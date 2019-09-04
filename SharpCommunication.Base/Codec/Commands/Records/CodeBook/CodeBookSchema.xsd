@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="CodeBookSchema"
+    targetNamespace="http://tempuri.org/CodeBookSchema.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://tempuri.org/CodeBookSchema.xsd"
+    xmlns:c="http://tempuri.org/CodeBookSchema.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="PropertyCodeBook">
+
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Version" type="xs:string"/>
+        <xs:element maxOccurs="256" name="Properties" type="c:Property"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="Property">
+    <xs:sequence>
+      <xs:element name="Name" type="xs:string"/>
+      <xs:element name="Format" type="c:PropertyFormat"/>
+      <xs:element name="Size">
+        <xs:simpleType>
+          <xs:restriction base="xs:int">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="8"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:element>
+      <xs:element minOccurs="0" name="Description" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:simpleType name="PropertyFormat">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Number"/>
+      <xs:enumeration value="Buffer"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

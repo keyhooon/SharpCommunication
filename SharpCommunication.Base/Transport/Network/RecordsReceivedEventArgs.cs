@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SharpCommunication.Base.Codec.Commands.Records;
+using SharpCommunication.Base.Codec.Packets.Records;
 
 namespace SharpCommunication.Base.Transport.Network
 {

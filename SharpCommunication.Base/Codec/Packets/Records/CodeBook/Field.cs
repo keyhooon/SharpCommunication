@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace SharpCommunication.Base.Codec.Commands.Records
+namespace SharpCommunication.Base.Codec.Packets.Records.CodeBook
 {
     public enum FieldFormat : byte
     {

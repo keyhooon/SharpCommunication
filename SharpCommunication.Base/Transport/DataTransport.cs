@@ -15,22 +15,18 @@ namespace SharpCommunication.Base.Transport
         private bool _isOpen;
         readonly CancellationTokenSource _tokenSource;
         private readonly Task _checkingIsOpenedTask;
-        protected Stream InStream;
         protected ObservableCollection<IChannel> _channels;
         protected ILogger Log { get; }
 
         public event EventHandler IsOpenChanged;
         public event EventHandler CanOpenChanged;
         public event EventHandler CanCloseChanged;
-        public event EventHandler<ChannelStructEventArg> ChannelStructed;
-        public event EventHandler<ChannelDestructEventArg> ChannelDestruct;
-        public event PropertyChangedEventHandler PropertyChanged;
 
         protected DataTransport(ChannelFactory channelFactory)
         {
             Log = NullLoggerProvider.Instance.CreateLogger("DataTransport");
             ChannelFactory = channelFactory;
-            _channels = new ObservableCollection<IChannel>();
+
             _tokenSource = new CancellationTokenSource();
             var token = _tokenSource.Token;
             _checkingIsOpenedTask = Task.Factory.StartNew(async () =>
@@ -39,9 +35,14 @@ namespace SharpCommunication.Base.Transport
                 {
                     try
                     {
-                        IsOpen = GetIsOpenedCore();
+                        if (_isOpen != IsOpen)
+                        {
+                            _isOpen = IsOpen;
+                            OnIsOpenChanged();
+                        }
                         await Task.Delay(500, token);
-                        token.ThrowIfCancellationRequested();
+                        if (token.IsCancellationRequested)
+                            break;
                     }
                     catch (Exception e)
                     {
@@ -53,72 +54,59 @@ namespace SharpCommunication.Base.Transport
             }, _tokenSource.Token, TaskCreationOptions.AttachedToParent, TaskScheduler.Current);
         }
 
-        public bool CanOpen => !IsOpen && CanOpenCore();
-
-        public bool CanClose => IsOpen && CanCloseCore();
-
         public void Open()
         {
             if (IsOpen)
                 throw new InvalidOperationException();
             OpenCore();
-            IsOpen = GetIsOpenedCore();
+            if (IsOpen)
+            {
+                _channels = new ObservableCollection<IChannel>();
+                OnIsOpenChanged();
+                _isOpen = true;
+            }
         }
-
-        public ReadOnlyObservableCollection<IChannel> Channels => new ReadOnlyObservableCollection<IChannel>(_channels);
 
         public void Close()
         {
             if (IsOpen == false)
                 throw new InvalidOperationException();
             CloseCore();
-            foreach (var channel in _channels)
-                OnChannelDestruct(new ChannelDestructEventArg(channel));
-            _channels.Clear();
-            IsOpen = GetIsOpenedCore();
-        }
-
-        public bool IsOpen
-        {
-            get => _isOpen;
-            protected set
+            if (!IsOpen)
             {
-                if (_isOpen == value)
-                    return;
-                _isOpen = value;
-                if (!_isOpen && _channels.Count != 0)
-                {
-                    foreach (var channel in _channels)
-                        OnChannelDestruct(new ChannelDestructEventArg(channel));
-                    _channels.Clear();
-                }
+                _channels.Clear();
                 OnIsOpenChanged();
+                _isOpen = false;
             }
         }
 
-        public ChannelFactory ChannelFactory { get; private set; }
 
-        protected abstract bool GetIsOpenedCore();
+        public bool CanOpen => !IsOpen && CanOpenCore;
+
+        public bool CanClose => IsOpen && CanCloseCore;
+
+        public bool IsOpen => IsOpenCore;
+
+        public ReadOnlyObservableCollection<IChannel> Channels => new ReadOnlyObservableCollection<IChannel>(_channels);
+
+
+
+        protected ChannelFactory ChannelFactory;
+
+        protected abstract bool IsOpenCore { get; }
 
         protected abstract void OpenCore();
 
         protected abstract void CloseCore();
 
-        protected virtual bool CanOpenCore()
-        {
-            return true;
-        }
+        protected virtual bool CanOpenCore => true;
 
-        protected virtual bool CanCloseCore()
-        {
-            return true;
-        }
+        protected virtual bool CanCloseCore => true;
 
         public virtual void Dispose()
         {
             _tokenSource.Cancel();
             Task.WaitAll(new[] { _checkingIsOpenedTask }, 1000);
-            IsOpen = false;
         }
 
         protected virtual void OnIsOpenChanged()
@@ -128,18 +116,6 @@ namespace SharpCommunication.Base.Transport
             OnCanCloseChanged();
         }
 
-        protected virtual void OnChannelStructed(ChannelStructEventArg e)
-        {
-            _channels.Add(e.Channel);
-            ChannelStructed?.Invoke(this, e);
-        }
-
-        protected virtual void OnChannelDestruct(ChannelDestructEventArg e)
-        {
-
-            ChannelDestruct?.Invoke(this, e);
-            e.Channel.Dispose();
-        }
 
         protected virtual void OnCanOpenChanged()
         {

@@ -1,4 +1,4 @@
-﻿namespace SharpCommunication.Base.Codec.Commands.Records
+﻿namespace SharpCommunication.Base.Codec.Packets.Records.CodeBook
 {
     public interface IFieldEncoding : IEncoding<Field>
     {

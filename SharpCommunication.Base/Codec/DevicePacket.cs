@@ -1,6 +1,6 @@
-﻿using SharpCommunication.Base.Codec.Commands;
-using System;
+﻿using System;
 using System.IO;
+using SharpCommunication.Base.Codec.Packets;
 
 namespace SharpCommunication.Base.Codec
 {
@@ -11,7 +11,7 @@ namespace SharpCommunication.Base.Codec
 
         public byte[] UniqueId { get; set; }
 
-        public Commands.Command Command { get; set; }
+        public Packet Command { get; set; }
 
 
         public sealed class Encoding : IEncoding<DevicePacket>
@@ -22,7 +22,7 @@ namespace SharpCommunication.Base.Codec
             {
                 get
                 {
-                    IEncoding<DevicePacket> encoding = _instance ??= new Encoding();
+                    var encoding = _instance ??= new Encoding();
                     return encoding;
                 }
             }
@@ -37,7 +37,7 @@ namespace SharpCommunication.Base.Codec
                     throw new ArgumentException("The packet does not contain a valid command.", nameof(packet));
                 writer.Write(Header, 0, Header.Length);
                 writer.Write(packet.UniqueId, 0, UniqueIdLength);
-                CommandEncodingFactory.Instance.Create(packet.Command.Id).Encode(packet.Command, writer);
+                PacketEncodingFactory.Instance.Create(packet.Command.TypeId).Encode(packet.Command, writer);
             }
 
             public DevicePacket Decode(BinaryReader reader)
@@ -60,7 +60,7 @@ namespace SharpCommunication.Base.Codec
                 return new DevicePacket
                 {
                     UniqueId = reader.ReadBytes(UniqueIdLength),
-                    Command = CommandEncodingFactory.Instance.Create(reader.ReadByte()).Decode(reader)
+                    Command = PacketEncodingFactory.Instance.Create(reader.ReadByte()).Decode(reader)
                 };
             }
         }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using SharpCommunication.Base.Channels;
 using SharpCommunication.Base.Codec;
 
 namespace SharpCommunication.Base.Channels.Decorator

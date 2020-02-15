@@ -10,14 +10,7 @@ namespace SharpCommunication.Base.Transport
         event EventHandler IsOpenChanged;
         event EventHandler CanOpenChanged;
         event EventHandler CanCloseChanged;
-        event EventHandler<ChannelStructEventArg> ChannelStructed;
-        event EventHandler<ChannelDestructEventArg> ChannelDestruct;
-
-        ChannelFactory ChannelFactory { get; }
-
         ReadOnlyObservableCollection<IChannel> Channels { get; }
-
-
 
         void Open();
 
@@ -28,9 +21,6 @@ namespace SharpCommunication.Base.Transport
         bool CanOpen { get; }
 
         bool CanClose { get; }
-
-
-
 
     }
 }

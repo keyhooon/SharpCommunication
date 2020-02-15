@@ -1,10 +1,9 @@
-﻿using SharpCommunication.Base.Codec.Commands.Records.CodeBook;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 
-namespace SharpCommunication.Base.Codec.Commands.Records
+namespace SharpCommunication.Base.Codec.Packets.Records.CodeBook
 {
     public class FieldEncoding : IEncoding<Field>
     {

@@ -1,33 +1,30 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 
-namespace SharpCommunication.Base.Codec.Commands
+namespace SharpCommunication.Base.Codec.Packets.Records.Data
 {
-    public abstract class Command
+    public abstract class Data
     {
         public abstract int Id { get; }
-
-
-
+               
         public abstract override string ToString();
 
-        public abstract class Encoding<T> : ICommandEncoding where T : Command
+        public abstract class Encoding<T> : IDataEncoding where T : Data
         {
-            public abstract int CommandId { get; }
+            public abstract int Id { get; }
 
-            public void Encode(Command command, BinaryWriter writer)
+            public void Encode(Data data, BinaryWriter writer)
             {
-                if (command == null)
-                    throw new ArgumentNullException(nameof(command));
+                if (data == null)
+                    throw new ArgumentNullException(nameof(data));
                 if (writer == null)
                     throw new ArgumentNullException(nameof(writer));
-                if (!(command is T command1))
+                if (!(data is T da))
                     throw new ArgumentException("The command type is not supported.");
-                EncodeCore(command1, writer);
+                EncodeCore(da, writer);
             }
 
-            public Command Decode(BinaryReader reader)
+            public Data Decode(BinaryReader reader)
             {
                 if (reader == null)
                     throw new ArgumentNullException(nameof(reader));
@@ -42,5 +39,4 @@ namespace SharpCommunication.Base.Codec.Commands
             protected abstract T DecodeCore(BinaryReader reader);
         }
     }
-
 }

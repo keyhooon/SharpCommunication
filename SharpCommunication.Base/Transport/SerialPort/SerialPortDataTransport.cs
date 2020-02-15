@@ -6,22 +6,25 @@ namespace SharpCommunication.Base.Transport.SerialPort
 {
     public class SerialPortDataTransport : DataTransport
     {
-        public SerialPortDataTransport(ChannelFactory channelFactory) : base(channelFactory)
+        private readonly SerialPortDataTransportOption _option;
+        private System.IO.Ports.SerialPort _serialPort;
+
+        public SerialPortDataTransport(ChannelFactory channelFactory, SerialPortDataTransportOption option) : base(channelFactory)
         {
-        }
-        protected override void CloseCore()
-        {
-            throw new NotImplementedException();
+            _option = option;
         }
 
-        protected override bool GetIsOpenedCore()
+        protected override bool IsOpenCore => _serialPort!.IsOpen;
+
+        protected override void CloseCore()
         {
-            throw new NotImplementedException();
+            _serialPort.Dispose();
         }
 
         protected override void OpenCore()
         {
-            throw new NotImplementedException();
+            _serialPort = new System.IO.Ports.SerialPort(_option.portName,_option.baudRate,_option.Parity);
+            _channels.Add(ChannelFactory.Create(_serialPort.BaseStream, _serialPort));
         }
     }
 }

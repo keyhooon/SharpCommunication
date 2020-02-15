@@ -1,6 +1,4 @@
-﻿using SharpCommunication.Base.Channels;
-
-namespace SharpCommunication.Base.Channels
+﻿namespace SharpCommunication.Base.Channels
 {
     public class DataReceivedEventArg<T> : DataReceivedEventArg
     {

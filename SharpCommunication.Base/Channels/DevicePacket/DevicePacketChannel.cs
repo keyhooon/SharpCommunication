@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
-using SharpCommunication.Base.Channels;
 using SharpCommunication.Base.Codec;
 
-namespace Connection.Channels.DevicePacket
+namespace SharpCommunication.Base.Channels.DevicePacket
 {
     public partial class DevicePacketChannel : Channel<SharpCommunication.Base.Codec.DevicePacket>
     {

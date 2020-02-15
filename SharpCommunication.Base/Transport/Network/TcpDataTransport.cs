@@ -3,31 +3,30 @@ using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using SharpCommunication.Base.Channels;
-using SharpCommunication.Base.Transport;
 
 namespace SharpCommunication.Base.Transport.Network
 {
     public abstract class TcpDataTransport : DataTransport
     {
+        private readonly TcpDataTransportOption _option;
 
         private TcpListener _tcpListener;
 
-        public int ListenPort { get; protected set; }
-
-        public int BackLog { get; protected set; }
 
 
 
-        protected TcpDataTransport(ChannelFactory channelFactory) : base(channelFactory)
+
+        protected TcpDataTransport(ChannelFactory channelFactory, TcpDataTransportOption option) : base(channelFactory)
         {
+            _option = option;
         }
 
         protected override void OpenCore()
         {
             Log.LogInformation("Starting ...");
-            var localEndPoint = new IPEndPoint(IPAddress.Any, ListenPort);
+            var localEndPoint = new IPEndPoint(IPAddress.Any, _option.ListenPort);
             _tcpListener = new TcpListener(localEndPoint);
-            _tcpListener.Start(BackLog);
+            _tcpListener.Start(_option.BackLog);
 
 
 
@@ -36,14 +35,16 @@ namespace SharpCommunication.Base.Transport.Network
             Log.LogDebug("- Starting thread workers");
             Log.LogInformation("Started");
         }
-        void TcpClientAccept(IAsyncResult ar)
+
+        private void TcpClientAccept(IAsyncResult ar)
         {
             try
             {
                 var socket = _tcpListener.EndAcceptSocket(ar);
                 socket.ReceiveTimeout = 2000;
                 var networkStream = new NetworkStream(socket);
-                OnChannelStructed(new ChannelStructEventArg(ChannelFactory.Create(networkStream, socket)));
+                _channels.Add(ChannelFactory.Create(networkStream, socket));
+
                 _tcpListener.BeginAcceptSocket(TcpClientAccept, null);
             }
             catch (ObjectDisposedException e)
@@ -56,10 +57,7 @@ namespace SharpCommunication.Base.Transport.Network
             }
         }
 
-        protected override bool GetIsOpenedCore()
-        {
-            return _tcpListener != null && _tcpListener.Server.IsBound;
-        }
+        protected override bool IsOpenCore=> _tcpListener != null && _tcpListener.Server.IsBound;
 
         protected override void CloseCore()
         {

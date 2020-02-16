@@ -5,10 +5,9 @@ namespace SharpCommunication.Base.Transport.Network
 {
     public class DeviceTcpDataTransport : TcpDataTransport
     {
-        public DeviceTcpDataTransport() : base(new ChannelFactory<DevicePacket>(new Codec<DevicePacket, DevicePacket.Encoding>()))
+        public DeviceTcpDataTransport(TcpDataTransportOption option) : base(new ChannelFactory<DevicePacket>(new Codec<DevicePacket, DevicePacket.Encoding>()), option)
         {
-            ListenPort = 4500;
-            BackLog = 30;
+
         }
     }
 }

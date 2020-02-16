@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using SharpCommunication.Base.Codec.Packets.Commands;
-using SharpCommunication.Base.Codec.Packets.Records;
-using SharpCommunication.Base.Codec.Packets.Records.CodeBook;
 using SharpCommunication.Base.Codec.Packets.Records.Data;
 
 namespace SharpCommunication.Base.Codec.Packets

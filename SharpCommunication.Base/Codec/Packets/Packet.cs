@@ -14,24 +14,6 @@ namespace SharpCommunication.Base.Codec.Packets
         {
             Encoding = encoding;
         }
-        //public void Encode(T packet, BinaryWriter writer)
-        //{
-        //    if (packet == null)
-        //        throw new ArgumentNullException(nameof(packet));
-        //    if (writer == null)
-        //        throw new ArgumentNullException(nameof(writer));
-        //    EncodeCore(packet, writer);
-        //}
-
-        //public T Decode(BinaryReader reader)
-        //{
-        //    if (reader == null)
-        //        throw new ArgumentNullException(nameof(reader));
-        //    var obj = DecodeCore(reader);
-        //    if (obj == null)
-        //        throw new NotSupportedException("The encoding was unable to decode the command.");
-        //    return obj;
-        //}
 
         public abstract void EncodeCore(T packet, BinaryWriter writer);
 
@@ -43,11 +25,11 @@ namespace SharpCommunication.Base.Codec.Packets
 
         public static T FindDecoratedProperty<T, TPacket>(this PacketEncoding<TPacket> packetEncoding) where T : PacketEncoding<TPacket> where TPacket : IPacket
         {
-            while (mapItem is MapItemDecorator item)
+            while (packetEncoding is PacketEncoding<TPacket> item)
             {
-                if (item is T extraViewMapItem)
-                    return propertySelector(extraViewMapItem);
-                mapItem = item.MapItem;
+                if (item is T packetEncodingDesire)
+                    return packetEncodingDesire;
+                packetEncoding = (PacketEncoding<TPacket>)packetEncoding.Encoding;
             }
             return null;
         }

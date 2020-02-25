@@ -16,14 +16,14 @@ namespace SharpCommunication.Base.Codec.Packets
     {
         public readonly IReadOnlyDictionary<int, AncestorPacketEncoding<IAncestorPacket>> EncodingList;
         private readonly IDictionary<int, AncestorPacketEncoding<IAncestorPacket>> _encodingsList;
-        public DescendantPacketEncoding(IEncoding<IPacket> encoding, IEnumerable<AncestorPacketEncoding<IAncestorPacket>> encodingsList) : this(encoding)
+        public DescendantPacketEncoding(PacketEncoding<IPacket> encoding, IEnumerable<AncestorPacketEncoding<IAncestorPacket>> encodingsList) : this(encoding)
         {
             foreach (var encodingItem in encodingsList)
             {
                 Register(encodingItem);
             }
         }
-        public DescendantPacketEncoding(IEncoding<IPacket> encoding) : base(encoding)
+        public DescendantPacketEncoding(PacketEncoding<IPacket> encoding) : base(encoding)
         {
             _encodingsList = new Dictionary<int, AncestorPacketEncoding<IAncestorPacket>>();
             EncodingList = new ReadOnlyDictionary<int, AncestorPacketEncoding<IAncestorPacket>>(_encodingsList);
@@ -57,17 +57,17 @@ namespace SharpCommunication.Base.Codec.Packets
     {
         public static PacketEncodingBuilder WithDescendant<T>(this PacketEncodingBuilder mapItemBuilder, IEnumerable<PacketEncodingBuilder> encodingBuiledersList) where T : IDescendantPacket, new()
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new DescendantPacketEncoding<T>(item, encodingBuiledersList.Select(o => (AncestorPacketEncoding<IAncestorPacket>)o.Build()).ToList()));
+            mapItemBuilder.SetupActions.Add(item => (PacketEncoding<IPacket>)new DescendantPacketEncoding<T>(item, encodingBuiledersList.Select(o => (AncestorPacketEncoding<IAncestorPacket>)o.Build()).ToList()));
             return mapItemBuilder;
         }
         public static PacketEncodingBuilder WithDescendant<T>(this PacketEncodingBuilder mapItemBuilder, IEnumerable<AncestorPacketEncoding<IAncestorPacket>> encodingsList) where T : IDescendantPacket, new()
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new DescendantPacketEncoding<T>(item, encodingsList));
+            mapItemBuilder.SetupActions.Add(item => new DescendantPacketEncoding<T>(item, encodingsList));
             return mapItemBuilder;
         }
         public static PacketEncodingBuilder WithDescendant<T>(this PacketEncodingBuilder mapItemBuilder) where T : IDescendantPacket, new()
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new DescendantPacketEncoding<T>(item));
+            mapItemBuilder.SetupActions.Add(item => (PacketEncoding<IPacket>)new DescendantPacketEncoding<T>(item));
             return mapItemBuilder;
         }
     }

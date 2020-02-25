@@ -1,8 +1,6 @@
 ﻿using SharpCommunication.Base.Codec;
 using SharpCommunication.Base.Codec.Packets;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace Demo.Codec
 {
@@ -10,15 +8,15 @@ namespace Demo.Codec
     {
         private readonly PacketEncodingBuilder EncodingBuilder;
 
-        private IEncoding<DevicePacket> encoding;
+        private PacketEncoding<DevicePacket> encoding;
 
 
-        public override IEncoding<DevicePacket> Encoding
+        public override PacketEncoding<DevicePacket> Encoding
         {
             get
             {
                 if (encoding == null)
-                    encoding =(IEncoding<DevicePacket>) EncodingBuilder.Build();
+                    encoding =(PacketEncoding<DevicePacket>) EncodingBuilder.Build();
                 return encoding;
             }
         }
@@ -26,17 +24,18 @@ namespace Demo.Codec
         public DevicePacketCodec()
         {
             EncodingBuilder = PacketEncodingBuilder.CreateDefaultBuilder().WithHeader(DevicePacket.Header).WithDescendant<DevicePacket>(new[] {
-                PacketEncodingBuilder.CreateDefaultBuilder().WithDescendant<DataPacket>( new []{
+                PacketEncodingBuilder.CreateDefaultBuilder().WithDescendant<DataPacket>(),
+                PacketEncodingBuilder.CreateDefaultBuilder().WithDescendant<CommandPacket>( new []{
                     PacketEncodingBuilder.CreateDefaultBuilder().WithFunction<ReadCommand>(1, ReadCommand.ID)
-                }),
-                PacketEncodingBuilder.CreateDefaultBuilder().WithDescendant<CommandPacket>()
+                })
             });
 
-            DescendantPacketEncoding<DevicePacket>
+
         }
         void RegisterCommand<T>(AncestorPacketEncoding<IAncestorPacket> encoding) where T : IFunctionPacket, new()
         {
-            CommandPacketEncoding.Register(encoding);
+            var commandEncoding = Encoding.FindDecoratedProperty<DescendantPacketEncoding<DevicePacket>, DevicePacket>().EncodingList[ReadCommand.ID];
+            commandEncoding.FindDecoratedProperty<DescendantPacketEncoding<CommandPacket>, CommandPacket>().Register(encoding)
         }
         void RegisterData(AncestorPacketEncoding<IAncestorPacket> packet)
         {

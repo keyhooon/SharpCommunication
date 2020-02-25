@@ -8,7 +8,7 @@
     public abstract class AncestorPacketEncoding<T> : PacketEncoding<T> where T : IAncestorPacket
     {
         public byte Id { get; protected set; }
-        public AncestorPacketEncoding(IEncoding<IPacket> encoding, byte id) : base(encoding)
+        public AncestorPacketEncoding(PacketEncoding<IPacket> encoding, byte id) : base(encoding)
         {
             Id = id;
         }

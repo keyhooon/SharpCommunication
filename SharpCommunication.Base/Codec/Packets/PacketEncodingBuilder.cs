@@ -5,28 +5,28 @@ namespace SharpCommunication.Base.Codec.Packets
 {
     public class PacketEncodingBuilder
     {
-        protected PacketEncodingBuilder(List<Func<IEncoding<IPacket>, IEncoding<IPacket>>> setupActions)
+        protected PacketEncodingBuilder(List<Func<PacketEncoding<IPacket>, PacketEncoding<IPacket>>> setupActions)
         {
             this.SetupActions = setupActions;
         }
 
         public static PacketEncodingBuilder CreateDefaultBuilder()
         {
-            var setupActions = new List<Func<IEncoding<IPacket>, IEncoding<IPacket>>>();
+            var setupActions = new List<Func<PacketEncoding<IPacket>, PacketEncoding<IPacket>>>();
             var builder = new PacketEncodingBuilder(setupActions);
             return builder;
         }
 
 
-        public IEncoding<IPacket> Build() 
+        public PacketEncoding<IPacket> Build() 
         {
-            IEncoding<IPacket> encoding = null;
+            PacketEncoding<IPacket> encoding = null;
             foreach (var action in SetupActions)
             {
                 encoding = action(encoding);
             }
             return encoding;
         }
-        public List<Func<IEncoding<IPacket>, IEncoding<IPacket>>> SetupActions { get; }
+        public List<Func<PacketEncoding<IPacket>, PacketEncoding<IPacket>>> SetupActions { get; }
     }
 }

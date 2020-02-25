@@ -4,10 +4,21 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.0.0-preview8.19405.4" />
+    <Compile Remove="Codec\Packets\Records\**" />
+    <EmbeddedResource Remove="Codec\Packets\Records\**" />
+    <None Remove="Codec\Packets\Records\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Codec\Packets\PacketEncodingFactory.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.2" />
     <PackageReference Include="System.IO" Version="4.3.0" />
     <PackageReference Include="System.IO.Ports" Version="4.7.0" />
   </ItemGroup>

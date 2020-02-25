@@ -1,5 +1,4 @@
 ﻿using SharpCommunication.Base.Channels;
-using System;
 
 
 namespace SharpCommunication.Base.Transport.SerialPort
@@ -23,8 +22,8 @@ namespace SharpCommunication.Base.Transport.SerialPort
 
         protected override void OpenCore()
         {
-            _serialPort = new System.IO.Ports.SerialPort(_option.portName,_option.baudRate,_option.Parity);
-            _channels.Add(ChannelFactory.Create(_serialPort.BaseStream, _serialPort));
+            _serialPort = new System.IO.Ports.SerialPort(_option.PortName, _option.BaudRate, _option.Parity, _option.DataBits, _option.StopBits);
+            _channels.Add(ChannelFactory.Create(_serialPort.BaseStream));
         }
     }
 }

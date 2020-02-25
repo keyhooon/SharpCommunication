@@ -1,11 +1,12 @@
-﻿using System;
+﻿using SharpCommunication.Base.Codec.Packets;
 
 namespace SharpCommunication.Base.Channels
 {
-    public class DataReceivedEventArg : EventArgs
+    public class DataReceivedEventArg<T> where T : IPacket, new()
     {
-        public object Data { get; private set; }
-        public DataReceivedEventArg(object data)
+
+        public new T Data { get; }
+        public DataReceivedEventArg(T data)
         {
             Data = data;
         }

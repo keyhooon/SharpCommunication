@@ -4,8 +4,8 @@ namespace SharpCommunication.Base.Codec
 {
     public interface IEncoding<TCodableData>
     {
-        void Encode(TCodableData obj, BinaryWriter writer);
+        void EncodeCore(TCodableData obj, BinaryWriter writer);
 
-        TCodableData Decode(BinaryReader reader);
+        TCodableData DecodeCore( BinaryReader reader);
     }
 }

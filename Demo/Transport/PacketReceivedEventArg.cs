@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net.Sockets;
-using SharpCommunication.Base.Codec;
+using Demo.Codec;
 
-namespace SharpCommunication.Base.Transport.Network
+namespace Demo.Transport
 {
     public class PacketReceivedEventArg : EventArgs
     {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SharpCommunication.Base.Transport.Network
+﻿namespace SharpCommunication.Base.Transport.Network
 {
     public class TcpDataTransportOption
     {

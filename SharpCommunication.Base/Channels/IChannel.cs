@@ -1,15 +1,16 @@
-﻿using System;
+﻿using SharpCommunication.Base.Codec;
+using SharpCommunication.Base.Codec.Packets;
+using System;
 using System.IO;
-using SharpCommunication.Base.Codec;
 
 namespace SharpCommunication.Base.Channels
 {
-    public interface IChannel
+    public interface IChannel<T> where T : IPacket, new() 
     {
-        ICodec Codec { get; }
+        ICodec<T> Codec { get; }
         BinaryReader Reader { get; }
         BinaryWriter Writer { get; }
         void Dispose();
-        event EventHandler<DataReceivedEventArg> DataReceived;
+        event EventHandler<DataReceivedEventArg<T>> DataReceived;
     }
 }

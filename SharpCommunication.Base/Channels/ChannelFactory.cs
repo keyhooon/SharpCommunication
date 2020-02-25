@@ -1,25 +1,21 @@
-﻿using System;
+﻿using SharpCommunication.Base.Codec;
+using SharpCommunication.Base.Codec.Packets;
 using System.IO;
-using SharpCommunication.Base.Codec;
 
 namespace SharpCommunication.Base.Channels
 {
-    public class ChannelFactory : IChannelFactory
+    public class ChannelFactory<T> : IChannelFactory<T> where T : IPacket, new()
     {
-        public ICodec Codec { get; protected set; }
-        public ChannelFactory(ICodec codec)
+        public ICodec<T> Codec { get; protected set; }
+
+        public ChannelFactory(ICodec<T> codec)
         {
             Codec = codec;
         }
 
-        public ChannelFactory()
+        public virtual Channel<T> Create(Stream stream)
         {
-
-        }
-
-        public virtual Channel Create(Stream stream, IDisposable streamingObject)
-        {
-            return new Channel(Codec, stream, streamingObject);
+            return new Channel<T>(Codec, stream);
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -13,7 +11,7 @@ namespace SharpCommunication.Base.Transport
     public abstract class DataTransport : IDataTransport
     {
         private bool _isOpen;
-        readonly CancellationTokenSource _tokenSource;
+        private readonly CancellationTokenSource _tokenSource;
         private readonly Task _checkingIsOpenedTask;
         protected ObservableCollection<IChannel> _channels;
         protected ILogger Log { get; }
@@ -74,6 +72,10 @@ namespace SharpCommunication.Base.Transport
             CloseCore();
             if (!IsOpen)
             {
+                foreach (var ch in _channels)
+                {
+                    ch.Dispose();
+                }
                 _channels.Clear();
                 OnIsOpenChanged();
                 _isOpen = false;
@@ -91,7 +93,7 @@ namespace SharpCommunication.Base.Transport
 
 
 
-        protected ChannelFactory ChannelFactory;
+        protected readonly ChannelFactory ChannelFactory;
 
         protected abstract bool IsOpenCore { get; }
 

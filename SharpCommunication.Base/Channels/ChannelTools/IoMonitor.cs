@@ -1,13 +1,14 @@
-﻿using System;
+﻿using SharpCommunication.Base.Codec.Packets;
+using System;
 
 namespace SharpCommunication.Base.Channels.ChannelTools
 {
-    public class IoMonitor
+    public class IoMonitor<T> where T : IPacket, new()
     {
 
-        public Channel MonitoredChannel { get; }
+        public Channel<T> MonitoredChannel { get; }
 
-        public IoMonitor(Channel monitoredChannel)
+        public IoMonitor(Channel<T> monitoredChannel)
         {
             MonitoredChannel = monitoredChannel;
             MonitorBeginTime = DateTime.Now;

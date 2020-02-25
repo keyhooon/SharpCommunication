@@ -1,19 +1,20 @@
-﻿using System;
+﻿using SharpCommunication.Base.Codec.Packets;
+using System;
 using System.IO;
 
 namespace SharpCommunication.Base.Codec
 {
-    public interface ICodec
+    public interface ICodec<T> where T : IPacket, new()
     {
 
         Type DataType { get; }
 
-        void Encode(object data, BinaryWriter stream);
+        void Encode(T data, BinaryWriter stream);
 
-        byte[] Encode(object data);
+        byte[] Encode(T data);
 
-        object Decode(BinaryReader stream);
+        T Decode(BinaryReader stream);
 
-        object Decode(byte[] bytes);
+        T Decode(byte[] bytes);
     }
 }

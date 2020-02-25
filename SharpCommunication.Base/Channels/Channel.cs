@@ -1,4 +1,5 @@
 ﻿using SharpCommunication.Base.Codec;
+using SharpCommunication.Base.Codec.Packets;
 using System;
 using System.IO;
 using System.Threading;
@@ -6,20 +7,18 @@ using System.Threading.Tasks;
 
 namespace SharpCommunication.Base.Channels
 {
-    public class Channel : IDisposable, IChannel
+    public class Channel<T> : IDisposable, IChannel<T> where T : IPacket, new()
     {
 
-        public virtual ICodec Codec { get; }
+        public virtual ICodec<T> Codec { get; }
 
         private readonly BufferedStream _bufferStream;
         private readonly CancellationTokenSource _cancellationTokenSource;
-        public event EventHandler<DataReceivedEventArg> DataReceived;
+        public event EventHandler<DataReceivedEventArg<T>> DataReceived;
 
-        public Channel(ICodec codec, Stream stream, IDisposable streamingObject)
+        public Channel(ICodec<T> codec, Stream stream)
         {
             Codec = codec;
-            StreamingObject = streamingObject;
-
             _bufferStream = new BufferedStream(stream);
 
             Writer = new BinaryWriter(_bufferStream);
@@ -34,7 +33,7 @@ namespace SharpCommunication.Base.Channels
                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         var packet = codec.Decode(Reader);
-                        OnDataReceived(new DataReceivedEventArg(packet));
+                        OnDataReceived(new DataReceivedEventArg<T>(packet));
                     }
                     catch (OperationCanceledException)
                     {
@@ -50,21 +49,17 @@ namespace SharpCommunication.Base.Channels
 
         public BinaryWriter Writer { get; }
         public BinaryReader Reader { get; }
-        public IDisposable StreamingObject { get; }
 
         public void Dispose()
         {
             _cancellationTokenSource.Cancel();
-            StreamingObject?.Dispose();
             _bufferStream?.Dispose();
             _cancellationTokenSource?.Dispose();
             Writer?.Dispose();
             Reader?.Dispose();
         }
 
-
-
-        protected virtual void OnDataReceived(DataReceivedEventArg e)
+        protected virtual void OnDataReceived(DataReceivedEventArg<T> e)
         {
             DataReceived?.Invoke(this, e);
         }

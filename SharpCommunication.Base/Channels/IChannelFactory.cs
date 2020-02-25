@@ -1,13 +1,13 @@
 ﻿using SharpCommunication.Base.Codec;
-using System;
+using SharpCommunication.Base.Codec.Packets;
 using System.IO;
 
 namespace SharpCommunication.Base.Channels
 {
-    interface IChannelFactory
+    interface IChannelFactory<T> where T: IPacket, new()
     {
-        ICodec Codec { get; }
+        ICodec<T> Codec { get; }
 
-        Channel Create(Stream stream, IDisposable streamingObject);
+        Channel<T> Create(Stream stream);
     }
 }

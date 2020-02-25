@@ -1,7 +1,8 @@
-﻿using SharpCommunication.Base.Channels;
-using SharpCommunication.Base.Codec;
+﻿using Demo.Codec;
+using SharpCommunication.Base.Channels;
+using SharpCommunication.Base.Transport.Network;
 
-namespace SharpCommunication.Base.Transport.Network
+namespace Demo.Transport
 {
     public class DeviceTcpDataTransport : TcpDataTransport
     {

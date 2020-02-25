@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace SharpCommunication.Base.Codec.Packets.Records
+﻿namespace SharpCommunication.Base.Codec.Packets.Records
 {
 
     public abstract class Record : Packet

@@ -43,7 +43,7 @@ namespace SharpCommunication.Base.Transport.Network
                 var socket = _tcpListener.EndAcceptSocket(ar);
                 socket.ReceiveTimeout = 2000;
                 var networkStream = new NetworkStream(socket);
-                _channels.Add(ChannelFactory.Create(networkStream, socket));
+                _channels.Add(ChannelFactory.Create(networkStream));
 
                 _tcpListener.BeginAcceptSocket(TcpClientAccept, null);
             }

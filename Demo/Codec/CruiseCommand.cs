@@ -20,7 +20,8 @@ namespace Demo.Codec
 
         public Action Action => throw new NotImplementedException();
 
+        public static byte ParamByteCount = 1;
         private static int ID = 3;
-        public int Id => CruiseCommand.ID;
+        public int Id => ID;
     }
 }

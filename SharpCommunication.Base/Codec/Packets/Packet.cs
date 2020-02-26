@@ -9,8 +9,8 @@ namespace SharpCommunication.Base.Codec.Packets
 
     public abstract class PacketEncoding<T> : IEncoding<T> where T : IPacket
     {
-        public IEncoding<IPacket> Encoding { get; }
-        public PacketEncoding(IEncoding<IPacket> encoding)
+        public IEncoding<T> Encoding { get; }
+        public PacketEncoding(IEncoding<T> encoding)
         {
             Encoding = encoding;
         }
@@ -23,7 +23,7 @@ namespace SharpCommunication.Base.Codec.Packets
     public static class PacketEncodingHelper
     {
 
-        public static T FindDecoratedProperty<T, TPacket>(this PacketEncoding<TPacket> packetEncoding) where T : PacketEncoding<TPacket> where TPacket : IPacket
+        public static T FindDecoratedProperty<T, TPacket>(this IEncoding<TPacket> packetEncoding) where T : PacketEncoding<TPacket> where TPacket : IPacket
         {
             while (packetEncoding is PacketEncoding<TPacket> item)
             {

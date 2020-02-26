@@ -33,7 +33,11 @@ namespace Demo.Codec
         public class Encoding : AncestorPacketEncoding<BatteryConfigurationPacket>
         {
 
-            public Encoding(IEncoding<IPacket> encoding) : base(encoding,id)
+            public Encoding(IEncoding<BatteryConfigurationPacket> encoding) : base(encoding,id)
+            {
+
+            }
+            public Encoding() : base(null, id)
             {
 
             }

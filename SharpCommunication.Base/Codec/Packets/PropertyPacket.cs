@@ -10,7 +10,7 @@ namespace SharpCommunication.Base.Codec.Packets
     public class HasPropertyPacketEncoding<T> : PacketEncoding<T> where T : IPropertyPacket
     {
         public byte PropertySize { get; }
-        public HasPropertyPacketEncoding(IEncoding<IPacket> encoding, byte propertySize) : base(encoding)
+        public HasPropertyPacketEncoding(IEncoding<T> encoding, byte propertySize) : base(encoding)
         {
             PropertySize = propertySize;
         }
@@ -34,7 +34,7 @@ namespace SharpCommunication.Base.Codec.Packets
     {
         public static PacketEncodingBuilder WithProperty(this PacketEncodingBuilder mapItemBuilder, byte propertySize)
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new HasPropertyPacketEncoding<IPropertyPacket>(item, propertySize));
+            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new HasPropertyPacketEncoding<IPropertyPacket>((IEncoding<IPropertyPacket>)item, propertySize));
             return mapItemBuilder;
         }
 

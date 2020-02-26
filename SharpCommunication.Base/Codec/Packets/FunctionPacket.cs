@@ -11,7 +11,7 @@ namespace SharpCommunication.Base.Codec.Packets
     public class FunctionPacketEncoding<T> : AncestorPacketEncoding<T> where T : IFunctionPacket, new()
     {
         public byte InputByteCount{ get; }
-        public FunctionPacketEncoding(IEncoding<IPacket> encoding, byte inputByteCount, byte id) : base(encoding, id)
+        public FunctionPacketEncoding(IEncoding<T> encoding, byte inputByteCount, byte id) : base(encoding, id)
         {
             InputByteCount = inputByteCount;
         }
@@ -31,7 +31,7 @@ namespace SharpCommunication.Base.Codec.Packets
     {
         public static PacketEncodingBuilder WithFunction<T>(this PacketEncodingBuilder mapItemBuilder, byte inputByteCount,byte id) where T : IFunctionPacket, new()
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new FunctionPacketEncoding<T>(item, inputByteCount, id));
+            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new FunctionPacketEncoding<T>((IEncoding<T>)item, inputByteCount, id));
             return mapItemBuilder;
         }
 

@@ -3,9 +3,10 @@ using System;
 
 namespace Demo.Codec
 {
-    class DataPacket : IPacket, IDescendantPacket, IAncestorPacket
+    public class DataPacket : IPacket, IDescendantPacket, IAncestorPacket
     {
-        public int Id => 1;
+        public static int ID = 1;
+        public int Id => ID;
 
         public IAncestorPacket DescendantPacket { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 

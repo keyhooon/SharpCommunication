@@ -26,20 +26,22 @@ namespace Demo.Codec
             EncodingBuilder = PacketEncodingBuilder.CreateDefaultBuilder().WithHeader(DevicePacket.Header).WithDescendant<DevicePacket>(new[] {
                 PacketEncodingBuilder.CreateDefaultBuilder().WithDescendant<DataPacket>(),
                 PacketEncodingBuilder.CreateDefaultBuilder().WithDescendant<CommandPacket>( new []{
-                    PacketEncodingBuilder.CreateDefaultBuilder().WithFunction<ReadCommand>(1, ReadCommand.ID)
+                    PacketEncodingBuilder.CreateDefaultBuilder().WithFunction<ReadCommand>(ReadCommand.ParamByteCount, ReadCommand.ID)
                 })
             });
 
 
         }
-        void RegisterCommand<T>(AncestorPacketEncoding<IAncestorPacket> encoding) where T : IFunctionPacket, new()
+        public void RegisterCommand<T>(byte inputByteCount, byte id) where T : IFunctionPacket, new()
         {
-            var commandEncoding = Encoding.FindDecoratedProperty<DescendantPacketEncoding<DevicePacket>, DevicePacket>().EncodingList[ReadCommand.ID];
-            commandEncoding.FindDecoratedProperty<DescendantPacketEncoding<CommandPacket>, CommandPacket>().Register(encoding)
+            var commandEncoding = (IEncoding<CommandPacket>) Encoding.FindDecoratedProperty<DescendantPacketEncoding<DevicePacket>, DevicePacket>().EncodingList[CommandPacket.ID];
+            commandEncoding.FindDecoratedProperty<DescendantPacketEncoding<CommandPacket>, CommandPacket>().Register(
+               PacketEncodingBuilder.CreateDefaultBuilder().WithFunction<T>(inputByteCount, id).Build());
         }
-        void RegisterData(AncestorPacketEncoding<IAncestorPacket> packet)
+        public void RegisterData<T>(AncestorPacketEncoding<IAncestorPacket> encoding) where T: IAncestorPacket, new()
         {
-            DataPacketEncoding.Register(packet);
+            var commandEncoding = (IEncoding<DataPacket>)Encoding.FindDecoratedProperty<DescendantPacketEncoding<DevicePacket>, DevicePacket>().EncodingList[DataPacket.ID];
+            commandEncoding.FindDecoratedProperty<DescendantPacketEncoding<DataPacket>, DataPacket>().Register(encoding);
         }
     }
 }

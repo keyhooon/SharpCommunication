@@ -11,7 +11,9 @@ namespace Demo.Codec
 
         public Action Action => throw new NotImplementedException();
 
-        private static byte ID = 2;
-        public int Id => LightCommand.ID;
+        public static byte ParamByteCount = 2;
+        public static byte ID = 2;
+        public int Id => ID;
+
     }
 }

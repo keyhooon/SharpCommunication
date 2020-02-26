@@ -23,7 +23,7 @@ namespace SharpCommunication.Base.Codec
             if (bytes.Length == 0)
                 throw new InvalidOperationException("bytes.Length = 0");
             using (var memoryStream = new MemoryStream(bytes))
-                return Decode(new BinaryReader(memoryStream));
+                return Encoding.DecodeCore(new BinaryReader(memoryStream));
         }
 
         public void Encode(TData data, BinaryWriter stream)

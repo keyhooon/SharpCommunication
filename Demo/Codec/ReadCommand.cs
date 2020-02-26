@@ -11,7 +11,8 @@ namespace Demo.Codec
 
         public Action Action => throw new NotImplementedException();
 
+        public static byte ParamByteCount = 1;
         public static byte ID = 1;
-        public int Id => ReadCommand.ID;
+        public int Id => ID;
     }
 }

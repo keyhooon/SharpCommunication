@@ -11,7 +11,6 @@ namespace Demo.Service
         {
             devicePacketCodec = new DevicePacketCodec();
 
-
         }
         public DescendantPacketEncoding<CommandPacket> CommandEncoding { get; private set; }
 

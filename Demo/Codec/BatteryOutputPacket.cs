@@ -27,7 +27,11 @@ namespace Demo.Codec
         public class Encoding : AncestorPacketEncoding<BatteryOutputPacket>
         {
 
-            public Encoding(IEncoding<IPacket> encoding) : base(encoding, id)
+            public Encoding(IEncoding<BatteryOutputPacket> encoding) : base(encoding, id)
+            {
+
+            }
+            public Encoding():base (null, id)
             {
 
             }

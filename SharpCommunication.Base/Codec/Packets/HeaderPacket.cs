@@ -10,7 +10,7 @@ namespace SharpCommunication.Base.Codec.Packets
     public class HeaderPacketEncoding<T> : PacketEncoding<T> where T : IHeaderPacket
     {
         public byte[] Header { get; }
-        public HeaderPacketEncoding(IEncoding<IPacket> encoding, byte[] header) : base(encoding)
+        public HeaderPacketEncoding(IEncoding<T> encoding, byte[] header) : base(encoding)
         {
             Header = header;
         }
@@ -41,7 +41,7 @@ namespace SharpCommunication.Base.Codec.Packets
     {
         public static PacketEncodingBuilder WithHeader(this PacketEncodingBuilder mapItemBuilder, byte[] header)
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new HeaderPacketEncoding<IHeaderPacket>(item, header));
+            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)(new HeaderPacketEncoding<IHeaderPacket>((IEncoding<IHeaderPacket>)item, header)));
             return mapItemBuilder;
         }
 

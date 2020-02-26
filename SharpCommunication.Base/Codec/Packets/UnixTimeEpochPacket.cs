@@ -10,7 +10,7 @@ namespace SharpCommunication.Base.Codec.Packets
     }
     public class HasUnixTimeEpochPacketEncoding<T> : PacketEncoding<T> where T : IUnixTimeEpochPacket
     {
-        public HasUnixTimeEpochPacketEncoding(IEncoding<IPacket> encoding) : base(encoding)
+        public HasUnixTimeEpochPacketEncoding(IEncoding<T> encoding) : base(encoding)
         {
         }
 
@@ -33,7 +33,7 @@ namespace SharpCommunication.Base.Codec.Packets
     {
         public static PacketEncodingBuilder WithUnixTimeEpoch(this PacketEncodingBuilder mapItemBuilder)
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new HasUnixTimeEpochPacketEncoding<IUnixTimeEpochPacket>(item));
+            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new HasUnixTimeEpochPacketEncoding<IUnixTimeEpochPacket>((IEncoding<IUnixTimeEpochPacket>)item));
             return mapItemBuilder;
         }
 

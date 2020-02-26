@@ -26,7 +26,11 @@ namespace Demo.Codec
         public class Encoding : AncestorPacketEncoding<CoreSituationPacket>
         {
 
-            public Encoding(IEncoding<IPacket> encoding) : base(encoding, id)
+            public Encoding(IEncoding<CoreSituationPacket> encoding) : base(encoding, id)
+            {
+
+            }
+            public Encoding() : base(null, id)
             {
 
             }

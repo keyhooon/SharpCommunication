@@ -2,10 +2,10 @@
 
 namespace SharpCommunication.Base.Channels
 {
-    public class DataReceivedEventArg<T> where T : IPacket, new()
+    public class DataReceivedEventArg<T> where T : IPacket
     {
 
-        public new T Data { get; }
+        public T Data { get; }
         public DataReceivedEventArg(T data)
         {
             Data = data;

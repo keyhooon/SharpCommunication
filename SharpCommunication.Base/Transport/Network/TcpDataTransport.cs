@@ -3,10 +3,12 @@ using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using SharpCommunication.Base.Channels;
+using SharpCommunication.Base.Codec;
+using SharpCommunication.Base.Codec.Packets;
 
 namespace SharpCommunication.Base.Transport.Network
 {
-    public abstract class TcpDataTransport : DataTransport
+    public abstract class TcpDataTransport<TPacket> : DataTransport<TPacket> where TPacket : IPacket
     {
         private readonly TcpDataTransportOption _option;
 
@@ -16,7 +18,7 @@ namespace SharpCommunication.Base.Transport.Network
 
 
 
-        protected TcpDataTransport(ChannelFactory channelFactory, TcpDataTransportOption option) : base(channelFactory)
+        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportOption option) : base(channelFactory)
         {
             _option = option;
         }

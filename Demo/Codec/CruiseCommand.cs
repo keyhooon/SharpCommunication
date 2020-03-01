@@ -1,7 +1,6 @@
 ﻿using SharpCommunication.Base.Codec.Packets;
 using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace Demo.Codec
 {
@@ -18,10 +17,22 @@ namespace Demo.Codec
             }
         }
 
+        public override string ToString()
+        {
+
+            return $"Cruise : {IsOn}";
+        }
         public Action Action => throw new NotImplementedException();
 
-        public static byte ParamByteCount = 1;
-        private static int ID = 3;
+        public readonly static byte ParamByteCount = 1;
+        public static readonly byte ID = 3;
         public int Id => ID;
+    }
+    public static class CruiseCommandEncodingHelper
+    {
+        public static PacketEncodingBuilder CreateCruiseCommand(this PacketEncodingBuilder packetEncodingBuilder)
+        {
+            return packetEncodingBuilder.WithFunction<CruiseCommand>(ReadCommand.ParamByteCount, CruiseCommand.ID);
+        }
     }
 }

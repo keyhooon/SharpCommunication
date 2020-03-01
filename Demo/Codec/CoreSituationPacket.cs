@@ -1,12 +1,15 @@
 ﻿using SharpCommunication.Base.Codec;
 using SharpCommunication.Base.Codec.Packets;
+using System;
 using System.IO;
+using System.Linq;
 
 namespace Demo.Codec
 {
     class CoreSituationPacket : IPacket, IAncestorPacket
     {
-        private const int id = 3;
+        public static byte id = 3;
+        public const byte byteCount = 4;
         public int Id => id;
         public double Temprature { get; set; }
         public double Voltage { get; set; }
@@ -18,15 +21,18 @@ namespace Demo.Codec
 
         private static double tempratureBias = 0.0d;
         private static double voltageBias = 0.0d;
-
+        public override string ToString()
+        {
+            return $"Temprature : {Temprature}, Voltage : {Voltage} ";
+        }
         public CoreSituationPacket()
         {
 
         }
-        public class Encoding : AncestorPacketEncoding<CoreSituationPacket>
+        public class Encoding : AncestorPacketEncoding
         {
 
-            public Encoding(IEncoding<CoreSituationPacket> encoding) : base(encoding, id)
+            public Encoding(PacketEncoding encoding) : base(encoding, id)
             {
 
             }
@@ -34,34 +40,48 @@ namespace Demo.Codec
             {
 
             }
-
-            public override void EncodeCore(CoreSituationPacket packet, BinaryWriter writer)
+            public override void EncodeCore(IPacket packet, BinaryWriter writer)
             {
-                writer.Write((short)((packet.Temprature - tempratureBias) / tempratureBitResolution));
-                writer.Write((ushort)((packet.Voltage - voltageBias) / voltageBitResolution));
-
-
+                var o = (CoreSituationPacket)packet;
+                byte crc8 = 0;
+                byte[] value;
+                value = BitConverter.GetBytes((ushort)((o.Temprature - tempratureBias) / tempratureBitResolution));
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                value = BitConverter.GetBytes((ushort)((o.Voltage - voltageBias) / voltageBitResolution));
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                writer.Write(crc8);
             }
 
-            public override CoreSituationPacket DecodeCore(BinaryReader reader)
+
+            public override IPacket DecodeCore(BinaryReader reader)
             {
-                return new CoreSituationPacket()
-                {
-                    Temprature = reader.ReadByte() * tempratureBitResolution + tempratureBias,
-                    Voltage = reader.ReadByte() * voltageBitResolution + voltageBias,
- 
-                };
+                var value = reader.ReadBytes(byteCount);
+                byte crc8 = 0;
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                if (crc8 == reader.ReadByte())
+                    return new CoreSituationPacket()
+                    {
+                        Temprature = BitConverter.ToUInt16(value.Take(2).ToArray()) * tempratureBitResolution + tempratureBias,
+                        Voltage = BitConverter.ToUInt16( value.Skip(2).Take(2).ToArray()) * voltageBitResolution + voltageBias,
+                    };
+                return null;
             }
+
         }
 
     }
 
     public static class CoreSituationPacketHelper
     {
-        public static PacketEncodingBuilder WithBatteryConfigurationPacket(this PacketEncodingBuilder mapItemBuilder)
+        public static PacketEncodingBuilder CreateCoreSituationEncodingBuilder(this PacketEncodingBuilder packetEncodingBuilder)
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new CoreSituationPacket.Encoding(item));
-            return mapItemBuilder;
+            packetEncodingBuilder.SetupActions.Add(item => new CoreSituationPacket.Encoding(item));
+            return packetEncodingBuilder;
         }
 
     }

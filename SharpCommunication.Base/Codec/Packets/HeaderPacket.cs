@@ -2,26 +2,21 @@
 
 namespace SharpCommunication.Base.Codec.Packets
 {
-    public interface IHeaderPacket : IPacket
-    {
-
-    }
-
-    public class HeaderPacketEncoding<T> : PacketEncoding<T> where T : IHeaderPacket
+    public class HeaderPacketEncoding : PacketEncoding
     {
         public byte[] Header { get; }
-        public HeaderPacketEncoding(IEncoding<T> encoding, byte[] header) : base(encoding)
+        public HeaderPacketEncoding(PacketEncoding encoding, byte[] header) : base(encoding)
         {
             Header = header;
         }
 
-        public override void EncodeCore(T packet, BinaryWriter writer)
+        public override void EncodeCore(IPacket packet, BinaryWriter writer)
         {
             writer.Write(Header);
             Encoding.EncodeCore(packet, writer);
         }
 
-        public override T DecodeCore( BinaryReader reader)
+        public override IPacket DecodeCore( BinaryReader reader)
         {
             var found = 0;
             while (found < Header.Length)
@@ -34,14 +29,14 @@ namespace SharpCommunication.Base.Codec.Packets
                 else
                     found = 0;
             }
-            return (T) Encoding.DecodeCore(reader);
+            return Encoding.DecodeCore(reader);
         }
     }
     public static class HasHeaderPacketHelper
     {
         public static PacketEncodingBuilder WithHeader(this PacketEncodingBuilder mapItemBuilder, byte[] header)
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)(new HeaderPacketEncoding<IHeaderPacket>((IEncoding<IHeaderPacket>)item, header)));
+            mapItemBuilder.SetupActions.Add(item => new HeaderPacketEncoding(item, header));
             return mapItemBuilder;
         }
 

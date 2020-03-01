@@ -1,12 +1,15 @@
 ﻿using SharpCommunication.Base.Codec;
 using SharpCommunication.Base.Codec.Packets;
+using System;
 using System.IO;
+using System.Linq;
 
 namespace Demo.Codec
 {
     class BatteryOutputPacket : IPacket, IAncestorPacket
     {
-        private const int id = 2;
+        public static byte id = 2;
+        public static byte byteCount = 6;
         public int Id => id;
         public double Current { get; set; }
         public double Voltage { get; set; }
@@ -20,14 +23,21 @@ namespace Demo.Codec
         private static double VoltageBias = 20.0d;
         private static double TempratureBias = 0.0d;
 
+        public override string ToString()
+        {
+
+            return $"Current : {Current}, Voltage : {Voltage}, " +
+                $"Temprature : {Temprature} ";
+        }
+
         public BatteryOutputPacket()
         {
 
         }
-        public class Encoding : AncestorPacketEncoding<BatteryOutputPacket>
+        public class Encoding : AncestorPacketEncoding
         {
 
-            public Encoding(IEncoding<BatteryOutputPacket> encoding) : base(encoding, id)
+            public Encoding(PacketEncoding encoding) : base(encoding, id)
             {
 
             }
@@ -36,32 +46,52 @@ namespace Demo.Codec
 
             }
 
-            public override void EncodeCore(BatteryOutputPacket packet, BinaryWriter writer)
+            public override void EncodeCore(IPacket packet, BinaryWriter writer)
             {
-                writer.Write((byte)((packet.Current - CurrentBias) / CurrentBitResolution));
-                writer.Write((byte)((packet.Voltage - VoltageBias) / VoltageBitResolution));
-                writer.Write((short)((packet.Temprature - TempratureBias) / TempratureBitResolution));
+                var o = (BatteryOutputPacket)packet;
+                byte crc8 = 0;
+                byte[] value;
+                value = BitConverter.GetBytes((ushort)((o.Current - CurrentBias) / CurrentBitResolution));
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                value = BitConverter.GetBytes((ushort)((o.Voltage - VoltageBias) / VoltageBitResolution));
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                value = BitConverter.GetBytes((ushort)((o.Temprature - TempratureBias) / TempratureBitResolution));
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                writer.Write(crc8);
             }
 
-            public override BatteryOutputPacket DecodeCore(BinaryReader reader)
+            public override IPacket DecodeCore(BinaryReader reader)
             {
-                return new BatteryOutputPacket()
-                {
-                    Current = reader.ReadByte() * CurrentBitResolution + CurrentBias,
-                    Voltage = reader.ReadByte() * VoltageBitResolution + VoltageBias,
-                    Temprature = reader.ReadByte() * TempratureBitResolution + TempratureBias,
-                };
+                var value = reader.ReadBytes(byteCount);
+                byte crc8 = 0;
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                if (crc8 == reader.ReadByte())
+                    return new BatteryOutputPacket()
+                    {
+                        Current = BitConverter.ToUInt16(value.Take(2).ToArray()) * CurrentBitResolution + CurrentBias,
+                        Voltage = BitConverter.ToUInt16(value.Skip(2).Take(2).ToArray()) * VoltageBitResolution + VoltageBias,
+                        Temprature = BitConverter.ToUInt16(value.Skip(4).Take(2).ToArray()) * TempratureBitResolution + TempratureBias,
+                    };
+                return null;
             }
+
         }
 
     }
 
     public static class BatteryOutputPacketHelper
     {
-        public static PacketEncodingBuilder WithBatteryConfigurationPacket(this PacketEncodingBuilder mapItemBuilder)
+        public static PacketEncodingBuilder CreateBatteryOutputEncodingBuilder(this PacketEncodingBuilder PacketEncodingBuilder)
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new BatteryOutputPacket.Encoding(item));
-            return mapItemBuilder;
+            PacketEncodingBuilder.SetupActions.Add(item => new BatteryOutputPacket.Encoding(item));
+            return PacketEncodingBuilder;
         }
 
     }

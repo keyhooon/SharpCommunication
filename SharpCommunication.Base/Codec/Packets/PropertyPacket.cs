@@ -7,34 +7,34 @@ namespace SharpCommunication.Base.Codec.Packets
         byte[] PropertyBinary { get; set; }
 
     }
-    public class HasPropertyPacketEncoding<T> : PacketEncoding<T> where T : IPropertyPacket
+    public class HasPropertyPacketEncoding : PacketEncoding
     {
         public byte PropertySize { get; }
-        public HasPropertyPacketEncoding(IEncoding<T> encoding, byte propertySize) : base(encoding)
+        public HasPropertyPacketEncoding(PacketEncoding encoding, byte propertySize) : base(encoding)
         {
             PropertySize = propertySize;
         }
 
-        public override void EncodeCore(T packet, BinaryWriter writer)
+        public override void EncodeCore(IPacket packet, BinaryWriter writer)
         {
-            writer.Write(packet.PropertyBinary, 0, PropertySize);
+            var propertyPacket = (IPropertyPacket)packet;
+            writer.Write(propertyPacket.PropertyBinary, 0, PropertySize);
             Encoding.EncodeCore(packet, writer);
         }
 
-        public override T DecodeCore( BinaryReader reader)
+        public override IPacket DecodeCore( BinaryReader reader)
         {
             var binary = reader.ReadBytes(PropertySize);
-            var obj = (IPropertyPacket)Encoding.DecodeCore(reader);
-            obj.PropertyBinary = binary;
-            
-            return (T)obj;
+            var propertyPacket = (IPropertyPacket) Encoding.DecodeCore(reader);
+            propertyPacket.PropertyBinary = binary;
+            return propertyPacket;
          }
     }
     public static class HasPropertyPacketHelper
     {
         public static PacketEncodingBuilder WithProperty(this PacketEncodingBuilder mapItemBuilder, byte propertySize)
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new HasPropertyPacketEncoding<IPropertyPacket>((IEncoding<IPropertyPacket>)item, propertySize));
+            mapItemBuilder.SetupActions.Add(item => new HasPropertyPacketEncoding(item, propertySize));
             return mapItemBuilder;
         }
 

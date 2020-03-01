@@ -4,10 +4,10 @@ using System.IO;
 
 namespace SharpCommunication.Base.Channels
 {
-    interface IChannelFactory<T> where T: IPacket, new()
+    public interface IChannelFactory<TPacket> where TPacket : IPacket
     {
-        ICodec<T> Codec { get; }
+        ICodec<TPacket> Codec { get; }
 
-        Channel<T> Create(Stream stream);
+        IChannel<TPacket> Create(Stream stream);
     }
 }

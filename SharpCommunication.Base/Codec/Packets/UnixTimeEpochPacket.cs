@@ -8,24 +8,25 @@ namespace SharpCommunication.Base.Codec.Packets
          DateTime DateTime { get; set; }
 
     }
-    public class HasUnixTimeEpochPacketEncoding<T> : PacketEncoding<T> where T : IUnixTimeEpochPacket
+    public class HasUnixTimeEpochPacketEncoding : PacketEncoding
     {
-        public HasUnixTimeEpochPacketEncoding(IEncoding<T> encoding) : base(encoding)
+        public HasUnixTimeEpochPacketEncoding(PacketEncoding encoding) : base(encoding)
         {
         }
 
-        public override void EncodeCore(T packet, BinaryWriter writer)
+        public override void EncodeCore(IPacket packet, BinaryWriter writer)
         {
-            writer.Write(packet.DateTime.ToUnixEpoch());
-            Encoding.EncodeCore(packet, writer);
+            var unixTimeEpochPacket = (IUnixTimeEpochPacket)packet;
+            writer.Write(unixTimeEpochPacket.DateTime.ToUnixEpoch());
+            Encoding.EncodeCore(unixTimeEpochPacket, writer);
         }
 
-        public override T DecodeCore(BinaryReader reader)
+        public override IPacket DecodeCore(BinaryReader reader)
         {
             var datetime = reader.ReadUInt32().ToUnixTime();
-            var obj = (IUnixTimeEpochPacket) Encoding.DecodeCore(reader);
-            obj.DateTime = datetime;
-            return (T) obj;
+            var unixTimeEpochPacket = (IUnixTimeEpochPacket) Encoding.DecodeCore(reader);
+            unixTimeEpochPacket.DateTime = datetime;
+            return unixTimeEpochPacket;
         }
 
     }
@@ -33,7 +34,7 @@ namespace SharpCommunication.Base.Codec.Packets
     {
         public static PacketEncodingBuilder WithUnixTimeEpoch(this PacketEncodingBuilder mapItemBuilder)
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new HasUnixTimeEpochPacketEncoding<IUnixTimeEpochPacket>((IEncoding<IUnixTimeEpochPacket>)item));
+            mapItemBuilder.SetupActions.Add(item => new HasUnixTimeEpochPacketEncoding(item));
             return mapItemBuilder;
         }
 

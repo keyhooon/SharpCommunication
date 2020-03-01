@@ -4,18 +4,18 @@ using System.IO;
 
 namespace SharpCommunication.Base.Channels
 {
-    public class ChannelFactory<T> : IChannelFactory<T> where T : IPacket, new()
+    public  class ChannelFactory<TPacket> : IChannelFactory<TPacket> where TPacket : IPacket
     {
-        public ICodec<T> Codec { get; protected set; }
+        public ICodec<TPacket> Codec { get; protected set; }
 
-        public ChannelFactory(ICodec<T> codec)
+        public ChannelFactory(ICodec<TPacket> codec)
         {
             Codec = codec;
         }
 
-        public virtual Channel<T> Create(Stream stream)
+        public virtual IChannel<TPacket> Create(Stream stream)
         {
-            return new Channel<T>(Codec, stream);
+            return new Channel<TPacket>(Codec, stream);
         }
     }
 }

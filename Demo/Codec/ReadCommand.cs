@@ -7,12 +7,36 @@ namespace Demo.Codec
 {
     class ReadCommand : IFunctionPacket
     {
-        public byte[] Param { get; set; }
+        public byte DataId { get; set; }
+        public byte[] Param
+        {
+            get
+            {
+                return new byte[] { DataId };
+            }
+            set
+            {
+                if (value != null && value.Length > 0)
+                    DataId = value[0];
 
+            }
+        }
+        public override string ToString()
+        {
+
+            return $"Request Data: {DataId}";
+        }
         public Action Action => throw new NotImplementedException();
 
-        public static byte ParamByteCount = 1;
-        public static byte ID = 1;
+        public readonly static byte ParamByteCount = 1;
+        public readonly static byte ID = 1;
         public int Id => ID;
+    }
+    public static class ReadCommandEncodingHelper
+    {
+        public static PacketEncodingBuilder CreateReadCommand(this PacketEncodingBuilder packetEncodingBuilder)
+        {
+            return packetEncodingBuilder.WithFunction<ReadCommand>(ReadCommand.ParamByteCount, ReadCommand.ID);
+        }
     }
 }

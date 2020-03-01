@@ -6,16 +6,12 @@ using SharpCommunication.Base.Codec.Packets;
 
 namespace SharpCommunication.Base.Channels.Decorator
 {
-    public class MonitoredChannel<T> : ChannelDecorator<T> where T: IPacket, new()
+    public class MonitoredChannel<TPacket> : ChannelDecorator<TPacket> where TPacket : IPacket, new()
     {
-        private IoMonitor<T> ioMonitor { get; set; }
-        public MonitoredChannel(ICodec<T> codec, Stream stream) : this(new Channel<T>(codec, stream))
+        private IoMonitor< TPacket> ioMonitor { get; set; }
+        public MonitoredChannel(Channel< TPacket> innerChannel) : base(innerChannel)
         {
-        }
-
-        public MonitoredChannel(Channel<T> innerChannel) : base(innerChannel)
-        {
-            ioMonitor = new IoMonitor<T>(innerChannel);
+            ioMonitor = new IoMonitor<TPacket>(innerChannel);
         }
 
         public int GetDataReceivedCount => ioMonitor.DataReceivedCount;

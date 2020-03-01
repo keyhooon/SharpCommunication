@@ -8,7 +8,13 @@ namespace Demo.Channels
     {
         public class DevicePacketChannelFactory : ChannelFactory<DevicePacket>
         {
-            public override Channel Create(Stream stream)
+
+            public DevicePacketChannelFactory() : base(new DevicePacketCodec())
+            {
+
+            }
+
+            public override IChannel<DevicePacket> Create(Stream stream)
             {
                 return new DevicePacketChannel(stream);
             }

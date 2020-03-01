@@ -7,29 +7,29 @@ namespace SharpCommunication.Base.Codec.Packets
         string ToString();        
     }
 
-    public abstract class PacketEncoding<T> : IEncoding<T> where T : IPacket
+    public abstract class PacketEncoding : IEncoding<IPacket>
     {
-        public IEncoding<T> Encoding { get; }
-        public PacketEncoding(IEncoding<T> encoding)
+        public PacketEncoding Encoding { get; }
+        public PacketEncoding(PacketEncoding encoding)
         {
             Encoding = encoding;
         }
 
-        public abstract void EncodeCore(T packet, BinaryWriter writer);
+        public abstract void EncodeCore(IPacket packet, BinaryWriter writer);
 
-        public abstract T DecodeCore(BinaryReader reader);
+        public abstract IPacket DecodeCore(BinaryReader reader);
 
     }
     public static class PacketEncodingHelper
     {
 
-        public static T FindDecoratedProperty<T, TPacket>(this IEncoding<TPacket> packetEncoding) where T : PacketEncoding<TPacket> where TPacket : IPacket
+        public static T FindDecoratedEncoding<T>(this PacketEncoding packetEncoding) where T : PacketEncoding 
         {
-            while (packetEncoding is PacketEncoding<TPacket> item)
+            while (packetEncoding is PacketEncoding item)
             {
                 if (item is T packetEncodingDesire)
                     return packetEncodingDesire;
-                packetEncoding = (PacketEncoding<TPacket>)packetEncoding.Encoding;
+                packetEncoding = packetEncoding.Encoding;
             }
             return null;
         }

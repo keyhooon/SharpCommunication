@@ -5,24 +5,20 @@ using System.IO;
 
 namespace SharpCommunication.Base.Channels.Decorator
 {
-    public class ChannelDecorator<T> : IChannel<T> where T : IPacket, new()
+    public class ChannelDecorator<TPacket> : Channel<TPacket>, IDisposable where TPacket : IPacket, new()
     {
-        protected Channel<T> innerChannel;
+        protected Channel< TPacket> innerChannel;
 
-        public ChannelDecorator(ICodec<T> codec, Stream stream) : this(new Channel<T>(codec, stream))
-        {
-
-        }
-        public ChannelDecorator(Channel<T> innerChannel)
+        public ChannelDecorator(Channel<TPacket> innerChannel) : base(innerChannel)
         {
             this.innerChannel = innerChannel;
-            innerChannel.DataReceived += DataReceived;
         }
 
-        public ICodec<T> Codec => innerChannel.Codec;
+        public ICodec<TPacket> Codec => innerChannel.Codec;
         public BinaryReader Reader => innerChannel.Reader;
         public BinaryWriter Writer => innerChannel.Writer;
+
         public void Dispose() { innerChannel.Dispose(); }
-        public event EventHandler<DataReceivedEventArg<T>> DataReceived;
+        public event EventHandler<DataReceivedEventArg<TPacket>> DataReceived;
     }
 }

@@ -1,25 +1,35 @@
 ﻿using SharpCommunication.Base.Codec;
 using SharpCommunication.Base.Codec.Packets;
+using System;
 using System.IO;
+using System.Linq;
 
 namespace Demo.Codec
 {
     class CoreConfigurationPacket : IPacket, IAncestorPacket
     {
-        private const int id = 4;
+        public static byte id = 4;
+        public static byte byteCount = 16;
         public int Id => id;
         public string UniqueId { get; set; }
         public string FirmwareVersion{ get; set; }
         public string ModelVersion { get; set; }
 
+
+        public override string ToString()
+        {
+
+            return $"UniqueId : {UniqueId}, FirmwareVersion : {FirmwareVersion}, " +
+                $"ModelVersion : {ModelVersion}";
+        }
         public CoreConfigurationPacket()
         {
 
         }
-        public class Encoding : AncestorPacketEncoding<CoreConfigurationPacket>
+        public class Encoding : AncestorPacketEncoding
         {
 
-            public Encoding(IEncoding<CoreConfigurationPacket> encoding) : base(encoding, id)
+            public Encoding(PacketEncoding encoding) : base(encoding, id)
             {
 
             }
@@ -27,22 +37,40 @@ namespace Demo.Codec
             {
 
             }
-
-            public override void EncodeCore(CoreConfigurationPacket packet, BinaryWriter writer)
+            public override void EncodeCore(IPacket packet, BinaryWriter writer)
             {
-                writer.Write(packet.UniqueId.ToByteArray());
-                writer.Write(packet.FirmwareVersion.ToByteArray());
-                writer.Write(packet.ModelVersion.ToByteArray());
+                var o = (CoreConfigurationPacket)packet;
+                byte crc8 = 0;
+                byte[] value;
+                value = o.UniqueId.ToByteArray();
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                value = o.FirmwareVersion.ToByteArray();
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                value = o.ModelVersion.ToByteArray();
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                writer.Write(crc8);
             }
 
-            public override CoreConfigurationPacket DecodeCore(BinaryReader reader)
+            public override IPacket DecodeCore(BinaryReader reader)
             {
-                return new CoreConfigurationPacket()
-                {
-                    UniqueId = reader.ReadBytes(12).ToHexString(),
-                    FirmwareVersion = reader.ReadBytes(2).ToHexString(),
-                    ModelVersion = reader.ReadBytes(2).ToHexString(),
-                };
+                var value = reader.ReadBytes(16);
+                byte crc8 = 0;
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                if (crc8 == reader.ReadByte())
+                    return new CoreConfigurationPacket()
+                    {
+                        UniqueId = value.Take(12).ToHexString(),
+                        FirmwareVersion = value.Skip(12).Take(2).ToHexString(),
+                        ModelVersion = value.Skip(14).Take(2).ToHexString(),
+                    };
+                return null;
             }
         }
 
@@ -50,9 +78,9 @@ namespace Demo.Codec
 
     public static class CoreConfigurationPacketHelper
     {
-        public static PacketEncodingBuilder WithBatteryConfigurationPacket(this PacketEncodingBuilder mapItemBuilder)
+        public static PacketEncodingBuilder CreateCoreConfigurationEncodingBuilder(this PacketEncodingBuilder mapItemBuilder)
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new CoreConfigurationPacket.Encoding(item));
+            mapItemBuilder.SetupActions.Add(item => new CoreConfigurationPacket.Encoding(item));
             return mapItemBuilder;
         }
 

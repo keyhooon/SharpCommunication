@@ -5,27 +5,34 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using SharpCommunication.Base.Channels;
+using SharpCommunication.Base.Codec;
+using SharpCommunication.Base.Codec.Packets;
 
 namespace SharpCommunication.Base.Transport
 {
-    public abstract class DataTransport : IDataTransport
+    public abstract class DataTransport<TPacket> : IDataTransport<TPacket> where TPacket : IPacket
     {
         private bool _isOpen;
         private readonly CancellationTokenSource _tokenSource;
         private readonly Task _checkingIsOpenedTask;
-        protected ObservableCollection<IChannel> _channels;
+        protected ObservableCollection<IChannel<TPacket>> _channels;
         protected ILogger Log { get; }
+        public readonly IChannelFactory<TPacket> ChannelFactory;
 
         public event EventHandler IsOpenChanged;
         public event EventHandler CanOpenChanged;
         public event EventHandler CanCloseChanged;
 
-        protected DataTransport(ChannelFactory channelFactory)
+        protected DataTransport(IChannelFactory<TPacket> channelFactory) : this(channelFactory, NullLoggerProvider.Instance.CreateLogger("DataTransport"))
         {
-            Log = NullLoggerProvider.Instance.CreateLogger("DataTransport");
-            ChannelFactory = channelFactory;
 
+        }
+        protected DataTransport(IChannelFactory<TPacket> channelFactory, ILogger log)
+        {
+            Log = log;
+            ChannelFactory = channelFactory;
             _tokenSource = new CancellationTokenSource();
+            _channels = new ObservableCollection<IChannel<TPacket>>();
             var token = _tokenSource.Token;
             _checkingIsOpenedTask = Task.Factory.StartNew(async () =>
             {
@@ -56,10 +63,11 @@ namespace SharpCommunication.Base.Transport
         {
             if (IsOpen)
                 throw new InvalidOperationException();
+
             OpenCore();
             if (IsOpen)
             {
-                _channels = new ObservableCollection<IChannel>();
+
                 OnIsOpenChanged();
                 _isOpen = true;
             }
@@ -69,14 +77,14 @@ namespace SharpCommunication.Base.Transport
         {
             if (IsOpen == false)
                 throw new InvalidOperationException();
+            foreach (var ch in _channels)
+            {
+                ch.Dispose();
+            }
+            _channels.Clear();
             CloseCore();
             if (!IsOpen)
             {
-                foreach (var ch in _channels)
-                {
-                    ch.Dispose();
-                }
-                _channels.Clear();
                 OnIsOpenChanged();
                 _isOpen = false;
             }
@@ -89,11 +97,10 @@ namespace SharpCommunication.Base.Transport
 
         public bool IsOpen => IsOpenCore;
 
-        public ReadOnlyObservableCollection<IChannel> Channels => new ReadOnlyObservableCollection<IChannel>(_channels);
+        public ReadOnlyObservableCollection<IChannel<TPacket>> Channels => new ReadOnlyObservableCollection<IChannel<TPacket>> (_channels);
 
 
-
-        protected readonly ChannelFactory ChannelFactory;
+  
 
         protected abstract bool IsOpenCore { get; }
 
@@ -104,6 +111,7 @@ namespace SharpCommunication.Base.Transport
         protected virtual bool CanOpenCore => true;
 
         protected virtual bool CanCloseCore => true;
+
 
         public virtual void Dispose()
         {

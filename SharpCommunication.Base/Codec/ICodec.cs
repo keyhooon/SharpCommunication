@@ -4,12 +4,12 @@ using System.IO;
 
 namespace SharpCommunication.Base.Codec
 {
-    public interface ICodec<T> where T : IPacket, new()
+    public interface ICodec<T> where T : IPacket
     {
 
         Type DataType { get; }
 
-        public PacketEncoding<T> Encoding { get; }
+        public PacketEncoding Encoding { get; }
 
         void Encode(T data, BinaryWriter stream);
 

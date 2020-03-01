@@ -8,7 +8,7 @@ namespace Demo.Channels
 {
     public partial class DevicePacketChannel : Channel<DevicePacket>
     {
-        public DevicePacketChannel(Stream stream) : base(new Codec<DevicePacket, IEncoding<DevicePacket>>(), stream)
+        public DevicePacketChannel(Stream stream) : base(new DevicePacketCodec(), stream)
         {
 
 

@@ -1,47 +1,65 @@
 ﻿using SharpCommunication.Base.Codec;
 using SharpCommunication.Base.Codec.Packets;
-
+using System.Collections.Generic;
 
 namespace Demo.Codec
 {
-    class DevicePacketCodec : Codec<DevicePacket>
+    public class DevicePacketCodec : Codec<DevicePacket>
     {
         private readonly PacketEncodingBuilder EncodingBuilder;
 
-        private PacketEncoding<DevicePacket> encoding;
+        private PacketEncoding encoding;
 
 
-        public override PacketEncoding<DevicePacket> Encoding
+        public override PacketEncoding Encoding
         {
             get
             {
                 if (encoding == null)
-                    encoding =(PacketEncoding<DevicePacket>) EncodingBuilder.Build();
+                    encoding = EncodingBuilder.Build();
                 return encoding;
             }
         }
 
         public DevicePacketCodec()
         {
+
             EncodingBuilder = PacketEncodingBuilder.CreateDefaultBuilder().WithHeader(DevicePacket.Header).WithDescendant<DevicePacket>(new[] {
-                PacketEncodingBuilder.CreateDefaultBuilder().WithDescendant<DataPacket>(),
-                PacketEncodingBuilder.CreateDefaultBuilder().WithDescendant<CommandPacket>( new []{
-                    PacketEncodingBuilder.CreateDefaultBuilder().WithFunction<ReadCommand>(ReadCommand.ParamByteCount, ReadCommand.ID)
+                PacketEncodingBuilder.CreateDefaultBuilder().CreateDataPacket(),
+                PacketEncodingBuilder.CreateDefaultBuilder().CreateCommandPacket( new []{
+                    PacketEncodingBuilder.CreateDefaultBuilder().CreateReadCommand()
                 })
             });
 
 
         }
-        public void RegisterCommand<T>(byte inputByteCount, byte id) where T : IFunctionPacket, new()
+        public void RegisterCommand(PacketEncoding enc) 
         {
-            var commandEncoding = (IEncoding<CommandPacket>) Encoding.FindDecoratedProperty<DescendantPacketEncoding<DevicePacket>, DevicePacket>().EncodingList[CommandPacket.ID];
-            commandEncoding.FindDecoratedProperty<DescendantPacketEncoding<CommandPacket>, CommandPacket>().Register(
-               PacketEncodingBuilder.CreateDefaultBuilder().WithFunction<T>(inputByteCount, id).Build());
+            var commandEncoding = Encoding.FindDecoratedEncoding<DescendantPacketEncoding<DevicePacket>>().EncodingList[CommandPacket.ID].FindDecoratedEncoding<DescendantPacketEncoding<CommandPacket>>();
+            commandEncoding.Register(enc);
         }
-        public void RegisterData<T>(AncestorPacketEncoding<IAncestorPacket> encoding) where T: IAncestorPacket, new()
+        public void RegisterCommand(IEnumerable<PacketEncoding> encs) 
         {
-            var commandEncoding = (IEncoding<DataPacket>)Encoding.FindDecoratedProperty<DescendantPacketEncoding<DevicePacket>, DevicePacket>().EncodingList[DataPacket.ID];
-            commandEncoding.FindDecoratedProperty<DescendantPacketEncoding<DataPacket>, DataPacket>().Register(encoding);
+            var commandEncoding = Encoding.FindDecoratedEncoding<DescendantPacketEncoding<DevicePacket>>().EncodingList[CommandPacket.ID].FindDecoratedEncoding<DescendantPacketEncoding<CommandPacket>>();
+            foreach (var enc in encs)
+            {
+                commandEncoding.Register(enc);
+            }
+        }
+
+        public void RegisterData(PacketEncoding enc) 
+        {
+            var dataEncoding = Encoding.FindDecoratedEncoding<DescendantPacketEncoding<DevicePacket>>().EncodingList[DataPacket.ID];
+            dataEncoding.FindDecoratedEncoding<DescendantPacketEncoding<DataPacket>>().Register(enc);
+        }
+        public void RegisterData(IEnumerable<PacketEncoding> encs)
+        {
+            var dataEncoding = Encoding.FindDecoratedEncoding<DescendantPacketEncoding<DevicePacket>>().EncodingList[DataPacket.ID]
+                .FindDecoratedEncoding<DescendantPacketEncoding<DataPacket>>();
+            foreach (var enc in encs)
+            {
+                dataEncoding.Register(enc);
+            }
         }
     }
 }

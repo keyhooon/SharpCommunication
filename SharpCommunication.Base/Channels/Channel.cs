@@ -7,19 +7,23 @@ using System.Threading.Tasks;
 
 namespace SharpCommunication.Base.Channels
 {
-    public class Channel<T> : IDisposable, IChannel<T> where T : IPacket, new()
+    public class Channel<TPacket> : IDisposable, IChannel<TPacket> where TPacket : IPacket
     {
-
-        public virtual ICodec<T> Codec { get; }
-
-        private readonly BufferedStream _bufferStream;
+        public virtual ICodec<TPacket> Codec { get; }
+        protected readonly Stream _stream;
+        protected readonly BufferedStream _bufferStream;
         private readonly CancellationTokenSource _cancellationTokenSource;
-        public event EventHandler<DataReceivedEventArg<T>> DataReceived;
+        public event EventHandler<DataReceivedEventArg<TPacket>> DataReceived;
+        public Channel(Channel<TPacket> channel): this (channel.Codec, channel._stream)
+        {
 
-        public Channel(ICodec<T> codec, Stream stream)
+        }
+
+        public Channel(ICodec<TPacket> codec, Stream stream)
         {
             Codec = codec;
-            _bufferStream = new BufferedStream(stream);
+            _stream = stream;
+            _bufferStream = new BufferedStream(_stream);
 
             Writer = new BinaryWriter(_bufferStream);
             Reader = new BinaryReader(stream);
@@ -30,25 +34,26 @@ namespace SharpCommunication.Base.Channels
                 while (true)
                 {
                     try
-                    {
+                     {
                         cancellationToken.ThrowIfCancellationRequested();
                         var packet = codec.Decode(Reader);
-                        OnDataReceived(new DataReceivedEventArg<T>(packet));
+                        OnDataReceived(new DataReceivedEventArg<TPacket>(packet));
                     }
                     catch (OperationCanceledException)
                     {
                         break;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // ignored
                     }
                 }
             }, cancellationToken);
         }
-
         public BinaryWriter Writer { get; }
         public BinaryReader Reader { get; }
+
+
 
         public void Dispose()
         {
@@ -59,7 +64,7 @@ namespace SharpCommunication.Base.Channels
             Reader?.Dispose();
         }
 
-        protected virtual void OnDataReceived(DataReceivedEventArg<T> e)
+        protected virtual void OnDataReceived(DataReceivedEventArg<TPacket> e)
         {
             DataReceived?.Invoke(this, e);
         }

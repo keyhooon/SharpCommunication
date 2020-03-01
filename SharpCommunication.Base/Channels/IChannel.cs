@@ -5,12 +5,12 @@ using System.IO;
 
 namespace SharpCommunication.Base.Channels
 {
-    public interface IChannel<T> where T : IPacket, new() 
+    public interface IChannel<TPacket> where TPacket : IPacket
     {
-        ICodec<T> Codec { get; }
+        ICodec<TPacket> Codec { get; }
         BinaryReader Reader { get; }
         BinaryWriter Writer { get; }
         void Dispose();
-        event EventHandler<DataReceivedEventArg<T>> DataReceived;
+        event EventHandler<DataReceivedEventArg<TPacket>> DataReceived;
     }
 }

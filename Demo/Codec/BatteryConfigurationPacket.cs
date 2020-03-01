@@ -1,12 +1,16 @@
 ﻿
+using System;
 using System.IO;
+using System.Linq;
+using System.Text;
 using SharpCommunication.Base.Codec;
 using SharpCommunication.Base.Codec.Packets;
 namespace Demo.Codec
 {
     public class BatteryConfigurationPacket : IPacket, IAncestorPacket
     {
-        private const int id = 1;
+        public readonly static byte id = 1;
+        public const byte byteCount = 10;
         public int Id => id;
         public double OverCurrent { get; set; }
         public double OverVoltage { get; set; }
@@ -30,10 +34,17 @@ namespace Demo.Codec
         {
 
         }
-        public class Encoding : AncestorPacketEncoding<BatteryConfigurationPacket>
+        public override string ToString()
         {
 
-            public Encoding(IEncoding<BatteryConfigurationPacket> encoding) : base(encoding,id)
+            return $"OverCurrent : {OverCurrent}, OverVoltage : {OverVoltage}, " +
+                $"UnderVoltage : {UnderVoltage}, NominalVoltage : {NominalVoltage}, " +
+                $"OverTemprature : {OverTemprature}, ";
+        }
+        public class Encoding : AncestorPacketEncoding
+        {
+
+            public Encoding(PacketEncoding encoding) : base(encoding, id)
             {
 
             }
@@ -42,26 +53,50 @@ namespace Demo.Codec
 
             }
 
-            public override void EncodeCore(BatteryConfigurationPacket packet, BinaryWriter writer)
+            public override void EncodeCore(IPacket packet, BinaryWriter writer)
             {
-                writer.Write((byte)((packet.OverCurrent - overCurrentBias) / overCurrentBitResolution));
-                writer.Write((byte)((packet.OverCurrent - overVoltageBias) / overVoltageBitResolution));
-                writer.Write((byte)((packet.OverCurrent - underVoltageBias) / underVoltageBitResolution));
-                writer.Write((byte)((packet.OverCurrent - nominalVoltageBias) / nominalVoltageBitResolution));
-                writer.Write((byte)((packet.OverCurrent - overTempratureBias) / overTempratureBitResolution));
-
+                var o = (BatteryConfigurationPacket)packet;
+                byte crc8 = 0;
+                byte[] value;
+                value = BitConverter.GetBytes((ushort)((o.OverCurrent - overCurrentBias) / overCurrentBitResolution));
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                value = BitConverter.GetBytes((ushort)((o.OverVoltage - overVoltageBias) / overVoltageBitResolution));
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                value = BitConverter.GetBytes((ushort)((o.UnderVoltage - underVoltageBias) / underVoltageBitResolution));
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                value = BitConverter.GetBytes((ushort)((o.NominalVoltage - nominalVoltageBias) / nominalVoltageBitResolution));
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                value = BitConverter.GetBytes((ushort)((o.OverTemprature - overTempratureBias) / overTempratureBitResolution));
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                writer.Write(value);
+                writer.Write(crc8);
             }
 
-            public override BatteryConfigurationPacket DecodeCore(BinaryReader reader)
+            public override IPacket DecodeCore(BinaryReader reader)
             {
-                return new BatteryConfigurationPacket()
-                {
-                    OverCurrent = (reader.ReadByte() * overCurrentBitResolution) + overCurrentBias,
-                    OverVoltage = (reader.ReadByte() * overVoltageBitResolution) + overVoltageBias,
-                    UnderVoltage = reader.ReadByte() * underVoltageBitResolution + underVoltageBias,
-                    NominalVoltage = reader.ReadByte() * nominalVoltageBitResolution + nominalVoltageBias,
-                    OverTemprature = reader.ReadByte() * overTempratureBitResolution + overTempratureBias,
-                };
+                var value = reader.ReadBytes(byteCount);
+                byte crc8 = 0;
+                for (int i = 0; i < value.Length; i++)
+                    crc8 += value[i];
+                if (crc8 == reader.ReadByte())
+                    return new BatteryConfigurationPacket()
+                    {
+                        OverCurrent = BitConverter.ToUInt16(value.Take(2).ToArray()) * overCurrentBitResolution + overCurrentBias,
+                        OverVoltage = BitConverter.ToUInt16(value.Skip(2).Take(2).ToArray()) * overVoltageBitResolution + overVoltageBias,
+                        UnderVoltage = BitConverter.ToUInt16(value.Skip(4).Take(2).ToArray()) * underVoltageBitResolution + underVoltageBias,
+                        NominalVoltage = BitConverter.ToUInt16(value.Skip(6).Take(2).ToArray()) * nominalVoltageBitResolution + nominalVoltageBias,
+                        OverTemprature = BitConverter.ToUInt16(value.Skip(8).Take(2).ToArray()) * overTempratureBitResolution + overTempratureBias,
+                    };
+                return null;
             }
         }
 
@@ -69,10 +104,11 @@ namespace Demo.Codec
 
     public static class BatteryConfigurationPacketHelper
     {
-        public static PacketEncodingBuilder WithBatteryConfigurationPacket(this PacketEncodingBuilder mapItemBuilder)
+        public static PacketEncodingBuilder CreateBatteryConfigurationEncodingBuilder(this PacketEncodingBuilder packetEncodingBuilder)
         {
-            mapItemBuilder.SetupActions.Add(item => (IEncoding<IPacket>)new BatteryConfigurationPacket.Encoding(item));
-            return mapItemBuilder;
+
+            packetEncodingBuilder.SetupActions.Add(item => new BatteryConfigurationPacket.Encoding(item));
+            return packetEncodingBuilder;
         }
 
     }

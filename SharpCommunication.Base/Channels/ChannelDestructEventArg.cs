@@ -1,16 +1,17 @@
-﻿using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Base.Codec;
+using SharpCommunication.Base.Codec.Packets;
 using System;
 
 namespace SharpCommunication.Base.Channels
 {
-    public class ChannelDestructEventArg<T> : EventArgs where T: IPacket,new()
+    public class ChannelDestructEventArg<TPacket> : EventArgs where TPacket : IPacket
     {
-        public ChannelDestructEventArg(IChannel<T> channel)
+        public ChannelDestructEventArg(IChannel<TPacket> channel)
         {
             Channel = channel;
         }
 
-        public IChannel<T> Channel
+        public IChannel<TPacket> Channel
         {
             get;
         }

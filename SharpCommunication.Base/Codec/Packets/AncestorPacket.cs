@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 namespace SharpCommunication.Base.Codec.Packets
 {
@@ -7,14 +8,31 @@ namespace SharpCommunication.Base.Codec.Packets
         public int Id { get; }
     }
 
-    public abstract class AncestorPacketEncoding<T> : PacketEncoding<T> where T : IAncestorPacket
+    public class AncestorPacketEncoding : PacketEncoding 
     {
         public byte Id { get; protected set; }
-        public AncestorPacketEncoding(IEncoding<T> encoding, byte id) : base(encoding)
+        public AncestorPacketEncoding(PacketEncoding encoding, byte id) : base(encoding)
         {
             Id = id;
         }
 
+        public override void EncodeCore(IPacket packet, BinaryWriter writer)
+        {
+            Encoding.EncodeCore(packet, writer);
+        }
+
+        public override IPacket DecodeCore(BinaryReader reader)
+        {
+            return Encoding.DecodeCore(reader);
+        }
+    }
+    public static class HasAnsectorPacketHelper
+    {
+        public static PacketEncodingBuilder WithAncestor(this PacketEncodingBuilder packetEncodingBuilder, byte id)
+        {
+            packetEncodingBuilder.SetupActions.Add(item => new AncestorPacketEncoding(item, id));
+            return packetEncodingBuilder;
+        }
 
     }
 }

@@ -7,12 +7,12 @@ namespace SharpCommunication.Base.Codec
     public abstract class Codec<TData> : ICodec<TData> where TData : IPacket, new()
     {
         public Type DataType => typeof(TData);
-        public abstract PacketEncoding<TData> Encoding { get; }
+        public abstract PacketEncoding Encoding { get; }
         public TData Decode(BinaryReader stream)
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
-            return Encoding.DecodeCore(stream);
+            return (TData) Encoding.DecodeCore(stream);
 
         }
 
@@ -23,7 +23,7 @@ namespace SharpCommunication.Base.Codec
             if (bytes.Length == 0)
                 throw new InvalidOperationException("bytes.Length = 0");
             using (var memoryStream = new MemoryStream(bytes))
-                return Encoding.DecodeCore(new BinaryReader(memoryStream));
+                return (TData) Encoding.DecodeCore(new BinaryReader(memoryStream));
         }
 
         public void Encode(TData data, BinaryWriter stream)

@@ -23,7 +23,7 @@ namespace Demo.Codec
         private static double voltageBias = 0.0d;
         public override string ToString()
         {
-            return $"Temprature : {Temprature}, Voltage : {Voltage} ";
+            return $"Battery Situation - Temprature : {Temprature}, Voltage : {Voltage} ";
         }
         public CoreSituationPacket()
         {

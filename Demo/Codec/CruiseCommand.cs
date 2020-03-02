@@ -20,7 +20,7 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"Cruise : {IsOn}";
+            return $"Cruise Command - Cruise : {IsOn}";
         }
         public Action Action => throw new NotImplementedException();
 

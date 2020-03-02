@@ -28,7 +28,7 @@ namespace Demo.Codec
         public override string ToString()
         {
             if (IsOn)
-                return $"Light : {LightId}, State : On";
+                return $"Light Command - Light : {LightId}, State : On";
             return $"Light : {LightId}, State : Off";
         }
         public Action Action => throw new NotImplementedException();

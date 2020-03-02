@@ -12,7 +12,7 @@ namespace SharpCommunication.Base.Transport.SerialPort
         private StopBits _stopBits;
         private int _dataBits;
 
-        public SerialPortDataTransportOption(string portName, int baudRate, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits= StopBits.OnePointFive)
+        public SerialPortDataTransportOption(string portName, int baudRate, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits= StopBits.One)
         {
             _stopBits = stopBits;
             _dataBits = dataBits;

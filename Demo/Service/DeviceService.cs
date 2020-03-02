@@ -20,7 +20,9 @@ namespace Demo.Service
                 PacketEncodingBuilder.CreateDefaultBuilder().CreateBatteryConfigurationEncodingBuilder().Build(),
                 PacketEncodingBuilder.CreateDefaultBuilder().CreateBatteryOutputEncodingBuilder().Build(),
                 PacketEncodingBuilder.CreateDefaultBuilder().CreateCoreConfigurationEncodingBuilder().Build(),
-                PacketEncodingBuilder.CreateDefaultBuilder().CreateCoreSituationEncodingBuilder().Build()
+                PacketEncodingBuilder.CreateDefaultBuilder().CreateCoreSituationEncodingBuilder().Build(),
+                PacketEncodingBuilder.CreateDefaultBuilder().CreateServoInputEncodingBuilder().Build(),
+                PacketEncodingBuilder.CreateDefaultBuilder().CreateThrottleConfigurationEncodingBuilder().Build(),
             });
             devicePacketCodec.RegisterCommand(new[] {
                 PacketEncodingBuilder.CreateDefaultBuilder().CreateLightCommand().Build(),

@@ -7,7 +7,7 @@ namespace Demo.Codec
     public class DevicePacket : IPacket, IDescendantPacket
     {
 
-        public static readonly byte[] Header = { 0x55, 0x55 };
+        public static readonly byte[] Header = { 0xAA, 0xAA };
 
         public IAncestorPacket DescendantPacket { get; set; }
         public override string ToString()

@@ -37,7 +37,7 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"OverCurrent : {OverCurrent}, OverVoltage : {OverVoltage}, " +
+            return $"Battery Configuration - OverCurrent : {OverCurrent}, OverVoltage : {OverVoltage}, " +
                 $"UnderVoltage : {UnderVoltage}, NominalVoltage : {NominalVoltage}, " +
                 $"OverTemprature : {OverTemprature}, ";
         }

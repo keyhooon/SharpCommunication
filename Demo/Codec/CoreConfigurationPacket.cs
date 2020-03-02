@@ -19,7 +19,7 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"UniqueId : {UniqueId}, FirmwareVersion : {FirmwareVersion}, " +
+            return $"Core Configuration - UniqueId : {UniqueId}, FirmwareVersion : {FirmwareVersion}, " +
                 $"ModelVersion : {ModelVersion}";
         }
         public CoreConfigurationPacket()

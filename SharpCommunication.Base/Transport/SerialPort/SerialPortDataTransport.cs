@@ -25,8 +25,8 @@ namespace SharpCommunication.Base.Transport.SerialPort
 
         protected override void OpenCore()
         {
-            _serialPort = new System.IO.Ports.SerialPort(_option.PortName, _option.BaudRate);
-            _serialPort.ReadTimeout = 1000;
+            _serialPort = new System.IO.Ports.SerialPort(_option.PortName, _option.BaudRate, _option.Parity, _option.DataBits, _option.StopBits);
+            _serialPort.ReadTimeout = 10000;
 
             _serialPort.Open();
             _channels.Add(ChannelFactory.Create(_serialPort.BaseStream));

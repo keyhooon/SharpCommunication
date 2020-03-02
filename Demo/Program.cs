@@ -19,11 +19,11 @@ namespace Demo
 
         static void Main(string[] args)
         {
-            SerialPort serial = new SerialPort("com253", 115200);
-            serial.Open();
-            var writer = new BinaryWriter(serial.BaseStream);
+            //SerialPort serial = new SerialPort("com6"", 9600);
+            //serial.Open();
+            //var writer = new BinaryWriter(serial.BaseStream);
 
-            var option = new SerialPortDataTransportOption("Com254", 115200);
+            var option = new SerialPortDataTransportOption("com6", 9600);
             var deviceService = new DeviceService(option);
             deviceService.DataReceived += DeviceService_DataReceived;
             deviceService.Start();
@@ -31,7 +31,7 @@ namespace Demo
 
             while (true)
             {
-                writer.Write(new byte[] { 0x55, 0x55, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00 , 0x00, 0x00, 0x00, 0x00, 0x00 , 0x00});
+                //writer.Write(new byte[] { 0xaa, 0xaa, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00 , 0x00, 0x00, 0x00, 0x00, 0x00 , 0x00});
                 Thread.Sleep(200);
             }
         }

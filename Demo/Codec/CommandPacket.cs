@@ -6,7 +6,7 @@ namespace Demo.Codec
 {
     public class CommandPacket : IPacket, IDescendantPacket, IAncestorPacket
     {
-        public static byte ID = 2;
+        public static byte ID = 1;
         public int Id => ID;
 
         public IAncestorPacket DescendantPacket { get ; set; }

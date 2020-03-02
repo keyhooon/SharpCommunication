@@ -24,7 +24,7 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"Request Data: {DataId}";
+            return $"Read Command - Request Data: {DataId}";
         }
         public Action Action => throw new NotImplementedException();
 

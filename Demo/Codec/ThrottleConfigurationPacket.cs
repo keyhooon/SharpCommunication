@@ -12,7 +12,7 @@ namespace Demo.Codec
     {
         public readonly static byte id = 10;
         public const byte byteCount = 6;
-        public int Id => id;
+        public byte Id => id;
         public double FaultThreshold { get; set; }
         public double Min { get; set; }
         public double Max { get; set; }

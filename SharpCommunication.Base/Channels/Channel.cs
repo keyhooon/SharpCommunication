@@ -68,5 +68,11 @@ namespace SharpCommunication.Base.Channels
         {
             DataReceived?.Invoke(this, e);
         }
+
+        public void Transmit(TPacket packet)
+        {
+            Codec.Encode(packet, Writer);
+            Writer.Flush();
+        }
     }
 }

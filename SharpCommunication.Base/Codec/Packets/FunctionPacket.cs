@@ -18,7 +18,7 @@ namespace SharpCommunication.Base.Codec.Packets
         public override IPacket DecodeCore(BinaryReader reader)
         {
             var functionPacket = new T() { Param = reader.ReadBytes(InputByteCount) };
-            functionPacket.Action.Invoke();
+            functionPacket?.Action?.Invoke();
             return functionPacket;
         }
 

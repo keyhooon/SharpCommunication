@@ -35,7 +35,7 @@ namespace Demo.Codec
 
         public readonly static byte ParamByteCount = 2;
         public readonly static byte ID = 2;
-        public int Id => ID;
+        public byte Id => ID;
 
     }
     public static class LightCommandEncodingHelper

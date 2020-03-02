@@ -10,7 +10,7 @@ namespace Demo.Codec
     {
         public static byte id = 4;
         public static byte byteCount = 16;
-        public int Id => id;
+        public byte Id => id;
         public string UniqueId { get; set; }
         public string FirmwareVersion{ get; set; }
         public string ModelVersion { get; set; }

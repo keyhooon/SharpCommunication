@@ -26,7 +26,7 @@ namespace Demo.Codec
 
         public readonly static byte ParamByteCount = 1;
         public static readonly byte ID = 3;
-        public int Id => ID;
+        public byte Id => ID;
     }
     public static class CruiseCommandEncodingHelper
     {

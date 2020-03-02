@@ -10,7 +10,7 @@ namespace Demo.Codec
     {
         public static byte id = 3;
         public const byte byteCount = 4;
-        public int Id => id;
+        public byte Id => id;
         public double Temprature { get; set; }
         public double Voltage { get; set; }
 

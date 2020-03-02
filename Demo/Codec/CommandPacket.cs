@@ -7,7 +7,7 @@ namespace Demo.Codec
     public class CommandPacket : IPacket, IDescendantPacket, IAncestorPacket
     {
         public static byte ID = 1;
-        public int Id => ID;
+        public byte Id => ID;
 
         public IAncestorPacket DescendantPacket { get ; set; }
         public override string ToString()

@@ -11,7 +11,7 @@ namespace Demo.Codec
     {
         public readonly static byte id = 1;
         public const byte byteCount = 10;
-        public int Id => id;
+        public byte Id => id;
         public double OverCurrent { get; set; }
         public double OverVoltage { get; set; }
         public double UnderVoltage { get; set; }

@@ -26,11 +26,11 @@ namespace Demo.Codec
 
             return $"Read Command - Request Data: {DataId}";
         }
-        public Action Action => throw new NotImplementedException();
+        public Action Action { get; }
 
         public readonly static byte ParamByteCount = 1;
         public readonly static byte ID = 1;
-        public int Id => ID;
+        public byte Id => ID;
     }
     public static class ReadCommandEncodingHelper
     {

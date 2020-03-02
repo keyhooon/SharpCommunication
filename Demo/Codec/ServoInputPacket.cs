@@ -12,7 +12,7 @@ namespace Demo.Codec
     {
         public readonly static byte id = 9;
         public const byte byteCount = 7;
-        public int Id => id;
+        public byte Id => id;
         public double Throttle { get; set; }
         public double Pedal { get; set; }
         public double Cruise { get; set; }

@@ -14,8 +14,8 @@ namespace SharpCommunication.Base.Codec.Packets
 
     public class DescendantPacketEncoding<T> : PacketEncoding where T : IDescendantPacket, new()
     {
-        public readonly IReadOnlyDictionary<int, AncestorPacketEncoding> EncodingList;
-        private readonly IDictionary<int, AncestorPacketEncoding> _encodingsList;
+        public readonly IReadOnlyDictionary<byte, AncestorPacketEncoding> EncodingList;
+        private readonly IDictionary<byte, AncestorPacketEncoding> _encodingsList;
         public DescendantPacketEncoding(PacketEncoding encoding, IEnumerable<PacketEncoding> encodingsList) : this(encoding)
         {
             foreach (var encodingItem in encodingsList)
@@ -25,8 +25,8 @@ namespace SharpCommunication.Base.Codec.Packets
         }
         public DescendantPacketEncoding(PacketEncoding encoding) : base(encoding)
         {
-            _encodingsList = new Dictionary<int, AncestorPacketEncoding>();
-            EncodingList = new ReadOnlyDictionary<int, AncestorPacketEncoding>(_encodingsList);
+            _encodingsList = new Dictionary<byte, AncestorPacketEncoding>();
+            EncodingList = new ReadOnlyDictionary<byte, AncestorPacketEncoding>(_encodingsList);
         }
         public void Register(PacketEncoding encoding)
         {

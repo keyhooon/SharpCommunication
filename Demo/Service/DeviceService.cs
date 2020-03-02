@@ -38,6 +38,7 @@ namespace Demo.Service
         {
             DataTransport.Close();
         }
+        public Channel<DevicePacket> devicePacketChannel => (Channel<DevicePacket>)DataTransport.Channels[0];
 
         private void Channels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {

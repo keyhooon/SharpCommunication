@@ -8,7 +8,7 @@ namespace SharpCommunication.Base.Codec.Packets
 {
     public interface IDescendantPacket : IPacket
     {
-        public IAncestorPacket DescendantPacket { get; set; }
+        IAncestorPacket DescendantPacket { get; set; }
 
     }
 

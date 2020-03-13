@@ -9,7 +9,7 @@ namespace SharpCommunication.Base.Codec
 
         Type DataType { get; }
 
-        public PacketEncoding Encoding { get; }
+        PacketEncoding Encoding { get; }
 
         void Encode(T data, BinaryWriter stream);
 

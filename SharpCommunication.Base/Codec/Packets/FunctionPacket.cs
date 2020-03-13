@@ -5,8 +5,8 @@ namespace SharpCommunication.Base.Codec.Packets
 {
     public interface IFunctionPacket : IPacket, IAncestorPacket
     {
-        public byte[] Param { get; set; }
-        public Action Action { get; }
+        byte[] Param { get; set; }
+        Action Action { get; }
     }
     public class FunctionPacketEncoding<T> : AncestorPacketEncoding where T: IFunctionPacket,new()
     {

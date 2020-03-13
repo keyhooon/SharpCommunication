@@ -5,7 +5,7 @@ namespace SharpCommunication.Base.Codec.Packets
 {
     public interface IAncestorPacket : IPacket
     {
-        public byte Id { get; }
+        byte Id { get; }
     }
 
     public class AncestorPacketEncoding : PacketEncoding 

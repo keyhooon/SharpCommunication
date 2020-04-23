@@ -1,13 +1,8 @@
-﻿using System;
+﻿using SharpCommunication.Base.Codec.Packets;
 using System.IO;
 
-namespace SharpCommunication.Base.Codec.Packets
+namespace SharpCommunication.Base.Codec.Encoding
 {
-    public interface IUnixTimeEpochPacket : IPacket
-    {
-         DateTime DateTime { get; set; }
-
-    }
     public class HasUnixTimeEpochPacketEncoding : PacketEncoding
     {
         public HasUnixTimeEpochPacketEncoding(PacketEncoding encoding) : base(encoding)
@@ -30,14 +25,6 @@ namespace SharpCommunication.Base.Codec.Packets
         }
 
     }
-    public static class HasUnixTimeEpochPacketHelper
-    {
-        public static PacketEncodingBuilder WithUnixTimeEpoch(this PacketEncodingBuilder mapItemBuilder)
-        {
-            mapItemBuilder.SetupActions.Add(item => new HasUnixTimeEpochPacketEncoding(item));
-            return mapItemBuilder;
-        }
 
-    }
 }
 

@@ -17,19 +17,20 @@ namespace SharpCommunication.Base.Transport
         private readonly Task _checkingIsOpenedTask;
         protected ObservableCollection<IChannel<TPacket>> _channels;
         protected ILogger Log { get; }
-        public readonly IChannelFactory<TPacket> ChannelFactory;
-
+        protected readonly IChannelFactory<TPacket> ChannelFactory;
+        public readonly DataTransportOption Option;
         public event EventHandler IsOpenChanged;
         public event EventHandler CanOpenChanged;
         public event EventHandler CanCloseChanged;
 
-        protected DataTransport(IChannelFactory<TPacket> channelFactory) : this(channelFactory, NullLoggerProvider.Instance.CreateLogger("DataTransport"))
+        protected DataTransport(IChannelFactory<TPacket> channelFactory, DataTransportOption option) : this(channelFactory, option, NullLoggerProvider.Instance.CreateLogger("DataTransport"))
         {
 
         }
-        protected DataTransport(IChannelFactory<TPacket> channelFactory, ILogger log)
+        protected DataTransport(IChannelFactory<TPacket> channelFactory, DataTransportOption option, ILogger log)
         {
             Log = log;
+            Option = option;
             ChannelFactory = channelFactory;
             _tokenSource = new CancellationTokenSource();
             _channels = new ObservableCollection<IChannel<TPacket>>();
@@ -40,12 +41,9 @@ namespace SharpCommunication.Base.Transport
                 {
                     try
                     {
-                        if (_isOpen != IsOpen)
-                        {
-                            _isOpen = IsOpen;
-                            OnIsOpenChanged();
-                        }
-                        await Task.Delay(500, token);
+                        if (IsOpenCore != IsOpen)
+                            IsOpen = IsOpenCore;
+                        await Task.Delay(Option.AutoCheckIsOpenTime, token);
                         if (token.IsCancellationRequested)
                             break;
                     }
@@ -65,12 +63,8 @@ namespace SharpCommunication.Base.Transport
                 throw new InvalidOperationException();
 
             OpenCore();
-            if (IsOpen)
-            {
-
-                OnIsOpenChanged();
-                _isOpen = true;
-            }
+            if (IsOpenCore != IsOpen)
+                IsOpen = IsOpenCore;
         }
 
         public void Close()
@@ -83,11 +77,8 @@ namespace SharpCommunication.Base.Transport
             }
             _channels.Clear();
             CloseCore();
-            if (!IsOpen)
-            {
-                OnIsOpenChanged();
-                _isOpen = false;
-            }
+            if (IsOpenCore != IsOpen)
+                IsOpen = IsOpenCore;
         }
 
 
@@ -95,12 +86,23 @@ namespace SharpCommunication.Base.Transport
 
         public bool CanClose => IsOpen && CanCloseCore;
 
-        public bool IsOpen => IsOpenCore;
+        public bool IsOpen
+        {
+            get => _isOpen;
+            protected set
+            {
+                if (value == _isOpen)
+                    return;
+                _isOpen = value;
+                OnIsOpenChanged();
+            }
+        }
+
 
         public ReadOnlyObservableCollection<IChannel<TPacket>> Channels => new ReadOnlyObservableCollection<IChannel<TPacket>> (_channels);
 
+        public ICodec<TPacket> Codec { get => ChannelFactory.Codec; }
 
-  
 
         protected abstract bool IsOpenCore { get; }
 
@@ -115,6 +117,8 @@ namespace SharpCommunication.Base.Transport
 
         public virtual void Dispose()
         {
+            if (IsOpen)
+                Close();
             _tokenSource.Cancel();
             Task.WaitAll(new[] { _checkingIsOpenedTask }, 1000);
         }
@@ -122,8 +126,11 @@ namespace SharpCommunication.Base.Transport
         protected virtual void OnIsOpenChanged()
         {
             IsOpenChanged?.Invoke(this, null);
+           
+            
             OnCanOpenChanged();
             OnCanCloseChanged();
+
         }
 
 

@@ -55,7 +55,7 @@ namespace SharpCommunication.Base.Channels
 
 
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             _cancellationTokenSource.Cancel();
             _bufferStream?.Dispose();

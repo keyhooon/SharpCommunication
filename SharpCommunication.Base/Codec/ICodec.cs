@@ -1,4 +1,5 @@
-﻿using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Base.Codec.Encoding;
+using SharpCommunication.Base.Codec.Packets;
 using System;
 using System.IO;
 

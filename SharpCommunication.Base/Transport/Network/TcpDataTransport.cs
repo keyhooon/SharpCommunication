@@ -15,12 +15,13 @@ namespace SharpCommunication.Base.Transport.Network
         private TcpListener _tcpListener;
 
 
-
-
-
-        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportOption option) : base(channelFactory)
+        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportOption option, ILogger log) : base(channelFactory, option, log)
         {
-            _option = option;
+        }
+
+
+        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportOption option) : base(channelFactory, option)
+        {
         }
 
         protected override void OpenCore()

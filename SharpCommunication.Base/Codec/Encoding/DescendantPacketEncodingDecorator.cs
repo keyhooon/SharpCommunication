@@ -1,16 +1,13 @@
-﻿using System;
+﻿using SharpCommunication.Base.Codec.Encoding;
+using SharpCommunication.Base.Codec.Packets;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
-namespace SharpCommunication.Base.Codec.Packets
+namespace SharpCommunication.Base.Codec.Encoding
 {
-    public interface IDescendantPacket : IPacket
-    {
-        IAncestorPacket DescendantPacket { get; set; }
-
-    }
 
     public class DescendantPacketEncoding<T> : PacketEncoding where T : IDescendantPacket, new()
     {
@@ -60,22 +57,5 @@ namespace SharpCommunication.Base.Codec.Packets
         }
 
     }
-    public static class HasDescendantPacketHelper
-    {
-        public static PacketEncodingBuilder WithDescendant<T>(this PacketEncodingBuilder mapItemBuilder, IEnumerable<PacketEncodingBuilder> encodingBuiledersList) where T : IDescendantPacket, new()
-        {
-            mapItemBuilder.SetupActions.Add(item => new DescendantPacketEncoding<T>(item, encodingBuiledersList.Select(o => o.Build()).ToList()));
-            return mapItemBuilder;
-        }
-        public static PacketEncodingBuilder WithDescendant<T>(this PacketEncodingBuilder mapItemBuilder, IEnumerable<PacketEncoding> encodingsList) where T : IDescendantPacket, new()
-        {
-            mapItemBuilder.SetupActions.Add(item => new DescendantPacketEncoding<T>(item, encodingsList));
-            return mapItemBuilder;
-        }
-        public static PacketEncodingBuilder WithDescendant<T>(this PacketEncodingBuilder mapItemBuilder) where T : IDescendantPacket, new()
-        {
-            mapItemBuilder.SetupActions.Add(item => new DescendantPacketEncoding<T>(item));
-            return mapItemBuilder;
-        }
-    }
+
 }

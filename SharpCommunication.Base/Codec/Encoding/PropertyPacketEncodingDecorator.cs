@@ -1,12 +1,8 @@
-﻿using System.IO;
+﻿using SharpCommunication.Base.Codec.Packets;
+using System.IO;
 
-namespace SharpCommunication.Base.Codec.Packets
+namespace SharpCommunication.Base.Codec.Encoding
 {
-    public interface IPropertyPacket : IPacket
-    {
-        byte[] PropertyBinary { get; set; }
-
-    }
     public class HasPropertyPacketEncoding : PacketEncoding
     {
         public byte PropertySize { get; }
@@ -30,14 +26,6 @@ namespace SharpCommunication.Base.Codec.Packets
             return propertyPacket;
          }
     }
-    public static class HasPropertyPacketHelper
-    {
-        public static PacketEncodingBuilder WithProperty(this PacketEncodingBuilder mapItemBuilder, byte propertySize)
-        {
-            mapItemBuilder.SetupActions.Add(item => new HasPropertyPacketEncoding(item, propertySize));
-            return mapItemBuilder;
-        }
 
-    }
 }
 

@@ -5,7 +5,7 @@ using System.IO;
 
 namespace SharpCommunication.Base.Channels.Decorator
 {
-    public class ChannelDecorator<TPacket> : Channel<TPacket>, IDisposable where TPacket : IPacket, new()
+    public class ChannelDecorator<TPacket> : Channel<TPacket>, IDisposable where TPacket : IPacket
     {
         protected Channel< TPacket> innerChannel;
 
@@ -14,11 +14,15 @@ namespace SharpCommunication.Base.Channels.Decorator
             this.innerChannel = innerChannel;
         }
 
-        public ICodec<TPacket> Codec => innerChannel.Codec;
-        public BinaryReader Reader => innerChannel.Reader;
-        public BinaryWriter Writer => innerChannel.Writer;
+        public new ICodec<TPacket> Codec => innerChannel.Codec;
+        public new BinaryReader Reader => innerChannel.Reader;
+        public new BinaryWriter Writer => innerChannel.Writer;
 
-        public void Dispose() { innerChannel.Dispose(); }
-        public event EventHandler<DataReceivedEventArg<TPacket>> DataReceived;
+        public override void Dispose() 
+        { 
+            base.Dispose(); 
+            innerChannel.Dispose(); 
+        }
+
     }
 }

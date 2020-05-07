@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace SharpCommunication.Base.Transport.SerialPort
 {
-    public class SerialPortDataTransportOption : INotifyPropertyChanged
+    public class SerialPortDataTransportOption : DataTransportOption
     {
         private Parity _parity;
         private int _baudRate;
@@ -12,7 +12,7 @@ namespace SharpCommunication.Base.Transport.SerialPort
         private StopBits _stopBits;
         private int _dataBits;
 
-        public SerialPortDataTransportOption(string portName, int baudRate, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits= StopBits.One)
+        public SerialPortDataTransportOption(string portName, int baudRate, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits= StopBits.One, bool isOpenCheckAutomatically = true, int isOpenCheckAutomaticallyDelay = 500) : base(isOpenCheckAutomatically, isOpenCheckAutomaticallyDelay)
         {
             _stopBits = stopBits;
             _dataBits = dataBits;
@@ -71,14 +71,6 @@ namespace SharpCommunication.Base.Transport.SerialPort
                 _dataBits = value;
                 OnPropertyChanged();
             } 
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

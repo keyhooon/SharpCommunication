@@ -12,6 +12,7 @@ namespace SharpCommunication.Base.Transport
 {
     public abstract class DataTransport<TPacket> : IDataTransport<TPacket> where TPacket : IPacket
     {
+        private static DataTransportOption DefaultOption => new DataTransportOption(true, 500);
         private bool _isOpen;
         private readonly CancellationTokenSource _tokenSource;
         private readonly Task _checkingIsOpenedTask;
@@ -23,11 +24,11 @@ namespace SharpCommunication.Base.Transport
         public event EventHandler CanOpenChanged;
         public event EventHandler CanCloseChanged;
 
-        protected DataTransport(IChannelFactory<TPacket> channelFactory) : this(channelFactory, NullLoggerProvider.Instance.CreateLogger("DataTransport"))
+        protected DataTransport(IChannelFactory<TPacket> channelFactory) : this(channelFactory, DefaultOption, NullLoggerProvider.Instance.CreateLogger("DataTransport"))
         {
 
         }
-        protected DataTransport(IChannelFactory<TPacket> channelFactory, ILogger log)
+        protected DataTransport(IChannelFactory<TPacket> channelFactory, DataTransportOption option, ILogger log)
         {
             Log = log;
             ChannelFactory = channelFactory;
@@ -36,7 +37,7 @@ namespace SharpCommunication.Base.Transport
             var token = _tokenSource.Token;
             _checkingIsOpenedTask = Task.Factory.StartNew(async () =>
             {
-                while (true)
+                while (option.IsOpenCheckAutomatically)
                 {
                     try
                     {
@@ -45,7 +46,7 @@ namespace SharpCommunication.Base.Transport
                             _isOpen = IsOpen;
                             OnIsOpenChanged();
                         }
-                        await Task.Delay(500, token);
+                        await Task.Delay(option.IsOpenCheckAutomaticallyDelay , token);
                         if (token.IsCancellationRequested)
                             break;
                     }
@@ -116,7 +117,6 @@ namespace SharpCommunication.Base.Transport
         public virtual void Dispose()
         {
             _tokenSource.Cancel();
-            Task.WaitAll(new[] { _checkingIsOpenedTask }, 1000);
         }
 
         protected virtual void OnIsOpenChanged()

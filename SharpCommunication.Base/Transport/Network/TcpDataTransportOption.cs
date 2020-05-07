@@ -1,9 +1,36 @@
 ﻿namespace SharpCommunication.Base.Transport.Network
 {
-    public class TcpDataTransportOption
+    public class TcpDataTransportOption : DataTransportOption
     {
-        public int ListenPort { get; protected set; }
 
-        public int BackLog { get; protected set; }
+        public TcpDataTransportOption(int listenPort, int backLog, bool isOpenCheckAutomatically = false, int isOpenCheckAutomaticallyDelay = 1000) : base(isOpenCheckAutomatically, isOpenCheckAutomaticallyDelay)
+        {
+            ListenPort = listenPort;
+            BackLog = backLog;
+        }
+        private int _listenPort;
+        public int ListenPort
+        {
+            get => _listenPort;
+            set
+            {
+                if (_listenPort == value)
+                    return;
+                _listenPort = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int _backLog;
+        public int BackLog {
+            get => _backLog;
+            set
+            {
+                if (_backLog == value)
+                    return;
+                _backLog = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

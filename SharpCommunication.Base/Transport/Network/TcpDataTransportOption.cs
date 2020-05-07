@@ -3,11 +3,7 @@
     public class TcpDataTransportOption : DataTransportOption
     {
 
-        public TcpDataTransportOption(int listenPort, int backLog, bool isOpenCheckAutomatically = false, int isOpenCheckAutomaticallyDelay = 1000) : base(isOpenCheckAutomatically, isOpenCheckAutomaticallyDelay)
-        {
-            ListenPort = listenPort;
-            BackLog = backLog;
-        }
+
         private int _listenPort;
         public int ListenPort
         {
@@ -22,7 +18,8 @@
         }
 
         private int _backLog;
-        public int BackLog {
+        public int BackLog
+        {
             get => _backLog;
             set
             {

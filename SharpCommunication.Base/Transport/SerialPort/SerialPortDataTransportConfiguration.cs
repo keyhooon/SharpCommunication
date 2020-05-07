@@ -1,26 +1,25 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.Extensions.Configuration;
+using System.ComponentModel;
 using System.IO.Ports;
 using System.Runtime.CompilerServices;
 
 namespace SharpCommunication.Base.Transport.SerialPort
 {
-    public class SerialPortDataTransportOption : DataTransportOption
+    public class SerialPortDataTransportConfiguration : INotifyPropertyChanged
     {
         private Parity _parity;
         private int _baudRate;
         private string _portName;
         private StopBits _stopBits;
         private int _dataBits;
-        private int _readTimeout;
 
-        public SerialPortDataTransportOption(string portName, int baudRate, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One, int readTimeout = 1000)
+        public SerialPortDataTransportConfiguration(string portName, int baudRate, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits= StopBits.One)
         {
             _stopBits = stopBits;
             _dataBits = dataBits;
             _portName = portName;
             _baudRate = baudRate;
             _parity = parity;
-            _readTimeout = readTimeout;
         }
 
         public string PortName { get => _portName;
@@ -32,7 +31,6 @@ namespace SharpCommunication.Base.Transport.SerialPort
                 OnPropertyChanged();
             }
         }
-
         public int BaudRate { get => _baudRate;
             set
             {
@@ -42,7 +40,6 @@ namespace SharpCommunication.Base.Transport.SerialPort
                 OnPropertyChanged();
             }
         }
-
         public Parity Parity { get => _parity;
             set
             {
@@ -77,17 +74,23 @@ namespace SharpCommunication.Base.Transport.SerialPort
             } 
         }
 
-        public int ReadTimeout 
-        { 
-            get => _readTimeout; 
-            set {
-                if (_readTimeout == value)
-                    return;
-                _readTimeout = value;
-                OnPropertyChanged();
-            } 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-
+    }
+    public static class SerialPortDataTransportConfigurationExtension
+    {
+        public static SerialPortDataTransportConfiguration GetSerialPortConfiguration(this IConfiguration configurationRoot)
+        {
+            var section = configurationRoot.GetSection("SerialPort");
+            SerialPortDataTransportConfiguration ret = null;
+            if (section.Exists())
+                ret = ConfigurationBinder.Get<SerialPortDataTransportConfiguration>(section);
+            return ret;
+        }
     }
 }

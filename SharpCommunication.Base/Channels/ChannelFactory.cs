@@ -4,7 +4,7 @@ using System.IO;
 
 namespace SharpCommunication.Base.Channels
 {
-    public  class ChannelFactory<TPacket> : IChannelFactory<TPacket> where TPacket : IPacket
+    public class ChannelFactory<TPacket> : IChannelFactory<TPacket> where TPacket : IPacket
     {
         public ICodec<TPacket> Codec { get; protected set; }
 

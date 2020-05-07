@@ -8,42 +8,45 @@ namespace SharpCommunication.Base.Transport
 {
     public class DataTransportOption : INotifyPropertyChanged
     {
-        public DataTransportOption(bool isOpenCheckAutomatically = true, int isOpenCheckAutomaticallyDelay = 500)
-        {
-            _isOpenCheckAutomatically = isOpenCheckAutomatically;
-            _isOpenCheckAutomaticallyDelay = isOpenCheckAutomaticallyDelay;
-        }
-        private bool _isOpenCheckAutomatically;
-        public bool IsOpenCheckAutomatically
-        {
-            get => _isOpenCheckAutomatically;
-            set
-            {
-                if (_isOpenCheckAutomatically == value)
-                    return;
-                _isOpenCheckAutomatically = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int _isOpenCheckAutomaticallyDelay;
-        public int IsOpenCheckAutomaticallyDelay
-        {
-            get => _isOpenCheckAutomaticallyDelay;
-            set
-            {
-                if (_isOpenCheckAutomaticallyDelay == value)
-                    return;
-                _isOpenCheckAutomaticallyDelay = value;
-                OnPropertyChanged();
-            }
-        }
-
-
         public event PropertyChangedEventHandler PropertyChanged;
+        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public DataTransportOption(bool autoCheckIsOpen = true, int autoCheckIsOpenTime = 500 )
+        {
+            _autoCheckIsOpen = autoCheckIsOpen;
+            _autoCheckIsOpenTime = autoCheckIsOpenTime;
+        }
+
+        private bool _autoCheckIsOpen;
+        private int _autoCheckIsOpenTime;
+
+
+        public bool AutoCheckIsOpen  
+        { 
+            get => _autoCheckIsOpen;
+            set
+            {
+                if (_autoCheckIsOpen == value)
+                    return;
+                _autoCheckIsOpen = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int AutoCheckIsOpenTime 
+        { 
+            get => _autoCheckIsOpenTime;
+            set
+            {
+                if (_autoCheckIsOpenTime == value)
+                    return;
+                _autoCheckIsOpenTime = value;
+                OnPropertyChanged();
+            }
         }
     }
 }

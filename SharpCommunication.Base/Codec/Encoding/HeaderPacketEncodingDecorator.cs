@@ -1,6 +1,7 @@
-﻿using System.IO;
+﻿using SharpCommunication.Base.Codec.Packets;
+using System.IO;
 
-namespace SharpCommunication.Base.Codec.Packets
+namespace SharpCommunication.Base.Codec.Encoding
 {
     public class HeaderPacketEncoding : PacketEncoding
     {
@@ -32,13 +33,5 @@ namespace SharpCommunication.Base.Codec.Packets
             return Encoding.DecodeCore(reader);
         }
     }
-    public static class HasHeaderPacketHelper
-    {
-        public static PacketEncodingBuilder WithHeader(this PacketEncodingBuilder mapItemBuilder, byte[] header)
-        {
-            mapItemBuilder.SetupActions.Add(item => new HeaderPacketEncoding(item, header));
-            return mapItemBuilder;
-        }
 
-    }
 }

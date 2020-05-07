@@ -1,4 +1,5 @@
-﻿using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Base.Codec.Encoding;
+using SharpCommunication.Base.Codec.Packets;
 using System;
 using System.IO;
 
@@ -9,7 +10,7 @@ namespace SharpCommunication.Base.Codec
 
         Type DataType { get; }
 
-        public PacketEncoding Encoding { get; }
+        PacketEncoding Encoding { get; }
 
         void Encode(T data, BinaryWriter stream);
 

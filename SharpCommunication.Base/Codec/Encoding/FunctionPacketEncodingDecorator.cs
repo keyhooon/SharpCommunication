@@ -1,13 +1,9 @@
-﻿using System;
+﻿using SharpCommunication.Base.Codec.Encoding;
+using SharpCommunication.Base.Codec.Packets;
 using System.IO;
 
-namespace SharpCommunication.Base.Codec.Packets
+namespace SharpCommunication.Base.Codec.Encoding
 {
-    public interface IFunctionPacket : IPacket, IAncestorPacket
-    {
-        public byte[] Param { get; set; }
-        public Action Action { get; }
-    }
     public class FunctionPacketEncoding<T> : AncestorPacketEncoding where T: IFunctionPacket,new()
     {
         public byte InputByteCount{ get; }
@@ -28,14 +24,6 @@ namespace SharpCommunication.Base.Codec.Packets
             writer.Write(functionPacket.Param);
         }
     }
-    public static class HasFunctionPacketHelper
-    {
-        public static PacketEncodingBuilder WithFunction<T>(this PacketEncodingBuilder mapItemBuilder, byte inputByteCount,byte id) where T : IFunctionPacket, new()
-        {
-            mapItemBuilder.SetupActions.Add(item => new FunctionPacketEncoding<T>(item, inputByteCount, id));
-            return mapItemBuilder;
-        }
 
-    }
 
 }

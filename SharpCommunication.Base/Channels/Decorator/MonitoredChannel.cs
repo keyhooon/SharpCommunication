@@ -6,7 +6,7 @@ using SharpCommunication.Base.Codec.Packets;
 
 namespace SharpCommunication.Base.Channels.Decorator
 {
-    public class MonitoredChannel<TPacket> : ChannelDecorator<TPacket> where TPacket : IPacket, new()
+    public class MonitoredChannel<TPacket> : ChannelDecorator<TPacket> where TPacket : IPacket
     {
         private IoMonitor< TPacket> ioMonitor { get; set; }
         public MonitoredChannel(Channel< TPacket> innerChannel) : base(innerChannel)

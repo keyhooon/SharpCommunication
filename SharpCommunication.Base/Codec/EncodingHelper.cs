@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text;
 
 
-namespace SharpCommunication.Base.Codec
+namespace SharpCommunication.Codec
 {
     public static class EncodingHelper
     {

@@ -2,11 +2,10 @@
 using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
-using SharpCommunication.Base.Channels;
-using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Codec.Packets;
+using SharpCommunication.Channels;
+using SharpCommunication.Codec.Packets;
 
-namespace SharpCommunication.Base.Transport.Network
+namespace SharpCommunication.Transport.Network
 {
     public abstract class TcpDataTransport<TPacket> : DataTransport<TPacket> where TPacket : IPacket
     {

@@ -1,9 +1,9 @@
-﻿using SharpCommunication.Base.Codec.Encoding;
-using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec.Packets;
 using System;
 using System.IO;
 
-namespace SharpCommunication.Base.Codec
+namespace SharpCommunication.Codec
 {
     public abstract class Codec<TData> : ICodec<TData> where TData : IPacket, new()
     {

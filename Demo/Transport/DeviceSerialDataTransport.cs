@@ -1,12 +1,12 @@
-﻿using Demo.Codec;
-using SharpCommunication.Base.Channels;
-using SharpCommunication.Base.Transport.SerialPort;
+﻿using Demo.Channels;
+using Demo.Codec;
+using SharpCommunication.Transport.SerialPort;
 
 namespace Demo.Transport
 {
-    public class DeviceSerialDataTransport : SerialPortDataTransport<DevicePacket>
+    public class DeviceSerialDataTransport : SerialPortDataTransport<Device>
     {
-        public DeviceSerialDataTransport(SerialPortDataTransportOption option) : base(new ChannelFactory<DevicePacket>(new DevicePacketCodec()), option)
+        public DeviceSerialDataTransport(SerialPortDataTransportOption option) : base(new DevicePacketChannelFactory(), option)
         {
 
         }

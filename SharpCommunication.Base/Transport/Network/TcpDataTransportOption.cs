@@ -1,4 +1,4 @@
-﻿namespace SharpCommunication.Base.Transport.Network
+﻿namespace SharpCommunication.Transport.Network
 {
     public class TcpDataTransportOption : DataTransportOption
     {

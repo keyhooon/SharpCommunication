@@ -1,11 +1,11 @@
-﻿using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec;
+using SharpCommunication.Codec.Packets;
 using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SharpCommunication.Base.Channels
+namespace SharpCommunication.Channels
 {
     public class Channel<TPacket> : IDisposable, IChannel<TPacket> where TPacket : IPacket
     {

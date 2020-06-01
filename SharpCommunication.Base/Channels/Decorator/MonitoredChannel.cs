@@ -1,10 +1,8 @@
 ﻿using System;
-using System.IO;
-using SharpCommunication.Base.Channels.ChannelTools;
-using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Codec.Packets;
+using SharpCommunication.Channels.ChannelTools;
+using SharpCommunication.Codec.Packets;
 
-namespace SharpCommunication.Base.Channels.Decorator
+namespace SharpCommunication.Channels.Decorator
 {
     public class MonitoredChannel<TPacket> : ChannelDecorator<TPacket> where TPacket : IPacket
     {

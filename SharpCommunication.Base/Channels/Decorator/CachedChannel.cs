@@ -1,11 +1,8 @@
-﻿using SharpCommunication.Base.Channels.ChannelTools;
-using SharpCommunication.Base.Codec.Packets;
-using System;
-using System.Collections.Generic;
+﻿using SharpCommunication.Channels.ChannelTools;
+using SharpCommunication.Codec.Packets;
 using System.Collections.ObjectModel;
-using System.Text;
 
-namespace SharpCommunication.Base.Channels.Decorator
+namespace SharpCommunication.Channels.Decorator
 {
     public class CachedChannel<TPacket> : ChannelDecorator<TPacket> where TPacket : IPacket
     {

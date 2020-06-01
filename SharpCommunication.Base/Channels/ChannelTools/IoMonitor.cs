@@ -1,9 +1,8 @@
-﻿using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Packets;
 using System;
 using System.ComponentModel;
 
-namespace SharpCommunication.Base.Channels.ChannelTools
+namespace SharpCommunication.Channels.ChannelTools
 {
     public class IoMonitor<TPacket>: INotifyPropertyChanged where TPacket : IPacket
     {

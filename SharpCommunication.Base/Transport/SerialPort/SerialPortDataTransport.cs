@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using SharpCommunication.Base.Channels;
-using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Codec.Packets;
+using SharpCommunication.Channels;
+using SharpCommunication.Codec.Packets;
 
-namespace SharpCommunication.Base.Transport.SerialPort
+namespace SharpCommunication.Transport.SerialPort
 {
     public class SerialPortDataTransport<TPacket> : DataTransport<TPacket> where TPacket : IPacket
     {

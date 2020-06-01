@@ -1,10 +1,9 @@
-﻿using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Packets;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-namespace SharpCommunication.Base.Channels.ChannelTools
+namespace SharpCommunication.Channels.ChannelTools
 {
     public class CachingManager<TPacket> where TPacket : IPacket
     {
@@ -18,7 +17,7 @@ namespace SharpCommunication.Base.Channels.ChannelTools
 
     public class LimitCountPacketCachingManager<TPacket> : CachingManager<TPacket> where TPacket : IPacket
     {
-        public int CacheCount { get; set; }
+        public int CacheCount { get; set; } = 10;
         public LimitCountPacketCachingManager(IOCache<TPacket> ioCache) : base(ioCache)
         {
             
@@ -37,7 +36,7 @@ namespace SharpCommunication.Base.Channels.ChannelTools
     }
     public class ExpireTimePacketCachingManager<TPacket> : CachingManager<TPacket> where TPacket : IPacket
     {
-        public TimeSpan ExpirationTime { get; set; }
+        public TimeSpan ExpirationTime { get; set; } = TimeSpan.FromSeconds(10);
         public ExpireTimePacketCachingManager(IOCache<TPacket> ioCache) : base(ioCache)
         {
             IoCache.PacketCacheInfoCollection = new ObservableCollection<PacketCacheInfo<TPacket>>();

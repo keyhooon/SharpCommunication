@@ -1,10 +1,9 @@
-﻿using SharpCommunication.Base.Codec.Encoding;
-using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Packets;
 using System.IO;
 
-namespace SharpCommunication.Base.Codec.Encoding
+namespace SharpCommunication.Codec.Encoding
 {
-    public class FunctionPacketEncoding<T> : AncestorPacketEncoding where T: IFunctionPacket,new()
+    public class FunctionPacketEncoding<T> : AncestorPacketEncoding<T> where T: IFunctionPacket,new()
     {
         public byte InputByteCount{ get; }
         public FunctionPacketEncoding(PacketEncoding encoding, byte inputByteCount, byte id) : base(encoding, id)

@@ -1,12 +1,11 @@
 ﻿using Demo.Codec;
-using SharpCommunication.Base.Channels;
-using SharpCommunication.Base.Codec;
+using SharpCommunication.Channels;
 using System.IO;
 
 
 namespace Demo.Channels
 {
-    public partial class DevicePacketChannel : Channel<DevicePacket>
+    public partial class DevicePacketChannel : Channel<Device>
     {
         public DevicePacketChannel(Stream stream) : base(new DevicePacketCodec(), stream)
         {

@@ -1,11 +1,9 @@
-﻿using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Packets;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Text;
 
-namespace SharpCommunication.Base.Channels.ChannelTools
+namespace SharpCommunication.Channels.ChannelTools
 {
     public class IOCache<TPacket> : INotifyPropertyChanged where TPacket : IPacket
     {

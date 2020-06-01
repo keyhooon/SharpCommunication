@@ -4,11 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using SharpCommunication.Base.Channels;
-using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Codec.Packets;
+using SharpCommunication.Channels;
+using SharpCommunication.Codec;
+using SharpCommunication.Codec.Packets;
 
-namespace SharpCommunication.Base.Transport
+namespace SharpCommunication.Transport
 {
     public abstract class DataTransport<TPacket> : IDataTransport<TPacket> where TPacket : IPacket
     {

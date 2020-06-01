@@ -1,12 +1,11 @@
 ﻿using Demo.Codec;
-using SharpCommunication.Base.Channels;
+using SharpCommunication.Channels;
+using SharpCommunication.Channels.Decorator;
 using System.IO;
 
 namespace Demo.Channels
 {
-    public partial class DevicePacketChannel
-    {
-        public class DevicePacketChannelFactory : ChannelFactory<DevicePacket>
+        public class DevicePacketChannelFactory : ChannelFactory<Device>
         {
 
             public DevicePacketChannelFactory() : base(new DevicePacketCodec())
@@ -14,11 +13,10 @@ namespace Demo.Channels
 
             }
 
-            public override IChannel<DevicePacket> Create(Stream stream)
+            public override IChannel<Device> Create(Stream stream)
             {
-                return new DevicePacketChannel(stream);
+                return ( new MonitoredChannel<Device>( new DevicePacketChannel(stream) ) );
             }
 
         }
-    }
 }

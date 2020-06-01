@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.IO.Ports;
 using System.Runtime.CompilerServices;
 
-namespace SharpCommunication.Base.Transport.SerialPort
+namespace SharpCommunication.Transport.SerialPort
 {
     public class SerialPortDataTransportConfiguration : INotifyPropertyChanged
     {
@@ -76,7 +76,6 @@ namespace SharpCommunication.Base.Transport.SerialPort
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SharpCommunication.Base.Codec.Packets
+namespace SharpCommunication.Codec.Packets
 {
     public interface IFunctionPacket : IPacket, IAncestorPacket
     {

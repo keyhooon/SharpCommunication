@@ -1,14 +1,9 @@
-﻿using Demo.Transport;
-using SharpCommunication.Base.Transport.SerialPort;
+﻿using SharpCommunication.Transport.SerialPort;
 using System;
 using System.IO;
 using System.IO.Ports;
-using System.Threading.Tasks;
-using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Channels;
-using System.Collections.ObjectModel;
+using SharpCommunication.Channels;
 using Demo.Codec;
-using System.Collections.Specialized;
 using Demo.Service;
 using System.Threading;
 
@@ -28,7 +23,7 @@ namespace Demo
             deviceService.DataReceived += DeviceService_DataReceived;
             deviceService.Start();
 
-            DevicePacket packet = new DevicePacket() { DescendantPacket = new CommandPacket() { DescendantPacket = new ReadCommand() { DataId = 1, Param = new byte[] { 3} } } };
+            Device packet = new Device() { DescendantPacket = new Command() { DescendantPacket = new ReadCommand() { DataId = 1, Param = new byte[] { 3} } } };
             while (true)
             {
                 if (serial.BytesToRead > 0)
@@ -39,7 +34,7 @@ namespace Demo
             }
         }
 
-        private static void DeviceService_DataReceived(object sender, DataReceivedEventArg<DevicePacket> e)
+        private static void DeviceService_DataReceived(object sender, DataReceivedEventArg<Device> e)
         {
             Console.WriteLine(e.Data.ToString());
         }

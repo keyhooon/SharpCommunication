@@ -1,20 +1,16 @@
-﻿using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Codec.Packets;
-using System;
+﻿using SharpCommunication.Codec;
+using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec.Packets;
 using System.IO;
 using System.Linq;
 
 namespace Demo.Codec
 {
-    class CoreConfigurationPacket : IPacket, IAncestorPacket
+    class CoreConfiguration : IPacket, IAncestorPacket
     {
-        public static byte id = 4;
-        public static byte byteCount = 16;
-        public byte Id => id;
         public string UniqueId { get; set; }
         public string FirmwareVersion{ get; set; }
         public string ModelVersion { get; set; }
-
 
         public override string ToString()
         {
@@ -22,24 +18,22 @@ namespace Demo.Codec
             return $"Core Configuration - UniqueId : {UniqueId}, FirmwareVersion : {FirmwareVersion}, " +
                 $"ModelVersion : {ModelVersion}";
         }
-        public CoreConfigurationPacket()
+        public class Encoding : AncestorPacketEncoding<CoreConfiguration>
         {
+            private static byte byteCount = 16;
 
-        }
-        public class Encoding : AncestorPacketEncoding
-        {
-
-            public Encoding(PacketEncoding encoding) : base(encoding, id)
+            public new const byte Id = 4;
+            public Encoding(PacketEncoding encoding) : base(encoding, Id)
             {
 
             }
-            public Encoding() : base(null, id)
+            public Encoding() : base(null, Id)
             {
 
             }
             public override void EncodeCore(IPacket packet, BinaryWriter writer)
             {
-                var o = (CoreConfigurationPacket)packet;
+                var o = (CoreConfiguration)packet;
                 byte crc8 = 0;
                 byte[] value;
                 value = o.UniqueId.ToByteArray();
@@ -64,7 +58,7 @@ namespace Demo.Codec
                 for (int i = 0; i < value.Length; i++)
                     crc8 += value[i];
                 if (crc8 == reader.ReadByte())
-                    return new CoreConfigurationPacket()
+                    return new CoreConfiguration()
                     {
                         UniqueId = value.Take(12).ToHexString(),
                         FirmwareVersion = value.Skip(12).Take(2).ToHexString(),
@@ -72,16 +66,8 @@ namespace Demo.Codec
                     };
                 return null;
             }
-        }
-
-    }
-
-    public static class CoreConfigurationPacketHelper
-    {
-        public static PacketEncodingBuilder CreateCoreConfigurationEncodingBuilder(this PacketEncodingBuilder mapItemBuilder)
-        {
-            mapItemBuilder.SetupActions.Add(item => new CoreConfigurationPacket.Encoding(item));
-            return mapItemBuilder;
+            public static PacketEncodingBuilder CreateBuilder() =>PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+            
         }
 
     }

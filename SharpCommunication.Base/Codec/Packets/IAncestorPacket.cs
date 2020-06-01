@@ -1,7 +1,7 @@
-﻿namespace SharpCommunication.Base.Codec.Packets
+﻿namespace SharpCommunication.Codec.Packets
 {
     public interface IAncestorPacket : IPacket
     {
-        byte Id { get; }
+        //        byte Id { get; }
     }
 }

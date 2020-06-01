@@ -1,8 +1,6 @@
-﻿using System.ComponentModel;
-using System.IO.Ports;
-using System.Runtime.CompilerServices;
+﻿using System.IO.Ports;
 
-namespace SharpCommunication.Base.Transport.SerialPort
+namespace SharpCommunication.Transport.SerialPort
 {
     public class SerialPortDataTransportOption : DataTransportOption
     {

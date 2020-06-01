@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SharpCommunication.Base.Codec.Encoding
+namespace SharpCommunication.Codec.Encoding
 {
     public class PacketEncodingBuilder
     {
@@ -27,9 +27,10 @@ namespace SharpCommunication.Base.Codec.Encoding
         }
         private List<Func<PacketEncoding, PacketEncoding>> SetupActions { get; }
 
-        public void  AddDecorate(Func<PacketEncoding, PacketEncoding> func)
+        public PacketEncodingBuilder AddDecorate(Func<PacketEncoding, PacketEncoding> func)
         {
             SetupActions.Add(func);
+            return this;
         }
     }
 }

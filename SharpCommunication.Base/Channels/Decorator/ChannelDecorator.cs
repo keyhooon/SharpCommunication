@@ -1,9 +1,9 @@
-﻿using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec;
+using SharpCommunication.Codec.Packets;
 using System;
 using System.IO;
 
-namespace SharpCommunication.Base.Channels.Decorator
+namespace SharpCommunication.Channels.Decorator
 {
     public class ChannelDecorator<TPacket> : Channel<TPacket>, IDisposable where TPacket : IPacket
     {

@@ -1,13 +1,14 @@
-﻿using SharpCommunication.Base.Codec.Packets;
-using System.Collections.Generic;
+﻿using SharpCommunication.Codec.Packets;
+using System;
 using System.IO;
 
-namespace SharpCommunication.Base.Codec.Encoding
+namespace SharpCommunication.Codec.Encoding
 {
 
-    public class AncestorPacketEncoding : PacketEncoding
+    public class AncestorPacketEncoding<T> : PacketEncoding where T : IAncestorPacket
     {
-        public byte Id { get; protected set; }
+        public byte Id { get; }
+        public Type PacketType => typeof(T);
         public AncestorPacketEncoding(PacketEncoding encoding, byte id) : base(encoding)
         {
             Id = id;
@@ -21,6 +22,15 @@ namespace SharpCommunication.Base.Codec.Encoding
         public override IPacket DecodeCore(BinaryReader reader)
         {
             return Encoding.DecodeCore(reader);
+        }
+        public void Encode(T packet, BinaryWriter writer)
+        {
+            EncodeCore(packet, writer);
+        }
+
+        public T Decode(BinaryReader reader)
+        {
+            return (T)DecodeCore(reader);
         }
     }
 

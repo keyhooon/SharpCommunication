@@ -1,6 +1,6 @@
-﻿using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Packets;
 
-namespace SharpCommunication.Base.Channels
+namespace SharpCommunication.Channels
 {
     public class DataReceivedEventArg<T> where T : IPacket
     {

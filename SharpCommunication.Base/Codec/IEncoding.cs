@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace SharpCommunication.Base.Codec
+namespace SharpCommunication.Codec
 {
     public interface IEncoding<TCodableData>
     {

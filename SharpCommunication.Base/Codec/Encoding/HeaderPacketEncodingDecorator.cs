@@ -1,7 +1,7 @@
-﻿using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Packets;
 using System.IO;
 
-namespace SharpCommunication.Base.Codec.Encoding
+namespace SharpCommunication.Codec.Encoding
 {
     public class HeaderPacketEncoding : PacketEncoding
     {

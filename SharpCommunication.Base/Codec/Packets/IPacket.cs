@@ -1,4 +1,4 @@
-﻿namespace SharpCommunication.Base.Codec.Packets
+﻿namespace SharpCommunication.Codec.Packets
 {
     public interface IPacket
     {

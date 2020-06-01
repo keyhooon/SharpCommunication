@@ -1,15 +1,42 @@
-﻿using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec;
 using System.Collections.Generic;
+using System.Linq;
+using SharpCommunication.Codec.Packets;
+using Communication.Codec;
 
 namespace Demo.Codec
 {
-    public class DevicePacketCodec : Codec<DevicePacket>
+    public class DevicePacketCodec : Codec<Device>
     {
         private readonly PacketEncodingBuilder EncodingBuilder;
 
         private PacketEncoding encoding;
 
+        private readonly List<PacketEncodingBuilder> _defaultCommandPacketEncodingBuilders = new List<PacketEncodingBuilder>(
+            new [] 
+            {
+                CruiseCommand.Encoding.CreateBuilder(),
+                LightCommand.Encoding.CreateBuilder(),
+                ReadCommand.Encoding.CreateBuilder()
+            });
+
+        private readonly List<PacketEncodingBuilder> _defaultDataPacketEncodingBuilders = new List<PacketEncodingBuilder>(
+            new[]
+            {
+                BatteryConfiguration.Encoding.CreateBuilder(),
+                BatteryOutput.Encoding.CreateBuilder(),
+                CoreConfiguration.Encoding.CreateBuilder(),
+                CoreSituation.Encoding.CreateBuilder(),
+                Fault.Encoding.CreateBuilder(),
+                LightSetting.Encoding.CreateBuilder(),
+                LightState.Encoding.CreateBuilder(),
+                PedalConfiguration.Encoding.CreateBuilder(),
+                PedalSetting.Encoding.CreateBuilder(),
+                ServoInput.Encoding.CreateBuilder(),
+                ServoOutput.Encoding.CreateBuilder(),
+                ThrottleConfiguration.Encoding.CreateBuilder()
+            });
 
         public override PacketEncoding Encoding
         {
@@ -21,45 +48,23 @@ namespace Demo.Codec
             }
         }
 
+        public DevicePacketCodec(IEnumerable<PacketEncodingBuilder> PacketEncodingBuilderList)
+        {
+            _defaultCommandPacketEncodingBuilders.AddRange(PacketEncodingBuilderList.Where(o => o.Build().GetType().BaseType.GetGenericTypeDefinition() == typeof(FunctionPacketEncoding<>)));
+            _defaultDataPacketEncodingBuilders.AddRange(PacketEncodingBuilderList.Where(o => o.Build().GetType().BaseType.GetGenericTypeDefinition() == typeof(AncestorPacketEncoding<>)));
+
+            EncodingBuilder = Device.Encoding.CreateBuilder(new[] {
+                Data.Encoding.CreateBuilder(_defaultDataPacketEncodingBuilders),
+                Command.Encoding.CreateBuilder(_defaultCommandPacketEncodingBuilders)
+            });
+        }
         public DevicePacketCodec()
         {
-
-            EncodingBuilder = PacketEncodingBuilder.CreateDefaultBuilder().WithHeader(DevicePacket.Header).WithDescendant<DevicePacket>(new[] {
-                PacketEncodingBuilder.CreateDefaultBuilder().CreateDataPacket(),
-                PacketEncodingBuilder.CreateDefaultBuilder().CreateCommandPacket( new []{
-                    PacketEncodingBuilder.CreateDefaultBuilder().CreateReadCommand()
-                })
+            EncodingBuilder = Device.Encoding.CreateBuilder(new[] {
+                Data.Encoding.CreateBuilder(_defaultDataPacketEncodingBuilders),
+                Command.Encoding.CreateBuilder(_defaultCommandPacketEncodingBuilders)
             });
-
-
-        }
-        public void RegisterCommand(PacketEncoding enc) 
-        {
-            var commandEncoding = Encoding.FindDecoratedEncoding<DescendantPacketEncoding<DevicePacket>>().EncodingList[CommandPacket.ID].FindDecoratedEncoding<DescendantPacketEncoding<CommandPacket>>();
-            commandEncoding.Register(enc);
-        }
-        public void RegisterCommand(IEnumerable<PacketEncoding> encs) 
-        {
-            var commandEncoding = Encoding.FindDecoratedEncoding<DescendantPacketEncoding<DevicePacket>>().EncodingList[CommandPacket.ID].FindDecoratedEncoding<DescendantPacketEncoding<CommandPacket>>();
-            foreach (var enc in encs)
-            {
-                commandEncoding.Register(enc);
-            }
         }
 
-        public void RegisterData(PacketEncoding enc) 
-        {
-            var dataEncoding = Encoding.FindDecoratedEncoding<DescendantPacketEncoding<DevicePacket>>().EncodingList[DataPacket.ID];
-            dataEncoding.FindDecoratedEncoding<DescendantPacketEncoding<DataPacket>>().Register(enc);
-        }
-        public void RegisterData(IEnumerable<PacketEncoding> encs)
-        {
-            var dataEncoding = Encoding.FindDecoratedEncoding<DescendantPacketEncoding<DevicePacket>>().EncodingList[DataPacket.ID]
-                .FindDecoratedEncoding<DescendantPacketEncoding<DataPacket>>();
-            foreach (var enc in encs)
-            {
-                dataEncoding.Register(enc);
-            }
-        }
     }
 }

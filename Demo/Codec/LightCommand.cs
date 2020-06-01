@@ -1,11 +1,10 @@
-﻿using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec.Packets;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Demo.Codec
 {
-    class LightCommand : IFunctionPacket
+    public class LightCommand : IFunctionPacket
     {
         public byte LightId { get; set; }
         public bool IsOn { get; set; }
@@ -24,25 +23,24 @@ namespace Demo.Codec
                 }
             }
         }
-
+        public Action Action => throw new NotImplementedException();
         public override string ToString()
         {
             if (IsOn)
                 return $"Light Command - Light : {LightId}, State : On";
             return $"Light : {LightId}, State : Off";
         }
-        public Action Action => throw new NotImplementedException();
-
-        public readonly static byte ParamByteCount = 2;
-        public readonly static byte ID = 2;
-        public byte Id => ID;
-
-    }
-    public static class LightCommandEncodingHelper
-    {
-        public static PacketEncodingBuilder CreateLightCommand(this PacketEncodingBuilder packetEncodingBuilder)
+        public class Encoding : FunctionPacketEncoding<LightCommand>
         {
-            return packetEncodingBuilder.WithFunction<LightCommand>(ReadCommand.ParamByteCount, LightCommand.ID);
+            private readonly static byte ParamByteCount = 1;
+            public new const byte Id = 2;
+            public Encoding(PacketEncoding encoding) : base(encoding, ParamByteCount, Id)
+            {
+
+            }
+            public static PacketEncodingBuilder CreateBuilder() =>
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o));
         }
+
     }
 }

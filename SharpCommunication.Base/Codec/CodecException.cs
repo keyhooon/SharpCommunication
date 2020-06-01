@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SharpCommunication.Base.Codec
+namespace SharpCommunication.Codec
 {
     public sealed class CodecException : Exception
     {

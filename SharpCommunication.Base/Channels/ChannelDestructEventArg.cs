@@ -1,8 +1,7 @@
-﻿using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Packets;
 using System;
 
-namespace SharpCommunication.Base.Channels
+namespace SharpCommunication.Channels
 {
     public class ChannelDestructEventArg<TPacket> : EventArgs where TPacket : IPacket
     {

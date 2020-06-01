@@ -1,4 +1,5 @@
-﻿using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec.Packets;
 using System;
 
 
@@ -16,23 +17,23 @@ namespace Demo.Codec
                     IsOn = true;
             }
         }
-
+        public Action Action => throw new NotImplementedException();
         public override string ToString()
         {
 
             return $"Cruise Command - Cruise : {IsOn}";
         }
-        public Action Action => throw new NotImplementedException();
 
-        public readonly static byte ParamByteCount = 1;
-        public static readonly byte ID = 3;
-        public byte Id => ID;
-    }
-    public static class CruiseCommandEncodingHelper
-    {
-        public static PacketEncodingBuilder CreateCruiseCommand(this PacketEncodingBuilder packetEncodingBuilder)
+        public class Encoding : FunctionPacketEncoding<CruiseCommand>
         {
-            return packetEncodingBuilder.WithFunction<CruiseCommand>(ReadCommand.ParamByteCount, CruiseCommand.ID);
+            public static byte ParamByteCount = 1;
+            public new const byte Id = 3;
+            public Encoding(PacketEncoding encoding) : base(encoding, ParamByteCount, Id)
+            {
+
+            }
+            public static PacketEncodingBuilder CreateBuilder() =>
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o));
         }
     }
 }

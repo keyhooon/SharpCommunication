@@ -5,6 +5,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>1.0.4</Version>
+    <RootNamespace>SharpCommunication</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

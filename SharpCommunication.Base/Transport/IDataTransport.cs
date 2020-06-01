@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using SharpCommunication.Base.Channels;
-using SharpCommunication.Base.Codec;
-using SharpCommunication.Base.Codec.Packets;
+using SharpCommunication.Channels;
+using SharpCommunication.Codec.Packets;
 
-namespace SharpCommunication.Base.Transport
+namespace SharpCommunication.Transport
 {
     interface IDataTransport<TPacket> where TPacket : IPacket
     {

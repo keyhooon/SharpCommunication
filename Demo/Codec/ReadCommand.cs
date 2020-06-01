@@ -1,13 +1,14 @@
-﻿using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec.Packets;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
 
 namespace Demo.Codec
 {
     class ReadCommand : IFunctionPacket
     {
         public byte DataId { get; set; }
+
         public byte[] Param
         {
             get
@@ -21,22 +22,24 @@ namespace Demo.Codec
 
             }
         }
+        public Action Action { get; }
         public override string ToString()
         {
 
             return $"Read Command - Request Data: {DataId}";
         }
-        public Action Action { get; }
 
-        public readonly static byte ParamByteCount = 1;
-        public readonly static byte ID = 1;
-        public byte Id => ID;
-    }
-    public static class ReadCommandEncodingHelper
-    {
-        public static PacketEncodingBuilder CreateReadCommand(this PacketEncodingBuilder packetEncodingBuilder)
+        public class Encoding : FunctionPacketEncoding<ReadCommand>
         {
-            return packetEncodingBuilder.WithFunction<ReadCommand>(ReadCommand.ParamByteCount, ReadCommand.ID);
+            private static byte ParamByteCount = 1;
+            public new const byte Id = 1;
+            public Encoding(PacketEncoding encoding) : base(encoding, ParamByteCount, Id)
+            {
+
+            }
+            public static PacketEncodingBuilder CreateBuilder()=>
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o));
         }
+
     }
 }

@@ -1,11 +1,10 @@
-﻿using SharpCommunication.Base.Codec.Encoding;
-using SharpCommunication.Base.Codec.Packets;
+﻿using SharpCommunication.Codec.Packets;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SharpCommunication.Base.Codec.Encoding
+namespace SharpCommunication.Codec.Encoding
 {
-    public static class PacketEncodingHelper
+    public static class PacketEncodingExtension
     {
 
         public static T FindDecoratedEncoding<T>(this PacketEncoding packetEncoding) where T : PacketEncoding 
@@ -18,9 +17,9 @@ namespace SharpCommunication.Base.Codec.Encoding
             }
             return null;
         }
-        public static PacketEncodingBuilder WithAncestor(this PacketEncodingBuilder packetEncodingBuilder, byte id)
+        public static PacketEncodingBuilder WithAncestor<T>(this PacketEncodingBuilder packetEncodingBuilder, byte id) where T : IAncestorPacket, new()
         {
-            packetEncodingBuilder.AddDecorate(item => new AncestorPacketEncoding(item, id));
+            packetEncodingBuilder.AddDecorate(item => new AncestorPacketEncoding<T>(item, id));
             return packetEncodingBuilder;
         }
         public static PacketEncodingBuilder WithDescendant<T>(this PacketEncodingBuilder mapItemBuilder, IEnumerable<PacketEncodingBuilder> encodingBuiledersList) where T : IDescendantPacket, new()

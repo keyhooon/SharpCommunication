@@ -2,6 +2,5 @@
 {
     public interface IAncestorPacket : IPacket
     {
-        //        byte Id { get; }
     }
 }

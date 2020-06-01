@@ -29,7 +29,7 @@ namespace Demo.Codec
             private static double _voltageBias = 0.0d;
 
             public new const byte Id = 3;
-            public Encoding(PacketEncoding encoding) : base(encoding, Id)
+            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
             {
 
             }

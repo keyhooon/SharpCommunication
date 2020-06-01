@@ -36,7 +36,7 @@ namespace Demo.Codec
             private static readonly double _cruiseBias = 0.0d;
 
             public new const byte Id = 9;
-            public Encoding(PacketEncoding encoding) : base(encoding, Id)
+            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
             {
 
             }

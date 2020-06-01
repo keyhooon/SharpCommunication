@@ -3,10 +3,10 @@ using System.IO;
 
 namespace SharpCommunication.Codec.Encoding
 {
-    public class HeaderPacketEncoding : PacketEncoding
+    public class HeaderPacketEncoding : EncodingDecorator, IHeaderPacketEncoding
     {
         public byte[] Header { get; }
-        public HeaderPacketEncoding(PacketEncoding encoding, byte[] header) : base(encoding)
+        public HeaderPacketEncoding(EncodingDecorator encoding, byte[] header) : base(encoding)
         {
             Header = header;
         }
@@ -32,6 +32,10 @@ namespace SharpCommunication.Codec.Encoding
             }
             return Encoding.DecodeCore(reader);
         }
+    }
+    public interface IHeaderPacketEncoding
+    {
+        byte[] Header { get; }
     }
 
 }

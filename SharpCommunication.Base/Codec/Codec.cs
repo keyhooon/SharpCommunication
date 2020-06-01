@@ -8,7 +8,7 @@ namespace SharpCommunication.Codec
     public abstract class Codec<TData> : ICodec<TData> where TData : IPacket, new()
     {
         public Type DataType => typeof(TData);
-        public abstract PacketEncoding Encoding { get; }
+        public abstract EncodingDecorator Encoding { get; }
         public TData Decode(BinaryReader stream)
         {
             if (stream == null)

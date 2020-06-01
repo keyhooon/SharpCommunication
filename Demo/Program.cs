@@ -17,11 +17,11 @@ namespace Demo
 
         static void Main(string[] args)
         {
-            SerialPort serial = new SerialPort("com6", 9600);
+            SerialPort serial = new SerialPort("com2", 9600);
             serial.Open();
             var reader = new BinaryReader(serial.BaseStream);
             var writer = new BinaryWriter(serial.BaseStream);
-            var option = new SerialPortDataTransportOption("com7", 9600);
+            var option = new SerialPortDataTransportOption("com3", 9600);
             var deviceService = new DeviceService();
             DeviceSerialDataTransport dataTransport = new DeviceSerialDataTransport(option);
             deviceService.RegisterDataTransport(dataTransport);

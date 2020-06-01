@@ -7,9 +7,9 @@ namespace SharpCommunication.Codec.Encoding
     public static class PacketEncodingExtension
     {
 
-        public static T FindDecoratedEncoding<T>(this PacketEncoding packetEncoding) where T : PacketEncoding 
+        public static T FindDecoratedEncoding<T>(this EncodingDecorator packetEncoding) where T : EncodingDecorator
         {
-                while (packetEncoding is PacketEncoding item)
+                while (packetEncoding is EncodingDecorator item)
                 {
                     if (item is T)
                         return (T)item;
@@ -27,7 +27,7 @@ namespace SharpCommunication.Codec.Encoding
             mapItemBuilder.AddDecorate(item => new DescendantPacketEncoding<T>(item, encodingBuiledersList.Select(o => o.Build()).ToList()));
             return mapItemBuilder;
         }
-        public static PacketEncodingBuilder WithDescendant<T>(this PacketEncodingBuilder mapItemBuilder, IEnumerable<PacketEncoding> encodingsList) where T : IDescendantPacket, new()
+        public static PacketEncodingBuilder WithDescendant<T>(this PacketEncodingBuilder mapItemBuilder, IEnumerable<EncodingDecorator> encodingsList) where T : IDescendantPacket, new()
         {
             mapItemBuilder.AddDecorate(item => new DescendantPacketEncoding<T>(item, encodingsList));
             return mapItemBuilder;
@@ -47,14 +47,14 @@ namespace SharpCommunication.Codec.Encoding
             mapItemBuilder.AddDecorate(item => new HeaderPacketEncoding(item, header));
             return mapItemBuilder;
         }
-        public static PacketEncodingBuilder WithUnixTimeEpoch(this PacketEncodingBuilder mapItemBuilder)
+        public static PacketEncodingBuilder WithUnixTimeEpoch<T>(this PacketEncodingBuilder mapItemBuilder) where T : IUnixTimeEpochPacket
         {
-            mapItemBuilder.AddDecorate(item => new HasUnixTimeEpochPacketEncoding(item));
+            mapItemBuilder.AddDecorate(item => new UnixTimeEpochPacketEncoding<T>(item));
             return mapItemBuilder;
         }
-        public static PacketEncodingBuilder WithProperty(this PacketEncodingBuilder mapItemBuilder, byte propertySize)
+        public static PacketEncodingBuilder WithProperty<T>(this PacketEncodingBuilder mapItemBuilder, byte propertySize) where T : IPropertyPacket
         {
-            mapItemBuilder.AddDecorate(item => new HasPropertyPacketEncoding(item, propertySize));
+            mapItemBuilder.AddDecorate(item => new PropertyPacketEncoding<T>(item, propertySize));
             return mapItemBuilder;
         }
 

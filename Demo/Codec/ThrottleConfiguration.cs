@@ -38,7 +38,7 @@ namespace Demo.Codec
 
             public new const byte Id = 10;
 
-            public Encoding(PacketEncoding encoding) : base(encoding, Id)
+            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
             {
 
             }

@@ -8,7 +8,7 @@ namespace SharpCommunication.Codec.Encoding
     public class AncestorPacketEncoding<T> : EncodingDecorator, IAncestorPacketEncoding<T> where T : IAncestorPacket
     {
         public byte Id { get; }
-
+        public Type PacketType => typeof(T);
         public AncestorPacketEncoding(EncodingDecorator encoding, byte id) : base(encoding)
         {
             Id = id;

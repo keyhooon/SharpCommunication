@@ -11,7 +11,7 @@ namespace Demo.Codec
     {
         private readonly PacketEncodingBuilder EncodingBuilder;
 
-        private PacketEncoding encoding;
+        private EncodingDecorator encoding;
 
         private readonly List<PacketEncodingBuilder> _defaultCommandPacketEncodingBuilders = new List<PacketEncodingBuilder>(
             new [] 
@@ -38,7 +38,7 @@ namespace Demo.Codec
                 ThrottleConfiguration.Encoding.CreateBuilder()
             });
 
-        public override PacketEncoding Encoding
+        public override EncodingDecorator Encoding
         {
             get
             {

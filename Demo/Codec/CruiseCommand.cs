@@ -28,7 +28,7 @@ namespace Demo.Codec
         {
             public static byte ParamByteCount = 1;
             public new const byte Id = 3;
-            public Encoding(PacketEncoding encoding) : base(encoding, ParamByteCount, Id)
+            public Encoding(EncodingDecorator encoding) : base(encoding, ParamByteCount, Id)
             {
 
             }

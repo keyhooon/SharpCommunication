@@ -23,7 +23,7 @@ namespace Communication.Codec
         {
             public new const byte Id = 8;
             private const byte ByteCount = 5;
-            public Encoding(PacketEncoding encoding) : base(encoding, Id)
+            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
             {
 
             }

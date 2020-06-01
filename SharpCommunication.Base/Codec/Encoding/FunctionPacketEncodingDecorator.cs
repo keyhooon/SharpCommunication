@@ -3,10 +3,10 @@ using System.IO;
 
 namespace SharpCommunication.Codec.Encoding
 {
-    public class FunctionPacketEncoding<T> : AncestorPacketEncoding<T> where T: IFunctionPacket,new()
+    public class FunctionPacketEncoding<T> : AncestorPacketEncoding<T>, IFunctionPacketEncoding<T> where T: IFunctionPacket,new()
     {
         public byte InputByteCount{ get; }
-        public FunctionPacketEncoding(PacketEncoding encoding, byte inputByteCount, byte id) : base(encoding, id)
+        public FunctionPacketEncoding(EncodingDecorator encoding, byte inputByteCount, byte id) : base(encoding, id)
         {
             InputByteCount = inputByteCount;
         }
@@ -22,7 +22,11 @@ namespace SharpCommunication.Codec.Encoding
             var functionPacket = (T) packet;
             writer.Write(functionPacket.Param);
         }
-    }
 
+    }
+    public interface IFunctionPacketEncoding<T> : IEncoding<T> where T : IFunctionPacket
+    {
+        byte InputByteCount { get; }
+    }
 
 }

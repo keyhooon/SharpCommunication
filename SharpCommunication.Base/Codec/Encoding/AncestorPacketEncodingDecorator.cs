@@ -5,33 +5,39 @@ using System.IO;
 namespace SharpCommunication.Codec.Encoding
 {
 
-    public class AncestorPacketEncoding<T> : PacketEncoding where T : IAncestorPacket
+    public class AncestorPacketEncoding<T> : EncodingDecorator, IAncestorPacketEncoding<T> where T : IAncestorPacket
     {
         public byte Id { get; }
-        public Type PacketType => typeof(T);
-        public AncestorPacketEncoding(PacketEncoding encoding, byte id) : base(encoding)
+
+        public AncestorPacketEncoding(EncodingDecorator encoding, byte id) : base(encoding)
         {
             Id = id;
         }
 
         public override void EncodeCore(IPacket packet, BinaryWriter writer)
         {
-            Encoding.EncodeCore(packet, writer);
+            Encode((T)packet, writer);
         }
 
         public override IPacket DecodeCore(BinaryReader reader)
         {
-            return Encoding.DecodeCore(reader);
+            return Decode(reader);
         }
         public void Encode(T packet, BinaryWriter writer)
         {
-            EncodeCore(packet, writer);
+            Encoding.EncodeCore(packet, writer);
+
         }
 
         public T Decode(BinaryReader reader)
         {
-            return (T)DecodeCore(reader);
+            return (T)Encoding.DecodeCore(reader);
         }
+    }
+    public interface IAncestorPacketEncoding<T> : IEncoding<T> where T : IAncestorPacket
+    {
+        byte Id { get; }
+        Type PacketType =>typeof(T);
     }
 
 }

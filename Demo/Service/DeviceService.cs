@@ -1,38 +1,42 @@
 ﻿using Demo.Codec;
 using Demo.Transport;
 using SharpCommunication.Channels;
+using SharpCommunication.Codec.Packets;
+using SharpCommunication.Transport;
 using SharpCommunication.Transport.SerialPort;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 
 namespace Demo.Service
 {
     class DeviceService
     {
-        private DeviceSerialDataTransport DataTransport;
+        private List<DataTransport<Device>> DataTransports;
         public event EventHandler<DataReceivedEventArg<Device>> DataReceived;
-        public DeviceService(SerialPortDataTransportOption option)
+        public DeviceService()
         {
-            DataTransport = new DeviceSerialDataTransport(option);
-
-            ((INotifyCollectionChanged)DataTransport.Channels).CollectionChanged += Channels_CollectionChanged;
+            DataTransports = new List<DataTransport<Device>>();
         }
+
         public void Start()
         {
-            DataTransport.Open();
+            foreach (var dataTransport in DataTransports)
+            {
+                dataTransport.Open();
+            }
         }
         public void Stop()
         {
-            DataTransport.Close();
-        }
-        public Channel<Device> devicePacketChannel => (Channel<Device>)DataTransport.Channels[0];
-
-        private void Channels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            foreach (var dataTransport in DataTransports)
             {
-                DataTransport.Channels[0].DataReceived += DataReceived;
+                dataTransport.Close();
             }
         }
+        public void RegisterDataTransport(DataTransport<Device> dataTransport)
+        {
+            DataTransports.Add(dataTransport);
+        }
+        
     }
 }

@@ -9,12 +9,12 @@ namespace SharpCommunication.Codec.Encoding
 
         public static T FindDecoratedEncoding<T>(this PacketEncoding packetEncoding) where T : PacketEncoding 
         {
-            while (packetEncoding is PacketEncoding item)
-            {
-                if (item is T packetEncodingDesire)
-                    return packetEncodingDesire;
-                packetEncoding = packetEncoding.Encoding;
-            }
+                while (packetEncoding is PacketEncoding item)
+                {
+                    if (item is T)
+                        return (T)item;
+                    packetEncoding = packetEncoding.Encoding;
+                }
             return null;
         }
         public static PacketEncodingBuilder WithAncestor<T>(this PacketEncodingBuilder packetEncodingBuilder, byte id) where T : IAncestorPacket, new()

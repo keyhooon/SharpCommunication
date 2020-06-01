@@ -25,7 +25,7 @@ namespace Demo.Codec
                 $"UnderVoltage : {UnderVoltage}, NominalVoltage : {NominalVoltage}, " +
                 $"OverTemprature : {OverTemprature}, ";
         }
-        public class Encoding : AncestorPacketEncoding<BatteryConfiguration>
+        public class Encoding : PacketEncoding
         {
             private static readonly double _overCurrentBitResolution = 0.125d;
             private static readonly double _overVoltageBitResolution = 0.25d;
@@ -39,12 +39,12 @@ namespace Demo.Codec
             private static readonly double _overTempratureBias = 0.25d;
             public static byte byteCount = 10;
 
-            public new const byte Id = 1;
-            public Encoding(PacketEncoding encoding) : base(encoding, Id)
+            public const byte Id = 1;
+            public Encoding(PacketEncoding encoding) : base(encoding)
             {
-
+  
             }
-            public Encoding() : base(null, Id)
+            public Encoding() : this(null)
             {
 
             }
@@ -93,7 +93,7 @@ namespace Demo.Codec
                 return null;
             }
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item)).AddDecorate(item=> new AncestorPacketEncoding<BatteryConfiguration>(item, Id));
         }
     }
 }

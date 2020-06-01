@@ -4,10 +4,10 @@ using System.IO;
 namespace SharpCommunication.Codec.Encoding
 {
 
-    public abstract class PacketEncoding : IEncoding<IPacket>
+    public abstract class EncodingDecorator 
     {
-        public PacketEncoding Encoding { get; }
-        public PacketEncoding(PacketEncoding encoding)
+        public EncodingDecorator Encoding { get; }
+        public EncodingDecorator(EncodingDecorator encoding)
         {
             Encoding = encoding;
         }
@@ -16,5 +16,6 @@ namespace SharpCommunication.Codec.Encoding
 
         public abstract IPacket DecodeCore(BinaryReader reader);
 
+ 
     }
 }

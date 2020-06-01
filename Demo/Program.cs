@@ -6,6 +6,9 @@ using SharpCommunication.Channels;
 using Demo.Codec;
 using Demo.Service;
 using System.Threading;
+using Demo.Transport;
+using SharpCommunication.Transport;
+using SharpCommunication.Codec.Packets;
 
 namespace Demo
 {
@@ -14,12 +17,14 @@ namespace Demo
 
         static void Main(string[] args)
         {
-            SerialPort serial = new SerialPort("com254", 9600);
+            SerialPort serial = new SerialPort("com6", 9600);
             serial.Open();
             var reader = new BinaryReader(serial.BaseStream);
             var writer = new BinaryWriter(serial.BaseStream);
-            var option = new SerialPortDataTransportOption("com253", 9600);
-            var deviceService = new DeviceService(option);
+            var option = new SerialPortDataTransportOption("com7", 9600);
+            var deviceService = new DeviceService();
+            DeviceSerialDataTransport dataTransport = new DeviceSerialDataTransport(option);
+            deviceService.RegisterDataTransport(dataTransport);
             deviceService.DataReceived += DeviceService_DataReceived;
             deviceService.Start();
 
@@ -29,7 +34,7 @@ namespace Demo
                 if (serial.BytesToRead > 0)
                     //Console.WriteLine(reader.ReadBytes(serial.BytesToRead).ToHexString());
                     writer.Write(reader.ReadBytes(serial.BytesToRead));
-                deviceService.devicePacketChannel.Transmit(packet);
+                dataTransport.Channels[0].Transmit(packet);
                 Thread.Sleep(200);
             }
         }

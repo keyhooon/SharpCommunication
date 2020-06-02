@@ -9,6 +9,7 @@ namespace Demo.Codec
     {
         public byte DataId { get; set; }
 
+
         public byte[] Param
         {
             get
@@ -22,7 +23,7 @@ namespace Demo.Codec
 
             }
         }
-        public Action Action { get; }
+
         public override string ToString()
         {
 
@@ -31,12 +32,15 @@ namespace Demo.Codec
 
         public class Encoding : FunctionPacketEncoding<ReadCommand>
         {
-            private static byte ParamByteCount = 1;
-            public new const byte Id = 1;
-            public Encoding(EncodingDecorator encoding) : base(encoding, ParamByteCount, Id)
+            public override byte ParameterByteCount => 1;
+            public override byte Id => 1;
+            public override Action<byte[]> ActionToDo { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }
+
             public static PacketEncodingBuilder CreateBuilder()=>
                 PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o));
         }

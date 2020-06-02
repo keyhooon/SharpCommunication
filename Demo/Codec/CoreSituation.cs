@@ -20,7 +20,7 @@ namespace Demo.Codec
         {
 
         }
-        public class Encoding : AncestorPacketEncoding<CoreSituation>
+        public class Encoding : AncestorPacketEncoding
         {
             private static byte byteCount = 4;
             private static double _tempratureBitResolution = 0.0625d;
@@ -37,7 +37,7 @@ namespace Demo.Codec
             {
 
             }
-            public override void EncodeCore(IPacket packet, BinaryWriter writer)
+            public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (CoreSituation)packet;
                 byte crc8 = 0;
@@ -53,7 +53,7 @@ namespace Demo.Codec
                 writer.Write(crc8);
             }
 
-            public override IPacket DecodeCore(BinaryReader reader)
+            public override IPacket Decode(BinaryReader reader)
             {
                 var value = reader.ReadBytes(byteCount);
                 byte crc8 = 0;

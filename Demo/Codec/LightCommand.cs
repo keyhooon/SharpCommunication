@@ -23,7 +23,6 @@ namespace Demo.Codec
                 }
             }
         }
-        public Action Action => throw new NotImplementedException();
         public override string ToString()
         {
             if (IsOn)
@@ -32,9 +31,12 @@ namespace Demo.Codec
         }
         public class Encoding : FunctionPacketEncoding<LightCommand>
         {
-            private readonly static byte ParamByteCount = 1;
-            public new const byte Id = 2;
-            public Encoding(EncodingDecorator encoding) : base(encoding, ParamByteCount, Id)
+            public override byte ParameterByteCount => 1;
+            public override byte Id => 2;
+
+            public override Action<byte[]> ActionToDo { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }

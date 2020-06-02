@@ -51,7 +51,7 @@ namespace Demo.Codec
         public DevicePacketCodec(IEnumerable<PacketEncodingBuilder> PacketEncodingBuilderList)
         {
             _defaultCommandPacketEncodingBuilders.AddRange(PacketEncodingBuilderList.Where(o => o.Build().GetType().BaseType.GetGenericTypeDefinition() == typeof(FunctionPacketEncoding<>)));
-            _defaultDataPacketEncodingBuilders.AddRange(PacketEncodingBuilderList.Where(o => o.Build().GetType().BaseType.GetGenericTypeDefinition() == typeof(AncestorPacketEncoding<>)));
+            _defaultDataPacketEncodingBuilders.AddRange(PacketEncodingBuilderList.Where(o => o.Build().GetType().BaseType.GetGenericTypeDefinition() == typeof(AncestorPacketEncoding)));
 
             EncodingBuilder = Device.Encoding.CreateBuilder(new[] {
                 Data.Encoding.CreateBuilder(_defaultDataPacketEncodingBuilders),

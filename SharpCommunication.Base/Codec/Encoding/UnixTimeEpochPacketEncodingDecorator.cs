@@ -3,38 +3,28 @@ using System.IO;
 
 namespace SharpCommunication.Codec.Encoding
 {
-    public class UnixTimeEpochPacketEncoding<T> : EncodingDecorator, IUnixTimeEpochPacketEncoding<T> where T : IUnixTimeEpochPacket
+    public class UnixTimeEpochPacketEncoding : EncodingDecorator, IUnixTimeEpochPacketEncoding
     {
         public UnixTimeEpochPacketEncoding(EncodingDecorator encoding) : base(encoding)
         {
         }
 
-        public override void EncodeCore(IPacket packet, BinaryWriter writer)
-        {
-            Encode((T)packet, writer);
-        }
-
-        public override IPacket DecodeCore(BinaryReader reader)
-        {
-            return Decode(reader);
-        }
-
-        public void Encode(T packet, BinaryWriter writer)
+        public override void Encode(IPacket packet, BinaryWriter writer)
         {
             var unixTimeEpochPacket = (IUnixTimeEpochPacket)packet;
             writer.Write(unixTimeEpochPacket.DateTime.ToUnixEpoch());
-            Encoding.EncodeCore(unixTimeEpochPacket, writer);
+            Encoding.Encode(unixTimeEpochPacket, writer);
         }
 
-        public T Decode(BinaryReader reader)
+        public override IPacket Decode(BinaryReader reader)
         {
             var datetime = reader.ReadUInt32().ToUnixTime();
-            var unixTimeEpochPacket = (IUnixTimeEpochPacket)Encoding.DecodeCore(reader);
+            var unixTimeEpochPacket = (IUnixTimeEpochPacket)Encoding.Decode(reader);
             unixTimeEpochPacket.DateTime = datetime;
-            return (T)unixTimeEpochPacket;
+            return unixTimeEpochPacket;
         }
     }
-    public interface IUnixTimeEpochPacketEncoding<T> : IEncoding<T> where T : IUnixTimeEpochPacket
+    public interface IUnixTimeEpochPacketEncoding : IEncoding<IPacket>
     {
 
     }

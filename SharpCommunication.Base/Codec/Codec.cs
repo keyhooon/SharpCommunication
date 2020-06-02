@@ -13,7 +13,7 @@ namespace SharpCommunication.Codec
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
-            return (TData) Encoding.DecodeCore(stream);
+            return (TData) Encoding.Decode(stream);
 
         }
 
@@ -24,7 +24,7 @@ namespace SharpCommunication.Codec
             if (bytes.Length == 0)
                 throw new InvalidOperationException("bytes.Length = 0");
             using (var memoryStream = new MemoryStream(bytes))
-                return (TData) Encoding.DecodeCore(new BinaryReader(memoryStream));
+                return (TData) Encoding.Decode(new BinaryReader(memoryStream));
         }
 
         public void Encode(TData data, BinaryWriter stream)
@@ -35,7 +35,7 @@ namespace SharpCommunication.Codec
                 throw new ArgumentNullException(nameof(stream));
             if (!(data is TData tData))
                 throw new CodecException("Expected data type " + DataType);
-            Encoding.EncodeCore(tData, stream);
+            Encoding.Encode(tData, stream);
 
         }
 

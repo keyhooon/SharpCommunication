@@ -26,7 +26,7 @@ namespace Demo.Codec
             return $"Throttle Configuration - FaultThreshold : {FaultThreshold}v, Min : {Min}v, " +
                 $"Max : {Max}v";
         }
-        public class Encoding : AncestorPacketEncoding<ThrottleConfiguration>
+        public class Encoding : AncestorPacketEncoding
         {
             public static readonly byte byteCount = 6;
             private static readonly double _faultThresholdBitResolution = 5.035477225909819e-5;
@@ -47,7 +47,7 @@ namespace Demo.Codec
 
             }
 
-            public override void EncodeCore(IPacket packet, BinaryWriter writer)
+            public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (ThrottleConfiguration)packet;
                 byte crc8 = 0;
@@ -67,7 +67,7 @@ namespace Demo.Codec
                 writer.Write(crc8);
             }
 
-            public override IPacket DecodeCore(BinaryReader reader)
+            public override IPacket Decode(BinaryReader reader)
             {
                 var value = reader.ReadBytes(byteCount);
                 byte crc8 = 0;

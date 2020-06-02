@@ -11,13 +11,8 @@ namespace SharpCommunication.Codec.Encoding
             Header = header;
         }
 
-        public override void EncodeCore(IPacket packet, BinaryWriter writer)
-        {
-            writer.Write(Header);
-            Encoding.EncodeCore(packet, writer);
-        }
 
-        public override IPacket DecodeCore( BinaryReader reader)
+        public override IPacket Decode( BinaryReader reader)
         {
             var found = 0;
             while (found < Header.Length)
@@ -30,10 +25,16 @@ namespace SharpCommunication.Codec.Encoding
                 else
                     found = 0;
             }
-            return Encoding.DecodeCore(reader);
+            return Encoding.Decode(reader);
+        }
+
+        public override void Encode(IPacket packet, BinaryWriter writer)
+        {
+            writer.Write(Header);
+            Encoding.Encode(packet, writer);
         }
     }
-    public interface IHeaderPacketEncoding
+    public interface IHeaderPacketEncoding : IEncoding<IPacket>
     {
         byte[] Header { get; }
     }

@@ -30,7 +30,7 @@ namespace Demo.Codec
                 $"Motor : {Motor}, " +
                 $"Drive : {Drive}, ";
         }
-        public class Encoding : AncestorPacketEncoding<Fault>
+        public class Encoding : AncestorPacketEncoding
         {
 
             private readonly static byte byteCount = 2;
@@ -44,7 +44,7 @@ namespace Demo.Codec
 
             }
 
-            public override void EncodeCore(IPacket packet, BinaryWriter writer)
+            public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (Fault)packet;
                 var value = BitConverter.GetBytes(
@@ -57,7 +57,7 @@ namespace Demo.Codec
                 writer.Write(crc8);
             }
 
-            public override IPacket DecodeCore(BinaryReader reader)
+            public override IPacket Decode(BinaryReader reader)
             {
                 var value = reader.ReadBytes(byteCount);
                 var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte)(current + t));

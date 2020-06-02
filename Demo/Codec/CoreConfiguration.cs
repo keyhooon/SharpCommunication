@@ -18,20 +18,19 @@ namespace Demo.Codec
             return $"Core Configuration - UniqueId : {UniqueId}, FirmwareVersion : {FirmwareVersion}, " +
                 $"ModelVersion : {ModelVersion}";
         }
-        public class Encoding : AncestorPacketEncoding<CoreConfiguration>
+        public class Encoding : AncestorPacketEncoding
         {
-            private static byte byteCount = 16;
-
-            public new const byte Id = 4;
-            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
+            private static readonly byte _byteCount = 16;
+            public override byte Id => 4;
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }
-            public Encoding() : base(null, Id)
+            public Encoding() : base(null)
             {
 
             }
-            public override void EncodeCore(IPacket packet, BinaryWriter writer)
+            public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (CoreConfiguration)packet;
                 byte crc8 = 0;
@@ -51,7 +50,7 @@ namespace Demo.Codec
                 writer.Write(crc8);
             }
 
-            public override IPacket DecodeCore(BinaryReader reader)
+            public override IPacket Decode(BinaryReader reader)
             {
                 var value = reader.ReadBytes(16);
                 byte crc8 = 0;

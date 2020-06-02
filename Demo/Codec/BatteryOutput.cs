@@ -25,9 +25,9 @@ namespace Demo.Codec
         }
 
 
-        public class Encoding : AncestorPacketEncoding<BatteryOutput>
+        public class Encoding : AncestorPacketEncoding
         {
-            private static byte byteCount = 6;
+            private static readonly byte _byteCount = 6;
             private static readonly double _currentBitResolution = 0.125d;
             private static readonly double _voltageBitResolution = 0.25d;
             private static readonly double _tempratureBitResolution = 0.125d;
@@ -35,11 +35,11 @@ namespace Demo.Codec
             private static readonly double _voltageBias = 20.0d;
             private static readonly double _tempratureBias = 0.0d;
 
-            public new const byte Id = 2;
+            public override Type PacketType => typeof(BatteryOutput);
 
+            public override byte Id => 2;
 
-
-            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }
@@ -48,7 +48,7 @@ namespace Demo.Codec
 
             }
 
-            public override void EncodeCore(IPacket packet, BinaryWriter writer)
+            public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (BatteryOutput)packet;
                 byte crc8 = 0;
@@ -68,9 +68,9 @@ namespace Demo.Codec
                 writer.Write(crc8);
             }
 
-            public override IPacket DecodeCore(BinaryReader reader)
+            public override IPacket Decode(BinaryReader reader)
             {
-                var value = reader.ReadBytes(byteCount);
+                var value = reader.ReadBytes(_byteCount);
                 byte crc8 = 0;
                 for (int i = 0; i < value.Length; i++)
                     crc8 += value[i];

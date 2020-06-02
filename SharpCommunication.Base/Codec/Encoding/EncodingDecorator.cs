@@ -12,18 +12,10 @@ namespace SharpCommunication.Codec.Encoding
             Encoding = encoding;
         }
 
-        public abstract void EncodeCore(IPacket packet, BinaryWriter writer);
+        public abstract void Encode(IPacket packet, BinaryWriter writer);
 
-        public abstract IPacket DecodeCore(BinaryReader reader);
+        public abstract IPacket Decode(BinaryReader reader);
 
-        void IEncoding<IPacket>.Encode(IPacket packet, BinaryWriter writer)
-        {
-            EncodeCore(packet, writer);
-        }
 
-        IPacket IEncoding<IPacket>.Decode(BinaryReader reader)
-        {
-            return DecodeCore(reader);
-        }
     }
 }

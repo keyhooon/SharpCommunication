@@ -14,7 +14,7 @@ namespace Communication.Codec
 
             return $"MagnetCount : {MagnetCount}";
         }
-        public class Encoding : AncestorPacketEncoding<PedalConfiguration>
+        public class Encoding : AncestorPacketEncoding
         {
             private const byte byteCount = 1;
             public new const byte Id = 7;
@@ -27,7 +27,7 @@ namespace Communication.Codec
 
             }
 
-            public override void EncodeCore(IPacket packet, BinaryWriter writer)
+            public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (PedalConfiguration)packet;
                 byte crc8 = 0;
@@ -37,7 +37,7 @@ namespace Communication.Codec
                 writer.Write(crc8);
             }
 
-            public override IPacket DecodeCore(BinaryReader reader)
+            public override IPacket Decode(BinaryReader reader)
             {
                 var value = reader.ReadByte();
                 byte crc8 = 0;

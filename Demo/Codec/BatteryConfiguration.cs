@@ -25,7 +25,7 @@ namespace Demo.Codec
                 $"UnderVoltage : {UnderVoltage}, NominalVoltage : {NominalVoltage}, " +
                 $"OverTemprature : {OverTemprature}, ";
         }
-        public class Encoding : AncestorPacketEncoding<BatteryConfiguration>
+        public class Encoding : AncestorPacketEncoding
         {
             private static readonly double _overCurrentBitResolution = 0.125d;
             private static readonly double _overVoltageBitResolution = 0.25d;
@@ -37,10 +37,13 @@ namespace Demo.Codec
             private static readonly double _underVoltageBias = 0.125d;
             private static readonly double _nominalVoltageBias = 1.0d;
             private static readonly double _overTempratureBias = 0.25d;
-            public static byte byteCount = 10;
+            private static readonly byte _byteCount = 10;
 
-            public const byte Id = 1;
-            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
+            public override Type PacketType => typeof(BatteryConfiguration);
+
+            public override byte Id => 1;
+
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
   
             }
@@ -48,7 +51,7 @@ namespace Demo.Codec
             {
 
             }
-            public override void EncodeCore(IPacket packet, BinaryWriter writer)
+            public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (BatteryConfiguration)packet;
                 byte crc8 = 0;
@@ -75,9 +78,9 @@ namespace Demo.Codec
                 writer.Write(value);
                 writer.Write(crc8);
             }
-            public override IPacket DecodeCore(BinaryReader reader)
+            public override IPacket Decode(BinaryReader reader)
             {
-                var value = reader.ReadBytes(byteCount);
+                var value = reader.ReadBytes(_byteCount);
                 byte crc8 = 0;
                 for (int i = 0; i < value.Length; i++)
                     crc8 += value[i];

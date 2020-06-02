@@ -20,9 +20,9 @@ namespace Communication.Codec
                 $", Light3 : {Light3}" +
                 $", Light4 : {Light4}";
         }
-        public class Encoding : AncestorPacketEncoding<LightSetting>
+        public class Encoding : AncestorPacketEncoding
         {
-            public const byte byteCount = 1;
+            private readonly static byte _byteCount = 1;
             public new const byte Id = 5;
             public Encoding(EncodingDecorator encoding) : base(encoding, Id)
             {
@@ -33,7 +33,7 @@ namespace Communication.Codec
 
             }
 
-            public override void EncodeCore(IPacket packet, BinaryWriter writer)
+            public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (LightSetting)packet;
                 byte crc8 = 0;
@@ -43,7 +43,7 @@ namespace Communication.Codec
                 writer.Write(crc8);
             }
 
-            public override IPacket DecodeCore(BinaryReader reader)
+            public override IPacket Decode(BinaryReader reader)
             {
                 var value = reader.ReadByte();
                 byte crc8 = 0;

@@ -25,7 +25,7 @@ namespace Demo.Codec
             return $"Servo Input - Throttle : {Throttle}, Pedal : {Pedal}, " +
                 $"Cruise : {Cruise}, IsBreak : {IsBreak}, ";
         }
-        public class Encoding : AncestorPacketEncoding<ServoInput>
+        public class Encoding : AncestorPacketEncoding
         {
             private static readonly byte _byteCount = 7;
             private static readonly double _throttleBitResolution = 0.001953125;
@@ -45,7 +45,7 @@ namespace Demo.Codec
 
             }
 
-            public override void EncodeCore(IPacket packet, BinaryWriter writer)
+            public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (ServoInput)packet;
                 byte crc8 = 0;
@@ -69,7 +69,7 @@ namespace Demo.Codec
                 writer.Write(crc8);
             }
 
-            public override IPacket DecodeCore(BinaryReader reader)
+            public override IPacket Decode(BinaryReader reader)
             {
                 var value = reader.ReadBytes(_byteCount);
                 byte crc8 = 0;

@@ -7,12 +7,13 @@ using System.IO;
 namespace SharpCommunication.Codec.Encoding
 {
 
-    public class DescendantPacketEncoding<T> : EncodingDecorator, IDescendantPacketEncoding<T> where T : IDescendantPacket, new()
+    public class DescendantPacketEncoding<T> : EncodingDecorator, IDescendantPacketEncoding where T: IDescendantPacket, new()
         {
-        public readonly IReadOnlyDictionary<byte, AncestorPacketEncoding<IAncestorPacket>> DecoderDictionary ;
-        public readonly IReadOnlyDictionary<Type, AncestorPacketEncoding<IAncestorPacket>> EncoderDictionary;
-        private readonly IDictionary<byte, AncestorPacketEncoding<IAncestorPacket>> _decoderDictionary;
-        private readonly IDictionary<Type, AncestorPacketEncoding<IAncestorPacket>> _encoderDictionary;
+        public readonly IReadOnlyDictionary<Type, byte> IdDictionary;
+        public readonly IReadOnlyDictionary<byte, EncodingDecorator> EncodingDictionary ;
+        private readonly IDictionary<Type, byte> _idDictionary;
+        private readonly IDictionary<byte, EncodingDecorator> _encodingDictionary;
+
         public DescendantPacketEncoding(EncodingDecorator encoding, IEnumerable<EncodingDecorator> encodingsList) : this(encoding)
         {
             foreach (var encodingItem in encodingsList)
@@ -22,54 +23,47 @@ namespace SharpCommunication.Codec.Encoding
         }
         public DescendantPacketEncoding(EncodingDecorator encoding) : base(encoding)
         {
-            _decoderDictionary = new Dictionary<byte, AncestorPacketEncoding<IAncestorPacket>>();
-            DecoderDictionary = new ReadOnlyDictionary<byte, AncestorPacketEncoding<IAncestorPacket>>(_decoderDictionary);
-            _encoderDictionary = new Dictionary<Type, AncestorPacketEncoding<IAncestorPacket>>();
-           EncoderDictionary = new ReadOnlyDictionary<Type, AncestorPacketEncoding<IAncestorPacket>>(_encoderDictionary);
+            _idDictionary = new Dictionary<Type, byte>();
+            IdDictionary = new ReadOnlyDictionary<Type, byte>(_idDictionary);
+
+            _encodingDictionary = new Dictionary<byte, EncodingDecorator>();
+            EncodingDictionary = new ReadOnlyDictionary<byte, EncodingDecorator>(_encodingDictionary);
         }
         public void Register(EncodingDecorator encoding)
         {
             if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
-            
-            var enc = encoding.FindDecoratedEncoding<AncestorPacketEncoding<IAncestorPacket>>();
+
+            IAncestorPacketEncoding<IAncestorPacket> enc = (IAncestorPacketEncoding<IAncestorPacket>) encoding.FindDecoratedEncoding<IAncestorPacketEncoding<IAncestorPacket>>();
             if (enc == null)
                 throw new NotSupportedException();
 
-            _decoderDictionary.Add(enc.Id, enc);
-            _encoderDictionary.Add(enc.PacketType, enc);
+            _idDictionary.Add(enc.PacketType, enc.Id);
+            _encodingDictionary.Add(enc.Id, encoding);
         }
 
-        public override void EncodeCore(IPacket packet, BinaryWriter writer)
-        {
-            Encode((T)packet, writer);
-        }
-
-        public override IPacket DecodeCore(BinaryReader reader)
-        {
-            return Decode(reader);
-        }
-
-        public void Encode(T packet, BinaryWriter writer)
+        public override void Encode(IPacket packet, BinaryWriter writer)
         {
             var descendantPacket = (IDescendantPacket)packet;
-            EncoderDictionary.TryGetValue(descendantPacket.DescendantPacket.GetType(), out var packetEncoding);
-            writer.Write(packetEncoding.Id);
-            packetEncoding.EncodeCore(descendantPacket.DescendantPacket, writer);
+            IdDictionary.TryGetValue(descendantPacket.DescendantPacket.GetType(), out var ancestorPacketId);
+            writer.Write(ancestorPacketId);
+            EncodingDictionary.TryGetValue(ancestorPacketId, out var encodingDecorator);
+            encodingDecorator?.Encode(descendantPacket.DescendantPacket, writer);
         }
 
-        public T Decode(BinaryReader reader)
+        public override IPacket Decode(BinaryReader reader)
         {
             var packetEncodingId = reader.ReadByte();
-            DecoderDictionary.TryGetValue(packetEncodingId, out var packetEncoding);
+            EncodingDictionary.TryGetValue(packetEncodingId, out var encodingDecorator);
             T obj = new T
             {
-                DescendantPacket = (IAncestorPacket)packetEncoding?.DecodeCore(reader)
+                DescendantPacket = (IAncestorPacket)encodingDecorator?.Decode(reader)
             };
             return obj;
         }
+
     }
-    public interface IDescendantPacketEncoding<T> : IEncoding<T> where T : IDescendantPacket
+    public interface IDescendantPacketEncoding : IEncoding<IPacket>
     {
         void Register(EncodingDecorator encoding);
 

@@ -20,7 +20,7 @@ namespace Communication.Codec
 
             return $"Servo Output - ActivityPercent : {ActivityPercent}, WheelSpeed : {WheelSpeed}, ";
         }
-        public class Encoding : AncestorPacketEncoding<ServoOutput>
+        public class Encoding : AncestorPacketEncoding
         {
             private static readonly double ActivityPercentBitResolution = 0.0015259021896696d;
             private static readonly double WheelSpeedBitResolution = 0.000244140625 / 60;
@@ -38,7 +38,7 @@ namespace Communication.Codec
 
             }
 
-            public override void EncodeCore(IPacket packet, BinaryWriter writer)
+            public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (ServoOutput)packet;
                 var value = BitConverter.GetBytes((ushort)((o.ActivityPercent - ActivityPercentBias) / ActivityPercentBitResolution));
@@ -52,7 +52,7 @@ namespace Communication.Codec
                 writer.Write(crc8);
             }
 
-            public override IPacket DecodeCore(BinaryReader reader)
+            public override IPacket Decode(BinaryReader reader)
             {
                 var value = reader.ReadBytes(ByteCount);
                 var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte)(current + t));

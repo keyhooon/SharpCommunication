@@ -19,7 +19,7 @@ namespace Communication.Codec
             return $"AssistLevel : {AssistLevel}, ActivationTime : {ActivationTime}, " +
                 $"LowLimit : {LowLimit}, HighLimit : {HighLimit}";
         }
-        public class Encoding : AncestorPacketEncoding<PedalSetting>
+        public class Encoding : AncestorPacketEncoding
         {
             public new const byte Id = 8;
             private const byte ByteCount = 5;
@@ -32,7 +32,7 @@ namespace Communication.Codec
 
             }
 
-            public override void EncodeCore(IPacket packet, BinaryWriter writer)
+            public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (PedalSetting)packet;
                 byte crc8 = 0;
@@ -50,7 +50,7 @@ namespace Communication.Codec
                 writer.Write(crc8);
             }
 
-            public override IPacket DecodeCore(BinaryReader reader)
+            public override IPacket Decode(BinaryReader reader)
             {
                 var value = reader.ReadBytes(ByteCount);
                 var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte)(current + t));

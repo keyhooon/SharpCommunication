@@ -26,9 +26,14 @@ namespace Demo.Codec
 
         public class Encoding : FunctionPacketEncoding<CruiseCommand>
         {
-            public static byte ParamByteCount = 1;
-            public new const byte Id = 3;
-            public Encoding(EncodingDecorator encoding) : base(encoding, ParamByteCount, Id)
+
+            public override byte ParameterByteCount => 1;
+            public override byte Id => 3;
+            public override Action<byte[]> ActionToDo { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+
+
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }

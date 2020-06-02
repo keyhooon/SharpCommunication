@@ -1,5 +1,6 @@
 ﻿using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,10 +15,13 @@ namespace Demo.Codec
             return $"Data : {DescendantPacket?.ToString()} ";
         }
 
-        public class Encoding : DescendantPacketEncoding<Command>
+        public class Encoding : DescendantPacketEncoding<Command>, IAncestorPacketEncoding<IAncestorPacket>
         {
 
-            public static byte Id => 0;
+            public byte Id => 0;
+
+            public Type PacketType => typeof(Data);
+
             public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
@@ -31,11 +35,11 @@ namespace Demo.Codec
             }
 
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o=>new AncestorPacketEncoding<Command>(o,Id)).AddDecorate(o => new Encoding(o));
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o));
             public static PacketEncodingBuilder CreateBuilder(IEnumerable<PacketEncodingBuilder> encodingBuileders) =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new AncestorPacketEncoding<Command>(o, Id)).AddDecorate(o => new Encoding(o, encodingBuileders.Select(o => o.Build()).ToList()));
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o, encodingBuileders.Select(o => o.Build()).ToList()));
             public static PacketEncodingBuilder CreateBuilder(IEnumerable<EncodingDecorator> encodings) =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new AncestorPacketEncoding<Command>(o, Id)).AddDecorate(o => new Encoding(o, encodings));
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o, encodings));
         }
     }
 }

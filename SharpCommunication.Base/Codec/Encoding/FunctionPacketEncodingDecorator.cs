@@ -1,32 +1,37 @@
 ﻿using SharpCommunication.Codec.Packets;
+using System;
 using System.IO;
 
 namespace SharpCommunication.Codec.Encoding
 {
-    public class FunctionPacketEncoding<T> : AncestorPacketEncoding<T>, IFunctionPacketEncoding<T> where T: IFunctionPacket,new()
+    public abstract class FunctionPacketEncoding<T> : AncestorPacketEncoding, IFunctionPacketEncoding where T : IFunctionPacket, new()
     {
-        public byte InputByteCount{ get; }
-        public FunctionPacketEncoding(EncodingDecorator encoding, byte inputByteCount, byte id) : base(encoding, id)
+        public override Type PacketType => typeof(T);
+        public abstract byte ParameterByteCount { get; }
+
+        public abstract Action<byte[]> ActionToDo { get; set; }
+        public FunctionPacketEncoding(EncodingDecorator encoding) : base(encoding)
         {
-            InputByteCount = inputByteCount;
-        }
-        public override IPacket DecodeCore(BinaryReader reader)
-        {
-            var functionPacket = new T() { Param = reader.ReadBytes(InputByteCount) };
-            functionPacket?.Action?.Invoke();
-            return functionPacket;
+
         }
 
-        public override void EncodeCore(IPacket packet, BinaryWriter writer)
+        public override IPacket Decode(BinaryReader reader)
         {
-            var functionPacket = (T) packet;
-            writer.Write(functionPacket.Param);
+            var ret = new T() { Param = reader.ReadBytes(ParameterByteCount) };
+            ActionToDo?.Invoke(ret.Param);
+            return ret;
+        }
+
+        public override void Encode(IPacket packet, BinaryWriter writer)
+        {
+            var command = (T)packet;
+            writer.Write(command.Param);
         }
 
     }
-    public interface IFunctionPacketEncoding<T> : IEncoding<T> where T : IFunctionPacket
+    public interface IFunctionPacketEncoding: IEncoding<IPacket>
     {
-        byte InputByteCount { get; }
+        byte ParameterByteCount { get; }
     }
 
 }

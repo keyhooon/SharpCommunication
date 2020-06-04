@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 
@@ -12,13 +13,16 @@ namespace Communication.Codec
         public override string ToString()
         {
 
-            return $"MagnetCount : {MagnetCount}";
+            return $"Pedal Configuration {{ MagnetCount : {MagnetCount} }}";
         }
         public class Encoding : AncestorPacketEncoding
         {
-            private const byte byteCount = 1;
-            public new const byte Id = 7;
-            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
+
+            public override byte Id => 7;
+
+            public override Type PacketType => typeof(PedalConfiguration);
+
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }

@@ -26,8 +26,8 @@ namespace Demo.Codec
         public override string ToString()
         {
             if (IsOn)
-                return $"Light Command - Light : {LightId}, State : On";
-            return $"Light : {LightId}, State : Off";
+                return $"Light Command {{ Light : {LightId}, State : On }}";
+            return $"Light Command {{ Light : {LightId}, State : Off }}";
         }
         public class Encoding : FunctionPacketEncoding<LightCommand>
         {

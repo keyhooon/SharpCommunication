@@ -12,10 +12,10 @@ namespace Demo.Codec
         public IAncestorPacket DescendantPacket { get; set; }
         public override string ToString()
         {
-            return $"Data : {DescendantPacket?.ToString()} ";
+            return $"Data {{ {DescendantPacket?.ToString()} }} ";
         }
 
-        public class Encoding : DescendantPacketEncoding<Command>, IAncestorPacketEncoding<IAncestorPacket>
+        public class Encoding : DescendantPacketEncoding<Data>, IAncestorPacketEncoding<IAncestorPacket>
         {
 
             public byte Id => 0;

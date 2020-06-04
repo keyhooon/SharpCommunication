@@ -23,8 +23,8 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"Throttle Configuration - FaultThreshold : {FaultThreshold}v, Min : {Min}v, " +
-                $"Max : {Max}v";
+            return $"Throttle Configuration {{ FaultThreshold : {FaultThreshold}v, Min : {Min}v, " +
+                $"Max : {Max}v }}";
         }
         public class Encoding : AncestorPacketEncoding
         {
@@ -36,13 +36,15 @@ namespace Demo.Codec
             private static readonly double _minBias = 0.0d;
             private static readonly double _maxBias = 0.0d;
 
-            public new const byte Id = 10;
+            public override byte Id => 10;
 
-            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
+            public override Type PacketType => typeof(ThrottleConfiguration);
+
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }
-            public Encoding() : base(null, Id)
+            public Encoding() : this(null)
             {
 
             }

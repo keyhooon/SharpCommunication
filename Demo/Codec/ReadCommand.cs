@@ -27,7 +27,7 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"Read Command - Request Data: {DataId}";
+            return $"Read Command {{ Request Data: {DataId} }}";
         }
 
         public class Encoding : FunctionPacketEncoding<ReadCommand>

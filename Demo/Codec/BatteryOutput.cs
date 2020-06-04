@@ -20,8 +20,8 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"Battery Output - Current : {Current}, Voltage : {Voltage}, " +
-                $"Temprature : {Temprature} ";
+            return $"Battery Output {{ Current : {Current}, Voltage : {Voltage}, " +
+                $"Temprature : {Temprature} }} ";
         }
 
 

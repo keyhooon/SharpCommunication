@@ -16,14 +16,18 @@ namespace Communication.Codec
         public override string ToString()
         {
 
-            return $"AssistLevel : {AssistLevel}, ActivationTime : {ActivationTime}, " +
-                $"LowLimit : {LowLimit}, HighLimit : {HighLimit}";
+            return $"Pedal Setting {{ AssistLevel : {AssistLevel}, ActivationTime : {ActivationTime}, " +
+                $"LowLimit : {LowLimit}, HighLimit : {HighLimit} }}";
         }
         public class Encoding : AncestorPacketEncoding
         {
-            public new const byte Id = 8;
-            private const byte ByteCount = 5;
-            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
+            private static readonly byte ByteCount = 5;
+
+            public override byte Id => 8;
+
+            public override Type PacketType => typeof(PedalSetting);
+
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }

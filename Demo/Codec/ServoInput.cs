@@ -22,8 +22,8 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"Servo Input - Throttle : {Throttle}, Pedal : {Pedal}, " +
-                $"Cruise : {Cruise}, IsBreak : {IsBreak}, ";
+            return $"Servo Input {{ Throttle : {Throttle}, Pedal : {Pedal}, " +
+                $"Cruise : {Cruise}, IsBreak : {IsBreak} }} ";
         }
         public class Encoding : AncestorPacketEncoding
         {
@@ -35,8 +35,11 @@ namespace Demo.Codec
             private static readonly double _pedalBias = 0.0d;
             private static readonly double _cruiseBias = 0.0d;
 
-            public new const byte Id = 9;
-            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
+            public override byte Id => 9;
+
+            public override Type PacketType => typeof(ServoInput);
+
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }

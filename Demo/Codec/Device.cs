@@ -12,9 +12,9 @@ namespace Demo.Codec
         public IAncestorPacket DescendantPacket { get; set; }
         public override string ToString()
         {
-            return $"DevicePacket : {DescendantPacket?.ToString()} ";
+            return $"DevicePacket {{ {DescendantPacket?.ToString()} }}";
         }
-        public class Encoding : DescendantPacketEncoding<Command>
+        public class Encoding : DescendantPacketEncoding<Device>
         {
             private static readonly byte[] Header = { 0xAA, 0xAA };
 

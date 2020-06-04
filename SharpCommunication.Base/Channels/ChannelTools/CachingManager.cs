@@ -1,32 +1,36 @@
 ﻿using SharpCommunication.Codec.Packets;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SharpCommunication.Channels.ChannelTools
 {
-    public class CachingManager<TPacket> where TPacket : IPacket
+    public interface ICachingManager<TPacket> where TPacket : IPacket
     {
-        public IOCache<TPacket> IoCache { get; }
-        public CachingManager(IOCache<TPacket> ioCache)
-        {
-            IoCache = ioCache;
-        }
-
+        void Bind(IOCache<TPacket> ioCache);
     }
 
-    public class LimitCountPacketCachingManager<TPacket> : CachingManager<TPacket> where TPacket : IPacket
+    public class LimitCountPacketCachingManager<TPacket> : ICachingManager<TPacket> where TPacket : IPacket
     {
         public int CacheCount { get; set; } = 10;
-        public LimitCountPacketCachingManager(IOCache<TPacket> ioCache) : base(ioCache)
+        public LimitCountPacketCachingManager()
         {
-            
-            IoCache.ChannelDataReceived += (sender, e) =>
+
+        }
+        public void Bind(IOCache<TPacket> ioCache) 
+        {
+
+            ioCache.PacketCacheInfoCollection.CollectionChanged += (sender, e) =>
             {
-                IoCache.PacketCacheInfoCollection = new ObservableCollection<PacketCacheInfo<TPacket>>();
-                ioCache.PacketCacheInfoCollection.Add(new PacketCountCacheInfo { packet = e.Data });
-                if (IoCache.PacketCacheInfoCollection.Count > CacheCount)
-                    IoCache.PacketCacheInfoCollection.RemoveAt(0);
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                    if (ioCache.PacketCacheInfoCollection.Count > CacheCount)
+                       Task.Run(()=> ioCache.PacketCacheInfoCollection.RemoveAt(0));
             };
         }
         public class PacketCountCacheInfo : PacketCacheInfo<TPacket> 
@@ -34,22 +38,33 @@ namespace SharpCommunication.Channels.ChannelTools
 
         }
     }
-    public class ExpireTimePacketCachingManager<TPacket> : CachingManager<TPacket> where TPacket : IPacket
+    public class ExpireTimePacketCachingManager<TPacket> : ICachingManager<TPacket> where TPacket : IPacket
     {
-        public TimeSpan ExpirationTime { get; set; } = TimeSpan.FromSeconds(10);
-        public ExpireTimePacketCachingManager(IOCache<TPacket> ioCache) : base(ioCache)
+        private Dictionary<PacketCacheInfo<TPacket>, Timer> timer;
+        public TimeSpan ExpireTime { get; set; } = TimeSpan.FromSeconds(10);
+        public ExpireTimePacketCachingManager()
         {
-            IoCache.PacketCacheInfoCollection = new ObservableCollection<PacketCacheInfo<TPacket>>();
-            IoCache.ChannelDataReceived += (sender, e) =>
+            timer = new Dictionary<PacketCacheInfo<TPacket>, Timer>();
+        }
+        public void Bind(IOCache<TPacket> ioCache) 
+        {
+            ioCache.PacketCacheInfoCollection.CollectionChanged += (sender, e) =>
             {
-                IoCache.PacketCacheInfoCollection.Add(new PacketTimeExpirationCacheInfo() { packet = e.Data, ExpirationTime = DateTime.Now + ExpirationTime });
-                while (IoCache.PacketCacheInfoCollection.Any() && ((PacketTimeExpirationCacheInfo)IoCache.PacketCacheInfoCollection.First()).ExpirationTime < DateTime.Now)
-                    IoCache.PacketCacheInfoCollection.RemoveAt(0);
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+                    foreach (var item in e.NewItems)
+                    {
+                        timer.Add((PacketCacheInfo<TPacket>)item,new Timer((state) => ioCache.PacketCacheInfoCollection.Remove((PacketCacheInfo<TPacket>)state), (PacketCacheInfo<TPacket>)item, ExpireTime, Timeout.InfiniteTimeSpan)) ;
+                    }
+                if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+                    foreach(var item in e.OldItems)
+                    {
+                        timer.Remove((PacketCacheInfo<TPacket>)item);
+                    }
+
             };
+
         }
-        public class PacketTimeExpirationCacheInfo : PacketCacheInfo<TPacket>
-        {
-            public DateTime ExpirationTime;
-        }
+
+
     }
 }

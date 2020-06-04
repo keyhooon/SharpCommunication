@@ -1,19 +1,34 @@
 ﻿using SharpCommunication.Channels.ChannelTools;
 using SharpCommunication.Codec.Packets;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 
 namespace SharpCommunication.Channels.Decorator
 {
     public class CachedChannel<TPacket> : ChannelDecorator<TPacket> where TPacket : IPacket
     {
-        private IOCache<TPacket> ioCache { get; set; }
+        public ReadOnlyObservableCollection<PacketCacheInfo<TPacket>> Packet { get; }
+
         public CachedChannel(Channel<TPacket> innerChannel) : base(innerChannel)
         {
-            ioCache = new IOCache<TPacket>(innerChannel);
+            var ioCache = new IOCache<TPacket>(innerChannel, new ICachingManager<TPacket>[] { new LimitCountPacketCachingManager<TPacket> (), new ExpireTimePacketCachingManager<TPacket>()});
+            Packet = new ReadOnlyObservableCollection<PacketCacheInfo<TPacket>>( ioCache.PacketCacheInfoCollection );
         }
 
-        public CachingManager<TPacket> CachingManager => ioCache.CachingManager;
-        public ObservableCollection<PacketCacheInfo<TPacket>> packet { get { return ioCache.PacketCacheInfoCollection; } }
 
+    }
+    public static class CachedChannelExtension
+    {
+        public static CachedChannel<TPacket> ToCachedChannel<TPacket>(this IChannel<TPacket> channel) where TPacket : IPacket
+        {
+            while (channel is ChannelDecorator<TPacket> item)
+            {
+                if (item is CachedChannel<TPacket>)
+                    return (CachedChannel<TPacket>)item;
+                channel = item.innerChannel;
+            }
+            return null;
+        }
     }
 }

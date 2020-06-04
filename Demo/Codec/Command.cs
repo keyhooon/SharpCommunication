@@ -11,7 +11,7 @@ namespace Demo.Codec
         public IAncestorPacket DescendantPacket { get ; set; }
         public override string ToString()
         {
-            return $"Command : {DescendantPacket?.ToString()} ";
+            return $"Command {{ {DescendantPacket?.ToString()} }}";
         }
         public class Encoding : DescendantPacketEncoding<Command>, IAncestorPacketEncoding<IAncestorPacket>
         {

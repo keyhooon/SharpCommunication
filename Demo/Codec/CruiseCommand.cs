@@ -21,7 +21,7 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"Cruise Command - Cruise : {IsOn}";
+            return $"Cruise Command {{ Cruise : {IsOn} }}";
         }
 
         public class Encoding : FunctionPacketEncoding<CruiseCommand>

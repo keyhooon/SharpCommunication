@@ -1,4 +1,5 @@
 ﻿using SharpCommunication.Codec.Packets;
+using System;
 using System.IO;
 
 namespace SharpCommunication.Codec.Encoding
@@ -17,6 +18,7 @@ namespace SharpCommunication.Codec.Encoding
             var found = 0;
             while (found < Header.Length)
             {
+
                 var header = reader.ReadByte();
                 if (header == Header[found])
                     found++;

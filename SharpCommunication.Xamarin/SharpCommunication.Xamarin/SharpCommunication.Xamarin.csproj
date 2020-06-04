@@ -19,8 +19,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\SharpCommunication.Base\SharpCommunication.Base.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Transport\" />
-  </ItemGroup>
 </Project>

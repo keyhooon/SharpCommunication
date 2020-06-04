@@ -9,16 +9,14 @@ namespace SharpCommunication.Channels
 {
     public class Channel<TPacket> : IDisposable, IChannel<TPacket> where TPacket : IPacket
     {
-        public virtual ICodec<TPacket> Codec { get; }
         protected readonly Stream _stream;
         protected readonly BufferedStream _bufferStream;
         private readonly CancellationTokenSource _cancellationTokenSource;
         public event EventHandler<DataReceivedEventArg<TPacket>> DataReceived;
-        public Channel(Channel<TPacket> channel): this (channel.Codec, channel._stream)
+        protected Channel() 
         {
 
         }
-
         public Channel(ICodec<TPacket> codec, Stream stream)
         {
             Codec = codec;
@@ -50,8 +48,11 @@ namespace SharpCommunication.Channels
                 }
             }, cancellationToken);
         }
-        public BinaryWriter Writer { get; }
-        public BinaryReader Reader { get; }
+
+
+        public virtual BinaryWriter Writer { get; }
+        public virtual BinaryReader Reader { get; }
+        public virtual ICodec<TPacket> Codec { get; }
 
 
 
@@ -69,7 +70,7 @@ namespace SharpCommunication.Channels
             DataReceived?.Invoke(this, e);
         }
 
-        public void Transmit(TPacket packet)
+        public virtual void Transmit(TPacket packet)
         {
             Codec.Encode(packet, Writer);
             Writer.Flush();

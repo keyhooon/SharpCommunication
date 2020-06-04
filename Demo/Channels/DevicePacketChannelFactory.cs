@@ -15,7 +15,7 @@ namespace Demo.Channels
 
             public override IChannel<Device> Create(Stream stream)
             {
-                return ( new MonitoredChannel<Device>( new DevicePacketChannel(stream) ) );
+                return (new CachedChannel<Device>( new MonitoredChannel<Device>( new DevicePacketChannel(stream) ) ));
             }
 
         }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 
@@ -15,20 +16,23 @@ namespace Communication.Codec
         public override string ToString()
         {
 
-            return $"Light1 : {Light1}" +
+            return $"Light State {{ Light1 : {Light1}" +
                 $", Light2 : {Light2}" +
                 $", Light3 : {Light3}" +
-                $", Light4 : {Light4}";
+                $", Light4 : {Light4} }}";
         }
         public class Encoding : AncestorPacketEncoding
         {
             public const byte byteCount = 1;
-            public new const byte Id = 6;
-            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
+            public override byte Id => 6;
+
+            public override Type PacketType => typeof(LightState);
+
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }
-            public Encoding() : base(null, Id)
+            public Encoding() : this(null)
             {
 
             }

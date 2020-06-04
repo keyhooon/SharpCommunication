@@ -33,11 +33,6 @@ namespace SharpCommunication.Codec.Encoding
             mapItemBuilder.AddDecorate(item => new DescendantPacketEncoding<T>(item));
             return mapItemBuilder;
         }
-        public static PacketEncodingBuilder WithFunction<T>(this PacketEncodingBuilder mapItemBuilder, byte inputByteCount, byte id) where T : IFunctionPacket, new()
-        {
-            mapItemBuilder.AddDecorate(item => new FunctionPacketEncoding<T>(item, inputByteCount, id));
-            return mapItemBuilder;
-        }
         public static PacketEncodingBuilder WithHeader(this PacketEncodingBuilder mapItemBuilder, byte[] header)
         {
             mapItemBuilder.AddDecorate(item => new HeaderPacketEncoding(item, header));

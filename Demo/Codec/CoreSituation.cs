@@ -14,7 +14,7 @@ namespace Demo.Codec
 
         public override string ToString()
         {
-            return $"Battery Situation - Temprature : {Temprature}, Voltage : {Voltage} ";
+            return $"Battery Situation {{ Temprature : {Temprature}, Voltage : {Voltage} }} ";
         }
         public CoreSituation()
         {
@@ -28,12 +28,16 @@ namespace Demo.Codec
             private static double _tempratureBias = 0.0d;
             private static double _voltageBias = 0.0d;
 
-            public new const byte Id = 3;
-            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
+
+            public override byte Id => 3;
+
+            public override Type PacketType => typeof(CoreSituation);
+
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }
-            public Encoding() : base(null, Id)
+            public Encoding() : base(null)
             {
 
             }

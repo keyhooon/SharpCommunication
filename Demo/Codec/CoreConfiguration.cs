@@ -1,6 +1,7 @@
 ﻿using SharpCommunication.Codec;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -15,13 +16,16 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"Core Configuration - UniqueId : {UniqueId}, FirmwareVersion : {FirmwareVersion}, " +
-                $"ModelVersion : {ModelVersion}";
+            return $"Core Configuration {{ UniqueId : {UniqueId}, FirmwareVersion : {FirmwareVersion}, " +
+                $"ModelVersion : {ModelVersion} }}";
         }
         public class Encoding : AncestorPacketEncoding
         {
             private static readonly byte _byteCount = 16;
             public override byte Id => 4;
+
+            public override Type PacketType => typeof(CoreConfiguration);
+
             public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 

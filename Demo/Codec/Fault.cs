@@ -21,25 +21,28 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"OverCurrent : {OverCurrent}, " +
+            return $"Fault {{ OverCurrent : {OverCurrent}, " +
                 $"OverTemprature : {OverTemprature}, " +
                 $"PedalSensor : {PedalSensor}, " +
                 $"Throttle : {Throttle}, " +
                 $"OverVoltage : {OverVoltage}, " +
                 $"UnderVoltage : {UnderVoltage}, " +
                 $"Motor : {Motor}, " +
-                $"Drive : {Drive}, ";
+                $"Drive : {Drive} }} ";
         }
         public class Encoding : AncestorPacketEncoding
         {
 
-            private readonly static byte byteCount = 2;
-            public new const byte Id = 100;
-            public Encoding(EncodingDecorator encoding) : base(encoding, Id)
+            private readonly static byte byteCount = 1;
+            public override Type PacketType => typeof(Fault);
+
+            public override byte Id => 100;
+
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
 
             }
-            public Encoding() : base(null, Id)
+            public Encoding() : base(null)
             {
 
             }
@@ -47,12 +50,12 @@ namespace Demo.Codec
             public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (Fault)packet;
-                var value = BitConverter.GetBytes(
-                    (o.OverTemprature ? 0x02 : 0x00) | (o.OverCurrent ? 0x01 : 0x00) |
+                var value = ((byte)(
+                    (o.OverTemprature ?  0x02 : 0x00) | (o.OverCurrent ? 0x01 : 0x00) |
                     (o.Throttle ? 0x08 : 0x00) | (o.PedalSensor ? 0x04 : 0x00) |
                     (o.UnderVoltage ? 0x20 : 0x00) | (o.OverVoltage ? 0x10 : 0x00) |
-                    (o.Drive ? 0x80 : 0x00) | (o.Motor ? 0x40 : 0x00));
-                var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte)(current + t));
+                    (o.Drive ? 0x80 : 0x00) | (o.Motor ? 0x40 : 0x00)));
+                var crc8 = value;
                 writer.Write(value);
                 writer.Write(crc8);
             }

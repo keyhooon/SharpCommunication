@@ -9,5 +9,7 @@ namespace SharpCommunication.Channels
         ICodec<TPacket> Codec { get; }
 
         IChannel<TPacket> Create(Stream stream);
+        IChannel<TPacket> Create(Stream inputStream, Stream outputStream);
+
     }
 }

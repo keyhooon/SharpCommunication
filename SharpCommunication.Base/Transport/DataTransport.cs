@@ -42,7 +42,12 @@ namespace SharpCommunication.Transport
                     try
                     {
                         if (IsOpenCore != IsOpen)
-                            IsOpen = IsOpenCore;
+                        {
+                            if (IsOpenCore)
+                                Open();
+                            else
+                                Close();
+                        }
                         await Task.Delay(Option.AutoCheckIsOpenTime, token);
                         if (token.IsCancellationRequested)
                             break;
@@ -60,7 +65,7 @@ namespace SharpCommunication.Transport
         public void Open()
         {
             if (IsOpen)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Device Is Open");
 
             OpenCore();
             if (IsOpenCore != IsOpen)

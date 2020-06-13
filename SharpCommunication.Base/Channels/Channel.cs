@@ -9,7 +9,6 @@ namespace SharpCommunication.Channels
 {
     public class Channel<TPacket> : IDisposable, IChannel<TPacket> where TPacket : IPacket
     {
-        protected readonly Stream _stream;
         protected readonly BufferedStream _bufferStream;
         private readonly CancellationTokenSource _cancellationTokenSource;
         public event EventHandler<DataReceivedEventArg<TPacket>> DataReceived;
@@ -17,14 +16,15 @@ namespace SharpCommunication.Channels
         {
 
         }
-        public Channel(ICodec<TPacket> codec, Stream stream)
+        public Channel(ICodec<TPacket> codec, Stream stream) : this(codec, stream, stream) { }
+
+        public Channel(ICodec<TPacket> codec, Stream inputstream, Stream outputstream)
         {
             Codec = codec;
-            _stream = stream;
-            _bufferStream = new BufferedStream(_stream);
+            _bufferStream = new BufferedStream(outputstream);
 
             Writer = new BinaryWriter(_bufferStream);
-            Reader = new BinaryReader(stream);
+            Reader = new BinaryReader(inputstream);
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
             Task.Factory.StartNew(() =>

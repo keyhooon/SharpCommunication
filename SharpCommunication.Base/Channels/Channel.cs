@@ -12,6 +12,7 @@ namespace SharpCommunication.Channels
         protected readonly BufferedStream _bufferStream;
         private readonly CancellationTokenSource _cancellationTokenSource;
         public event EventHandler<DataReceivedEventArg<TPacket>> DataReceived;
+        public event EventHandler<Exception> ErrorReceived;
         protected Channel() 
         {
 
@@ -27,7 +28,7 @@ namespace SharpCommunication.Channels
             Reader = new BinaryReader(inputstream);
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
-            Task.Factory.StartNew(() =>
+            Task.Factory.StartNew(async() =>
             {
                 while (true)
                 {
@@ -36,6 +37,7 @@ namespace SharpCommunication.Channels
                         cancellationToken.ThrowIfCancellationRequested();
                         var packet = codec.Decode(Reader);
                         OnDataReceived(new DataReceivedEventArg<TPacket>(packet));
+                        await Task.Delay(100);
                     }
                     catch (OperationCanceledException)
                     {
@@ -43,7 +45,8 @@ namespace SharpCommunication.Channels
                     }
                     catch (Exception ex)
                     {
-                        // ignored
+                        OnErrorReceived(ex);
+                        await Task.Delay(1000);
                     }
                 }
             }, cancellationToken);
@@ -60,7 +63,6 @@ namespace SharpCommunication.Channels
         {
             _cancellationTokenSource.Cancel();
             _bufferStream?.Dispose();
-            _cancellationTokenSource?.Dispose();
             Writer?.Dispose();
             Reader?.Dispose();
         }
@@ -69,6 +71,11 @@ namespace SharpCommunication.Channels
         {
             DataReceived?.Invoke(this, e);
         }
+        protected virtual void OnErrorReceived(Exception ex)
+        {
+            ErrorReceived?.Invoke(this, ex);
+        }
+
 
         public virtual void Transmit(TPacket packet)
         {

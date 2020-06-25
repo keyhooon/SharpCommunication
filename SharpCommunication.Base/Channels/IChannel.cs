@@ -12,6 +12,8 @@ namespace SharpCommunication.Channels
         BinaryWriter Writer { get; }
         void Dispose();
         void Transmit(TPacket packet);
+
         event EventHandler<DataReceivedEventArg<TPacket>> DataReceived;
+        event EventHandler<Exception> ErrorReceived;
     }
 }

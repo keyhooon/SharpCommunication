@@ -13,8 +13,8 @@ namespace SharpCommunication.Channels.Decorator
         }
 
         public int GetDataReceivedCount => ioMonitor.DataReceivedCount;
-        public DateTime MonitorBeginTime => ioMonitor.MonitorBeginTime;
-
+        public DateTime FirstPacketTime => ioMonitor.FirstPacketTime;
+        public DateTime LastPacketTime => ioMonitor.LastPacketTime;
     }
     public static class MonitoredChannelExtension
     {

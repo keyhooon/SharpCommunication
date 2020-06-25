@@ -12,9 +12,8 @@ namespace SharpCommunication.Channels.Decorator
         public ChannelDecorator(Channel<TPacket> innerChannel) 
         {
             this.innerChannel = innerChannel;
-            innerChannel.DataReceived += (sender, e) => { 
-                OnDataReceived(e);
-            };
+            innerChannel.DataReceived += (sender, e) => OnDataReceived(e);
+            innerChannel.ErrorReceived += (sender, e) => OnErrorReceived(e);
         }
         public override ICodec<TPacket> Codec => innerChannel.Codec;
         public override BinaryReader Reader => innerChannel.Reader;

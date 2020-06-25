@@ -13,9 +13,9 @@ namespace SharpCommunication.Channels
             Codec = codec;
         }
 
-        public virtual IChannel<TPacket> Create(Stream stream)
+        public IChannel<TPacket> Create(Stream stream)
         {
-            return new Channel<TPacket>(Codec, stream);
+            return Create(stream,stream);
         }
         public virtual IChannel<TPacket> Create(Stream inputStream, Stream outputStream)
         {

@@ -13,14 +13,18 @@ namespace SharpCommunication.Channels.ChannelTools
         public IoMonitor(IChannel<TPacket> monitoredChannel)
         {
             MonitoredChannel = monitoredChannel;
+            LastPacketTime = DateTime.Now;
             monitoredChannel.DataReceived += (sender, arg) => {
-                if (MonitorBeginTime == DateTime.MinValue)
-                    MonitorBeginTime = DateTime.Now;
+                if (FirstPacketTime == DateTime.MinValue)
+                    FirstPacketTime = DateTime.Now;
+
                 DataReceivedCount++;
+                LastPacketTime = DateTime.Now;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DataReceivedCount)));
             };
         }
-        public DateTime MonitorBeginTime { get; protected set; }
+        public DateTime FirstPacketTime { get; protected set; }
+        public DateTime LastPacketTime { get; protected set; }
         public int DataReceivedCount { get; protected set; }
 
         public event PropertyChangedEventHandler PropertyChanged;

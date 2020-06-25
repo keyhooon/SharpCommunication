@@ -43,20 +43,20 @@ namespace SharpCommunication.Transport
                     {
                         if (IsOpenCore != IsOpen)
                         {
-                            if (IsOpenCore)
-                                Open();
-                            else
-                                Close();
+                            IsOpen = IsOpenCore;
+
                         }
                         await Task.Delay(Option.AutoCheckIsOpenTime, token);
                         if (token.IsCancellationRequested)
                             break;
                     }
-                    catch (Exception e)
+                    catch (OperationCanceledException e)
                     {
-                        Console.WriteLine(e.Message);
-                        if (e.GetType() == typeof(OperationCanceledException))
                             break;
+                    }
+                    catch (Exception)
+                    {
+                        await Task.Delay(1000);
                     }
                 }
             }, _tokenSource.Token, TaskCreationOptions.AttachedToParent, TaskScheduler.Current);
@@ -76,11 +76,7 @@ namespace SharpCommunication.Transport
         {
             if (IsOpen == false)
                 throw new InvalidOperationException();
-            foreach (var ch in _channels)
-            {
-                ch.Dispose();
-            }
-            _channels.Clear();
+
             CloseCore();
             if (IsOpenCore != IsOpen)
                 IsOpen = IsOpenCore;
@@ -131,8 +127,14 @@ namespace SharpCommunication.Transport
         protected virtual void OnIsOpenChanged()
         {
             IsOpenChanged?.Invoke(this, null);
-           
-            
+            if (!IsOpen)
+            {
+                foreach (var ch in _channels)
+                {
+                    ch.Dispose();
+                }
+                _channels.Clear();
+            }
             OnCanOpenChanged();
             OnCanCloseChanged();
 

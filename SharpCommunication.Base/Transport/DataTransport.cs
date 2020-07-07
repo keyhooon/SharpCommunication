@@ -52,14 +52,14 @@ namespace SharpCommunication.Transport
                     }
                     catch (OperationCanceledException e)
                     {
-                            break;
+                        break;
                     }
                     catch (Exception)
                     {
                         await Task.Delay(1000);
                     }
                 }
-            }, _tokenSource.Token, TaskCreationOptions.AttachedToParent, TaskScheduler.Current);
+            });
         }
 
         public void Open()

@@ -11,7 +11,7 @@ namespace SharpCommunication.Transport.SerialPort
         private int _dataBits;
         private int _readTimeout;
 
-        public SerialPortDataTransportOption(string portName, int baudRate, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One, int readTimeout = 10000)
+        public SerialPortDataTransportOption(string portName, int baudRate, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One, int readTimeout = 1000)
         {
             _stopBits = stopBits;
             _dataBits = dataBits;

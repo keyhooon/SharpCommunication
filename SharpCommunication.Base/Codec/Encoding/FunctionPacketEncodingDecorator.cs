@@ -4,15 +4,15 @@ using System.IO;
 
 namespace SharpCommunication.Codec.Encoding
 {
-    public abstract class FunctionPacketEncoding<T> : AncestorPacketEncoding, IFunctionPacketEncoding where T : IFunctionPacket, new()
+    public class FunctionPacketEncoding<T> : EncodingDecorator, IFunctionPacketEncoding where T : IFunctionPacket, new()
     {
-        public override Type PacketType => typeof(T);
-        public abstract byte ParameterByteCount { get; }
+        public byte ParameterByteCount { get; }
 
-        public abstract Action<byte[]> ActionToDo { get; set; }
-        public FunctionPacketEncoding(EncodingDecorator encoding) : base(encoding)
+        public Action<byte[]> ActionToDo { get; set; }
+        public FunctionPacketEncoding(EncodingDecorator encoding, Action<byte[]> actionToDo, byte parameterByteCount) : base(encoding)
         {
-
+            ParameterByteCount = parameterByteCount;
+            ActionToDo = actionToDo;
         }
 
         public override IPacket Decode(BinaryReader reader)

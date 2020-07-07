@@ -45,16 +45,16 @@ namespace SharpCommunication.Codec.Encoding
         public override void Encode(IPacket packet, BinaryWriter writer)
         {
             var descendantPacket = (IDescendantPacket)packet;
-            IdDictionary.TryGetValue(descendantPacket.DescendantPacket.GetType(), out var ancestorPacketId);
+            _idDictionary.TryGetValue(descendantPacket.DescendantPacket.GetType(), out var ancestorPacketId);
             writer.Write(ancestorPacketId);
-            EncodingDictionary.TryGetValue(ancestorPacketId, out var encodingDecorator);
+            _encodingDictionary.TryGetValue(ancestorPacketId, out var encodingDecorator);
             encodingDecorator?.Encode(descendantPacket.DescendantPacket, writer);
         }
 
         public override IPacket Decode(BinaryReader reader)
         {
             var packetEncodingId = reader.ReadByte();
-            EncodingDictionary.TryGetValue(packetEncodingId, out var encodingDecorator);
+            _encodingDictionary.TryGetValue(packetEncodingId, out var encodingDecorator);
             T obj = new T
             {
                 DescendantPacket = (IAncestorPacket)encodingDecorator?.Decode(reader)

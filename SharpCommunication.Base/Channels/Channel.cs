@@ -34,10 +34,10 @@ namespace SharpCommunication.Channels
                 {
                     try
                      {
-                        cancellationToken.ThrowIfCancellationRequested();
+                        if (cancellationToken.IsCancellationRequested)
+                            break;
                         var packet = codec.Decode(Reader);
                         OnDataReceived(new DataReceivedEventArg<TPacket>(packet));
-                        await Task.Delay(100);
                     }
                     catch (OperationCanceledException)
                     {
@@ -56,8 +56,6 @@ namespace SharpCommunication.Channels
         public virtual BinaryWriter Writer { get; }
         public virtual BinaryReader Reader { get; }
         public virtual ICodec<TPacket> Codec { get; }
-
-
 
         public virtual void Dispose()
         {

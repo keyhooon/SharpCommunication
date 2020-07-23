@@ -46,7 +46,7 @@ namespace SharpCommunication.Channels
                     catch (Exception ex)
                     {
                         OnErrorReceived(ex);
-                        await Task.Delay(1000);
+                        await Task.Delay(100);
                     }
                 }
             }, cancellationToken);

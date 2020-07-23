@@ -66,7 +66,7 @@ namespace SharpCommunication.Transport
         {
             if (IsOpen)
                 throw new InvalidOperationException("Device Is Open");
-
+            Log.LogInformation("Try Open Transport Layer...");
             OpenCore();
             if (IsOpenCore != IsOpen)
                 IsOpen = IsOpenCore;
@@ -76,7 +76,7 @@ namespace SharpCommunication.Transport
         {
             if (IsOpen == false)
                 throw new InvalidOperationException();
-
+            Log.LogInformation("Try Close Transport Layer...");
             CloseCore();
             if (IsOpenCore != IsOpen)
                 IsOpen = IsOpenCore;
@@ -134,7 +134,10 @@ namespace SharpCommunication.Transport
                     ch.Dispose();
                 }
                 _channels.Clear();
-            }
+                Log.LogInformation("Transport Layer is closed.");
+            }else
+                Log.LogInformation("Transport Layer is Open.");
+
             OnCanOpenChanged();
             OnCanCloseChanged();
 

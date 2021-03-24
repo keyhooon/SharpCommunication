@@ -1,22 +1,22 @@
-﻿using SharpCommunication.Codec.Encoding;
-using SharpCommunication.Codec.Packets;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec.Packets;
 
 namespace Demo.Codec
 {
-    public class Device : IPacket, IDescendantPacket
+    public class Device : IDescendantPacket
     {
 
 
-        public IAncestorPacket DescendantPacket { get; set; }
+        public IAncestorPacket Content { get; set; }
         public override string ToString()
         {
-            return $"DevicePacket {{ {DescendantPacket?.ToString()} }}";
+            return $"DevicePacket {{ {Content?.ToString()} }}";
         }
         public class Encoding : DescendantPacketEncoding<Device>
         {
-            private static readonly byte[] Header = { 0xAA, 0xAA };
+            private static readonly byte[] _header = { 0xAA, 0xAA };
 
             public Encoding(EncodingDecorator encoding) : base(encoding)
             {
@@ -30,11 +30,11 @@ namespace Demo.Codec
                 }
             }
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new HeaderPacketEncoding(o, Header)).AddDecorate(o => new Encoding(o));
-            public static PacketEncodingBuilder CreateBuilder(IEnumerable<PacketEncodingBuilder> encodingBuileders) =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o =>new HeaderPacketEncoding(o, Header)).AddDecorate(o => new Encoding(o, encodingBuileders.Select(o => o.Build()).ToList()));
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new HeaderPacketEncoding(o, _header)).AddDecorate(o => new Encoding(o));
+            public static PacketEncodingBuilder CreateBuilder(IEnumerable<PacketEncodingBuilder> encodingBuilders) =>
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o =>new HeaderPacketEncoding(o, _header)).AddDecorate(o => new Encoding(o, encodingBuilders.Select(o => o.Build()).ToList()));
             public static PacketEncodingBuilder CreateBuilder(IEnumerable<EncodingDecorator> encodings) =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new HeaderPacketEncoding(o, Header)).AddDecorate(o => new Encoding(o, encodings));
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new HeaderPacketEncoding(o, _header)).AddDecorate(o => new Encoding(o, encodings));
         }
 
     }

@@ -9,7 +9,7 @@ namespace SharpCommunication.Channels
 {
     public class Channel<TPacket> : IDisposable, IChannel<TPacket> where TPacket : IPacket
     {
-        protected readonly BufferedStream _bufferStream;
+        protected readonly BufferedStream BufferStream;
         private readonly CancellationTokenSource _cancellationTokenSource;
         public event EventHandler<DataReceivedEventArg<TPacket>> DataReceived;
         public event EventHandler<Exception> ErrorReceived;
@@ -22,9 +22,9 @@ namespace SharpCommunication.Channels
         public Channel(ICodec<TPacket> codec, Stream inputstream, Stream outputstream)
         {
             Codec = codec;
-            _bufferStream = new BufferedStream(outputstream);
+            BufferStream = new BufferedStream(outputstream);
 
-            Writer = new BinaryWriter(_bufferStream);
+            Writer = new BinaryWriter(BufferStream);
             Reader = new BinaryReader(inputstream);
             _cancellationTokenSource = new CancellationTokenSource();
             var cancellationToken = _cancellationTokenSource.Token;
@@ -33,7 +33,7 @@ namespace SharpCommunication.Channels
                 while (true)
                 {
                     try
-                     {
+                    {
                         if (cancellationToken.IsCancellationRequested)
                             break;
                         var packet = codec.Decode(Reader);
@@ -60,7 +60,7 @@ namespace SharpCommunication.Channels
         public virtual void Dispose()
         {
             _cancellationTokenSource.Cancel();
-            _bufferStream?.Dispose();
+            BufferStream?.Dispose();
             Writer?.Dispose();
             Reader?.Dispose();
         }

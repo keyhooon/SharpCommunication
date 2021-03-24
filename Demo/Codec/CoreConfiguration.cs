@@ -1,13 +1,12 @@
-﻿using SharpCommunication.Codec;
+﻿using System.IO;
+using System.Linq;
+using SharpCommunication.Codec;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
-using System;
-using System.IO;
-using System.Linq;
 
 namespace Demo.Codec
 {
-    class CoreConfiguration : IPacket, IAncestorPacket
+    class CoreConfiguration : IAncestorPacket
     {
         public string UniqueId { get; set; }
         public string FirmwareVersion{ get; set; }
@@ -21,35 +20,26 @@ namespace Demo.Codec
         }
         public class Encoding : AncestorPacketEncoding
         {
-            private static readonly byte _byteCount = 16;
-            public override byte Id => 4;
 
-            public override Type PacketType => typeof(CoreConfiguration);
-
-            public Encoding(EncodingDecorator encoding) : base(encoding)
+            public Encoding(EncodingDecorator encoding) : base(encoding ,4, typeof(CoreConfiguration))
             {
 
             }
-            public Encoding() : base(null)
+            public Encoding() : this(null)
             {
 
             }
             public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (CoreConfiguration)packet;
-                byte crc8 = 0;
-                byte[] value;
-                value = o.UniqueId.ToByteArray();
-                for (int i = 0; i < value.Length; i++)
-                    crc8 += value[i];
+                var value = o.UniqueId.ToByteArray();
+                var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte) (current + t));
                 writer.Write(value);
                 value = o.FirmwareVersion.ToByteArray();
-                for (int i = 0; i < value.Length; i++)
-                    crc8 += value[i];
+                crc8 = value.Aggregate(crc8, (current, t) => (byte) (current + t));
                 writer.Write(value);
                 value = o.ModelVersion.ToByteArray();
-                for (int i = 0; i < value.Length; i++)
-                    crc8 += value[i];
+                crc8 = value.Aggregate(crc8, (current, t) => (byte) (current + t));
                 writer.Write(value);
                 writer.Write(crc8);
             }
@@ -57,11 +47,9 @@ namespace Demo.Codec
             public override IPacket Decode(BinaryReader reader)
             {
                 var value = reader.ReadBytes(16);
-                byte crc8 = 0;
-                for (int i = 0; i < value.Length; i++)
-                    crc8 += value[i];
+                var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte) (current + t));
                 if (crc8 == reader.ReadByte())
-                    return new CoreConfiguration()
+                    return new CoreConfiguration
                     {
                         UniqueId = value.Take(12).ToHexString(),
                         FirmwareVersion = value.Skip(12).Take(2).ToHexString(),

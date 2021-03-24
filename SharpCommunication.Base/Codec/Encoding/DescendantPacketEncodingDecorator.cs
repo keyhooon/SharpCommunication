@@ -34,7 +34,7 @@ namespace SharpCommunication.Codec.Encoding
             if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
 
-            IAncestorPacketEncoding<IAncestorPacket> enc = (IAncestorPacketEncoding<IAncestorPacket>) encoding.FindDecoratedEncoding<IAncestorPacketEncoding<IAncestorPacket>>();
+            var enc = (IAncestorPacketEncoding<IAncestorPacket>) encoding.FindDecoratedEncoding<IAncestorPacketEncoding<IAncestorPacket>>();
             if (enc == null)
                 throw new NotSupportedException();
 
@@ -45,19 +45,19 @@ namespace SharpCommunication.Codec.Encoding
         public override void Encode(IPacket packet, BinaryWriter writer)
         {
             var descendantPacket = (IDescendantPacket)packet;
-            _idDictionary.TryGetValue(descendantPacket.DescendantPacket.GetType(), out var ancestorPacketId);
+            _idDictionary.TryGetValue(descendantPacket.Content.GetType(), out var ancestorPacketId);
             writer.Write(ancestorPacketId);
             _encodingDictionary.TryGetValue(ancestorPacketId, out var encodingDecorator);
-            encodingDecorator?.Encode(descendantPacket.DescendantPacket, writer);
+            encodingDecorator?.Encode(descendantPacket.Content, writer);
         }
 
         public override IPacket Decode(BinaryReader reader)
         {
             var packetEncodingId = reader.ReadByte();
             _encodingDictionary.TryGetValue(packetEncodingId, out var encodingDecorator);
-            T obj = new T
+            var obj = new T
             {
-                DescendantPacket = (IAncestorPacket)encodingDecorator?.Decode(reader)
+                Content = (IAncestorPacket)encodingDecorator?.Decode(reader)
             };
             return obj;
         }

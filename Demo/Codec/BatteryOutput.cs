@@ -1,45 +1,36 @@
-﻿using SharpCommunication.Codec.Encoding;
-using SharpCommunication.Codec.Packets;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
+using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec.Packets;
 
 namespace Demo.Codec
 {
-    class BatteryOutput : IPacket, IAncestorPacket
+    public class BatteryOutput : IAncestorPacket
     {
         public double Current { get; set; }
         public double Voltage { get; set; }
-        public double Temprature { get; set; }
-
-        public BatteryOutput()
-        {
-
-        }
+        public double Temperature { get; set; }
 
         public override string ToString()
         {
 
             return $"Battery Output {{ Current : {Current}, Voltage : {Voltage}, " +
-                $"Temprature : {Temprature} }} ";
+                $"Temperature : {Temperature} }} ";
         }
 
 
         public class Encoding : AncestorPacketEncoding
         {
-            private static readonly byte _byteCount = 6;
-            private static readonly double _currentBitResolution = 0.125d;
-            private static readonly double _voltageBitResolution = 0.25d;
-            private static readonly double _tempratureBitResolution = 0.125d;
-            private static readonly double _currentBias = 0.0d;
-            private static readonly double _voltageBias = 20.0d;
-            private static readonly double _tempratureBias = 0.0d;
+            private const byte ByteCount = 6;
+            private const double CurrentBitResolution = 0.125d;
+            private const double VoltageBitResolution = 0.25d;
+            private const double TemperatureBitResolution = 0.125d;
+            private const double CurrentBias = 0.0d;
+            private const double VoltageBias = 20.0d;
+            private const double TemperatureBias = 0.0d;
 
-            public override Type PacketType => typeof(BatteryOutput);
-
-            public override byte Id => 2;
-
-            public Encoding(EncodingDecorator encoding) : base(encoding)
+            public Encoding(EncodingDecorator encoding) : base(encoding, 2, typeof(BatteryOutput))
             {
 
             }
@@ -51,35 +42,28 @@ namespace Demo.Codec
             public override void Encode(IPacket packet, BinaryWriter writer)
             {
                 var o = (BatteryOutput)packet;
-                byte crc8 = 0;
-                byte[] value;
-                value = BitConverter.GetBytes((ushort)((o.Current - _currentBias) / _currentBitResolution));
-                for (int i = 0; i < value.Length; i++)
-                    crc8 += value[i];
+                var value = BitConverter.GetBytes((ushort)((o.Current - CurrentBias) / CurrentBitResolution));
+                var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte) (current + t));
                 writer.Write(value);
-                value = BitConverter.GetBytes((ushort)((o.Voltage - _voltageBias) / _voltageBitResolution));
-                for (int i = 0; i < value.Length; i++)
-                    crc8 += value[i];
+                value = BitConverter.GetBytes((ushort)((o.Voltage - VoltageBias) / VoltageBitResolution));
+                crc8 = value.Aggregate(crc8, (current, t) => (byte) (current + t));
                 writer.Write(value);
-                value = BitConverter.GetBytes((ushort)((o.Temprature - _tempratureBias) / _tempratureBitResolution));
-                for (int i = 0; i < value.Length; i++)
-                    crc8 += value[i];
+                value = BitConverter.GetBytes((ushort)((o.Temperature - TemperatureBias) / TemperatureBitResolution));
+                crc8 = value.Aggregate(crc8, (current, t) => (byte) (current + t));
                 writer.Write(value);
                 writer.Write(crc8);
             }
 
             public override IPacket Decode(BinaryReader reader)
             {
-                var value = reader.ReadBytes(_byteCount);
-                byte crc8 = 0;
-                for (int i = 0; i < value.Length; i++)
-                    crc8 += value[i];
+                var value = reader.ReadBytes(ByteCount);
+                var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte) (current + t));
                 if (crc8 == reader.ReadByte())
-                    return new BatteryOutput()
+                    return new BatteryOutput
                     {
-                        Current = BitConverter.ToUInt16(value.Take(2).ToArray()) * _currentBitResolution + _currentBias,
-                        Voltage = BitConverter.ToUInt16(value.Skip(2).Take(2).ToArray()) * _voltageBitResolution + _voltageBias,
-                        Temprature = BitConverter.ToUInt16(value.Skip(4).Take(2).ToArray()) * _tempratureBitResolution + _tempratureBias,
+                        Current = BitConverter.ToUInt16(value.Take(2).ToArray()) * CurrentBitResolution + CurrentBias,
+                        Voltage = BitConverter.ToUInt16(value.Skip(2).Take(2).ToArray()) * VoltageBitResolution + VoltageBias,
+                        Temperature = BitConverter.ToUInt16(value.Skip(4).Take(2).ToArray()) * TemperatureBitResolution + TemperatureBias,
                     };
                 return null;
             }

@@ -1,17 +1,15 @@
-﻿using SharpCommunication.Codec.Encoding;
-using SharpCommunication.Codec;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using SharpCommunication.Codec.Packets;
-using Communication.Codec;
+using SharpCommunication.Codec;
+using SharpCommunication.Codec.Encoding;
 
 namespace Demo.Codec
 {
     public class DevicePacketCodec : Codec<Device>
     {
-        private readonly PacketEncodingBuilder EncodingBuilder;
+        private readonly PacketEncodingBuilder _encodingBuilder;
 
-        private EncodingDecorator encoding;
+        private EncodingDecorator _encoding;
 
         private readonly List<PacketEncodingBuilder> _defaultCommandPacketEncodingBuilders = new List<PacketEncodingBuilder>(
             new [] 
@@ -42,25 +40,26 @@ namespace Demo.Codec
         {
             get
             {
-                if (encoding == null)
-                    encoding = EncodingBuilder.Build();
-                return encoding;
+                if (_encoding == null)
+                    _encoding = _encodingBuilder.Build();
+                return _encoding;
             }
         }
 
         public DevicePacketCodec(IEnumerable<PacketEncodingBuilder> PacketEncodingBuilderList)
         {
-            _defaultCommandPacketEncodingBuilders.AddRange(PacketEncodingBuilderList.Where(o => o.Build().GetType().BaseType.GetGenericTypeDefinition() == typeof(FunctionPacketEncoding<>)));
-            _defaultDataPacketEncodingBuilders.AddRange(PacketEncodingBuilderList.Where(o => o.Build().GetType().BaseType.GetGenericTypeDefinition() == typeof(AncestorPacketEncoding)));
+            var packetEncodingBuilderList = PacketEncodingBuilderList.ToList();
+            _defaultCommandPacketEncodingBuilders.AddRange(packetEncodingBuilderList.Where(o => o.Build().GetType().BaseType?.GetGenericTypeDefinition() == typeof(FunctionPacketEncoding<>)));
+            _defaultDataPacketEncodingBuilders.AddRange(packetEncodingBuilderList.Where(o => o.Build().GetType().BaseType?.GetGenericTypeDefinition() == typeof(AncestorPacketEncoding)));
 
-            EncodingBuilder = Device.Encoding.CreateBuilder(new[] {
+            _encodingBuilder = Device.Encoding.CreateBuilder(new[] {
                 Data.Encoding.CreateBuilder(_defaultDataPacketEncodingBuilders),
                 Command.Encoding.CreateBuilder(_defaultCommandPacketEncodingBuilders)
             });
         }
         public DevicePacketCodec()
         {
-            EncodingBuilder = Device.Encoding.CreateBuilder(new[] {
+            _encodingBuilder = Device.Encoding.CreateBuilder(new[] {
                 Data.Encoding.CreateBuilder(_defaultDataPacketEncodingBuilders),
                 Command.Encoding.CreateBuilder(_defaultCommandPacketEncodingBuilders)
             });

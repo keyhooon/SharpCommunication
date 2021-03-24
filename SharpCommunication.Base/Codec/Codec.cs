@@ -23,8 +23,8 @@ namespace SharpCommunication.Codec
                 throw new ArgumentNullException(nameof(bytes));
             if (bytes.Length == 0)
                 throw new InvalidOperationException("bytes.Length = 0");
-            using (var memoryStream = new MemoryStream(bytes))
-                return (TData) Encoding.Decode(new BinaryReader(memoryStream));
+            using var memoryStream = new MemoryStream(bytes);
+            return (TData) Encoding.Decode(new BinaryReader(memoryStream));
         }
 
         public void Encode(TData data, BinaryWriter stream)
@@ -41,11 +41,9 @@ namespace SharpCommunication.Codec
 
         public byte[] Encode(TData data)
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                Encode(data, new BinaryWriter(memoryStream));
-                return memoryStream.ToArray();
-            }
+            using var memoryStream = new MemoryStream();
+            Encode(data, new BinaryWriter(memoryStream));
+            return memoryStream.ToArray();
         }
     }
 }

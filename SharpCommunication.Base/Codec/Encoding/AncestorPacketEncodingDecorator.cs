@@ -11,8 +11,8 @@ namespace SharpCommunication.Codec.Encoding
         public event EventHandler<EncodingOperationFinishedEventArgs> DecodeFinished;
 
 
-        public byte Id { get; }
-        public Type PacketType { get; }
+        public virtual byte Id { get; }
+        public virtual Type PacketType { get; }
         public AncestorPacketEncoding(EncodingDecorator encoding, byte id, Type packetType) : base(encoding)
         {
             Id = id;
@@ -35,7 +35,7 @@ namespace SharpCommunication.Codec.Encoding
     }
     public class EncodingOperationFinishedEventArgs : EventArgs
     {
-        public IPacket Packet { get; private set; }
+        public IPacket Packet { get; }
         public EncodingOperationFinishedEventArgs(IPacket packet)
         {
             Packet = packet;

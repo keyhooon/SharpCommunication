@@ -1,6 +1,6 @@
-﻿using SharpCommunication.Codec.Encoding;
+﻿using System;
+using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
-using System;
 
 namespace Demo.Codec
 {
@@ -12,14 +12,14 @@ namespace Demo.Codec
         {
             get
             {
-                return new byte[] { LightId,  IsOn ? (byte)0x01 : (byte)0x00 };
+                return new[] { LightId,  IsOn ? (byte)0x01 : (byte)0x00 };
             }
             set
             {
                 if (value != null && value.Length > 1)
                 {
                     LightId = value[0];
-                    IsOn = value[1] == (byte)0x01;
+                    IsOn = value[1] == 0x01;
                 }
             }
         }

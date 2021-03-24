@@ -1,12 +1,8 @@
 ﻿using Demo.Codec;
-using Demo.Transport;
 using SharpCommunication.Channels;
-using SharpCommunication.Codec.Packets;
 using SharpCommunication.Transport;
-using SharpCommunication.Transport.SerialPort;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 
 namespace Demo.Service
 {

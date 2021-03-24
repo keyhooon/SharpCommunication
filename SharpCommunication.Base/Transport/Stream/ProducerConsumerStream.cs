@@ -1,32 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace SharpCommunication.Transport.Stream
 {
     public class ProducerConsumerStream : System.IO.Stream
     {
-        private readonly MemoryStream innerStream;
-        private long readPosition;
-        private long writePosition;
+        private readonly MemoryStream _innerStream;
+        private long _readPosition;
+        private long _writePosition;
 
         public ProducerConsumerStream()
         {
-            innerStream = new MemoryStream();
+            _innerStream = new MemoryStream();
         }
 
-        public override bool CanRead { get { return true; } }
+        public override bool CanRead => true;
 
-        public override bool CanSeek { get { return false; } }
+        public override bool CanSeek => false;
 
-        public override bool CanWrite { get { return true; } }
+        public override bool CanWrite => true;
 
         public override void Flush()
         {
-            lock (innerStream)
+            lock (_innerStream)
             {
-                innerStream.Flush();
+                _innerStream.Flush();
             }
         }
 
@@ -34,29 +32,29 @@ namespace SharpCommunication.Transport.Stream
         {
             get
             {
-                lock (innerStream)
+                lock (_innerStream)
                 {
-                    return innerStream.Length;
+                    return _innerStream.Length;
                 }
             }
         }
 
         public override long Position
         {
-            get { throw new NotSupportedException(); }
-            set { throw new NotSupportedException(); }
+            get => throw new NotSupportedException();
+            set => throw new NotSupportedException();
         }
 
         public override int Read(byte[] buffer, int offset, int count)
         {
 
-            int red = 0;
+            var red = 0;
             while (red < count)
-                lock (innerStream)
+                lock (_innerStream)
                 {
-                    innerStream.Position = readPosition;
-                    red += innerStream.Read(buffer, offset + red, count - red);
-                    readPosition = innerStream.Position;
+                    _innerStream.Position = _readPosition;
+                    red += _innerStream.Read(buffer, offset + red, count - red);
+                    _readPosition = _innerStream.Position;
 
                 }
 
@@ -75,11 +73,11 @@ namespace SharpCommunication.Transport.Stream
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            lock (innerStream)
+            lock (_innerStream)
             {
-                innerStream.Position = writePosition;
-                innerStream.Write(buffer, offset, count);
-                writePosition = innerStream.Position;
+                _innerStream.Position = _writePosition;
+                _innerStream.Write(buffer, offset, count);
+                _writePosition = _innerStream.Position;
             }
         }
     }

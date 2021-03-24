@@ -1,12 +1,12 @@
-﻿using SharpCommunication.Codec.Encoding;
-using SharpCommunication.Codec.Packets;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
+using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec.Packets;
 
-namespace Communication.Codec
+namespace Demo.Codec
 {
-    public class PedalSetting : IPacket, IAncestorPacket
+    public class PedalSetting : IAncestorPacket
     {
         public byte AssistLevel { get; set; }
         public byte ActivationTime { get; set; }
@@ -21,13 +21,13 @@ namespace Communication.Codec
         }
         public class Encoding : AncestorPacketEncoding
         {
-            private static readonly byte ByteCount = 5;
+            private const byte ByteCount = 5;
 
             public override byte Id => 8;
 
             public override Type PacketType => typeof(PedalSetting);
 
-            public Encoding(EncodingDecorator encoding) : base(encoding)
+            public Encoding(EncodingDecorator encoding) : base(encoding, 8, typeof(PedalSetting))
             {
 
             }
@@ -40,16 +40,14 @@ namespace Communication.Codec
             {
                 var o = (PedalSetting)packet;
                 byte crc8 = 0;
-                var value = new byte[] { (byte)(o.AssistLevel | o.ActivationTime << 3) };
+                var value = new[] { (byte)(o.AssistLevel | o.ActivationTime << 3) };
                 crc8 += value[0];
                 writer.Write(value);
                 value = BitConverter.GetBytes((ushort)o.LowLimit);
-                for (int i = 0; i < value.Length; i++)
-                    crc8 += value[i];
+                crc8 = value.Aggregate(crc8, (current, t) => (byte) (current + t));
                 writer.Write(value);
                 value = BitConverter.GetBytes((ushort)o.HighLimit);
-                for (int i = 0; i < value.Length; i++)
-                    crc8 += value[i];
+                crc8 = value.Aggregate(crc8, (current, t) => (byte) (current + t));
                 writer.Write(value);
                 writer.Write(crc8);
             }

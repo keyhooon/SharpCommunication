@@ -1,8 +1,6 @@
 ﻿using SharpCommunication.Channels.ChannelTools;
 using SharpCommunication.Codec.Packets;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
 
 namespace SharpCommunication.Channels.Decorator
 {
@@ -12,7 +10,7 @@ namespace SharpCommunication.Channels.Decorator
 
         public CachedChannel(Channel<TPacket> innerChannel) : base(innerChannel)
         {
-            var ioCache = new IOCache<TPacket>(innerChannel, new ICachingManager<TPacket>[] { new LimitCountPacketCachingManager<TPacket> (), new ExpireTimePacketCachingManager<TPacket>()});
+            var ioCache = new IoCache<TPacket>(innerChannel, new ICachingManager<TPacket>[] { new LimitCountPacketCachingManager<TPacket> (), new ExpireTimePacketCachingManager<TPacket>()});
             Packet = new ReadOnlyObservableCollection<PacketCacheInfo<TPacket>>( ioCache.PacketCacheInfoCollection );
         }
 
@@ -26,7 +24,7 @@ namespace SharpCommunication.Channels.Decorator
             {
                 if (item is CachedChannel<TPacket>)
                     return (CachedChannel<TPacket>)item;
-                channel = item.innerChannel;
+                channel = item.InnerChannel;
             }
             return null;
         }

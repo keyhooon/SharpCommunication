@@ -4,13 +4,10 @@ using System.IO;
 using System.IO.Ports;
 using SharpCommunication.Channels;
 using Demo.Codec;
-using Demo.Service;
 using System.Threading;
 using Demo.Transport;
-using SharpCommunication.Codec;
 using System.Collections.Generic;
 using SharpCommunication.Channels.Decorator;
-using System.Linq;
 
 namespace Demo
 {
@@ -31,7 +28,7 @@ namespace Demo
             dataTransport.Open();
             byte[] b = new byte[] { 0xaa, 0xaa, 0x00, 0x64, 0x04, 0x04 };
             dataTransport.Channels[0].DataReceived += Channel_DataReceived;
-            Device packet = new Device() { DescendantPacket = new Data() { DescendantPacket = new Fault() { } } };
+            Device packet = new Device() { Content = new Data() { Content = new Fault() { } } };
             while (true)
             {
                 //writer.Write(b);

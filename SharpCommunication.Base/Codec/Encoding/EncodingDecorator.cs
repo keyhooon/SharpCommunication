@@ -7,7 +7,8 @@ namespace SharpCommunication.Codec.Encoding
     public abstract class EncodingDecorator : IEncoding<IPacket>
     {
         public EncodingDecorator Encoding { get; }
-        public EncodingDecorator(EncodingDecorator encoding)
+
+        protected EncodingDecorator(EncodingDecorator encoding)
         {
             Encoding = encoding;
         }

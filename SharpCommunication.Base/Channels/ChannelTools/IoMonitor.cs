@@ -1,6 +1,5 @@
 ﻿using SharpCommunication.Codec.Packets;
 using System;
-using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace SharpCommunication.Channels.ChannelTools

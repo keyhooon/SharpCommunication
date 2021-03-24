@@ -2,7 +2,7 @@
 {
     public interface IDescendantPacket : IPacket
     {
-        IAncestorPacket DescendantPacket { get; set; }
+        IAncestorPacket Content { get; set; }
 
     }
 }

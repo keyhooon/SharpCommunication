@@ -1,7 +1,6 @@
-﻿using SharpCommunication.Codec.Encoding;
+﻿using System;
+using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
-using System;
-
 
 namespace Demo.Codec
 {
@@ -10,10 +9,10 @@ namespace Demo.Codec
         public bool IsOn { get; set; }
         public byte[] Param { 
             get {
-                return new byte[] { IsOn ? (byte)0x01 : (byte)0x00 };
+                return new[] { IsOn ? (byte)0x01 : (byte)0x00 };
             } 
             set {
-                if (value != null && value.Length > 0 && value[0] == (byte)0x01)
+                if (value != null && value.Length > 0 && value[0] == 0x01)
                     IsOn = true;
             }
         }

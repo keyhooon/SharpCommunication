@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace SharpCommunication.Codec.Packets
+﻿namespace SharpCommunication.Codec.Packets
 {
-    public interface IFunctionPacket : IPacket, IAncestorPacket 
+    public interface IFunctionPacket : IAncestorPacket 
     {
         byte[] Param { get; set; }
     }

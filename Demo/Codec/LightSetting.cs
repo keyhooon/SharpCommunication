@@ -1,11 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 
-namespace Communication.Codec
+namespace Demo.Codec
 {
-    public class LightSetting : IPacket, IAncestorPacket
+    public class LightSetting : IAncestorPacket
     {
 
         public byte Light1 { get; set; }
@@ -23,11 +22,8 @@ namespace Communication.Codec
         }
         public class Encoding : AncestorPacketEncoding
         {
-            public override byte Id => 5;
 
-            public override Type PacketType => typeof(LightSetting);
-
-            public Encoding(EncodingDecorator encoding) : base(encoding)
+            public Encoding(EncodingDecorator encoding) : base(encoding, 5, typeof(LightSetting))
             {
 
             }
@@ -40,7 +36,7 @@ namespace Communication.Codec
             {
                 var o = (LightSetting)packet;
                 byte crc8 = 0;
-                var value = (byte)((byte)o.Light1 | (byte)o.Light2 << 2 | (byte)o.Light3 << 4 | (byte)o.Light4 << 6);
+                var value = (byte)(o.Light1 | o.Light2 << 2 | o.Light3 << 4 | o.Light4 << 6);
                 crc8 += value;
                 writer.Write(value);
                 writer.Write(crc8);

@@ -15,7 +15,7 @@ namespace SharpCommunication.Transport
         private bool _isOpen;
         private readonly CancellationTokenSource _tokenSource;
         private readonly Task _checkingIsOpenedTask;
-        protected ObservableCollection<IChannel<TPacket>> _channels;
+        protected ObservableCollection<IChannel<TPacket>> Channels;
         protected ILogger Log { get; }
         protected readonly IChannelFactory<TPacket> ChannelFactory;
         public readonly DataTransportOption Option;
@@ -102,7 +102,7 @@ namespace SharpCommunication.Transport
 
         public ReadOnlyObservableCollection<IChannel<TPacket>> Channels => new ReadOnlyObservableCollection<IChannel<TPacket>> (_channels);
 
-        public ICodec<TPacket> Codec { get => ChannelFactory.Codec; }
+        public ICodec<TPacket> Codec => ChannelFactory.Codec;
 
 
         protected abstract bool IsOpenCore { get; }

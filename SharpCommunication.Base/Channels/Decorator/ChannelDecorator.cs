@@ -7,18 +7,18 @@ namespace SharpCommunication.Channels.Decorator
 {
     public abstract class ChannelDecorator<TPacket> : Channel<TPacket>, IDisposable where TPacket : IPacket
     {
-         internal Channel< TPacket> innerChannel;
+         internal Channel< TPacket> InnerChannel;
 
         public ChannelDecorator(Channel<TPacket> innerChannel) 
         {
-            this.innerChannel = innerChannel;
+            this.InnerChannel = innerChannel;
             innerChannel.DataReceived += (sender, e) => OnDataReceived(e);
             innerChannel.ErrorReceived += (sender, e) => OnErrorReceived(e);
         }
-        public override ICodec<TPacket> Codec => innerChannel.Codec;
-        public override BinaryReader Reader => innerChannel.Reader;
-        public override BinaryWriter Writer => innerChannel.Writer;
-        public override void Transmit(TPacket packet) => innerChannel.Transmit(packet);
-        public override void Dispose() => innerChannel.Dispose();
+        public override ICodec<TPacket> Codec => InnerChannel.Codec;
+        public override BinaryReader Reader => InnerChannel.Reader;
+        public override BinaryWriter Writer => InnerChannel.Writer;
+        public override void Transmit(TPacket packet) => InnerChannel.Transmit(packet);
+        public override void Dispose() => InnerChannel.Dispose();
     }
 }

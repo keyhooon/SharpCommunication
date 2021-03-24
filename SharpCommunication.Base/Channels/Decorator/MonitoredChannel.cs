@@ -6,15 +6,15 @@ namespace SharpCommunication.Channels.Decorator
 {
     public class MonitoredChannel<TPacket> : ChannelDecorator<TPacket> where TPacket : IPacket
     {
-        private IoMonitor< TPacket> ioMonitor { get; set; }
+        private IoMonitor< TPacket> IoMonitor { get; set; }
         public MonitoredChannel(Channel< TPacket> innerChannel) :base(innerChannel)
         {
-            ioMonitor = new IoMonitor<TPacket>(innerChannel);
+            IoMonitor = new IoMonitor<TPacket>(innerChannel);
         }
 
-        public int GetDataReceivedCount => ioMonitor.DataReceivedCount;
-        public DateTime FirstPacketTime => ioMonitor.FirstPacketTime;
-        public DateTime LastPacketTime => ioMonitor.LastPacketTime;
+        public int GetDataReceivedCount => IoMonitor.DataReceivedCount;
+        public DateTime FirstPacketTime => IoMonitor.FirstPacketTime;
+        public DateTime LastPacketTime => IoMonitor.LastPacketTime;
     }
     public static class MonitoredChannelExtension
     {
@@ -24,7 +24,7 @@ namespace SharpCommunication.Channels.Decorator
             {
                 if (item is MonitoredChannel<TPacket>)
                     return (MonitoredChannel<TPacket>)item;
-                channel = item.innerChannel;
+                channel = item.InnerChannel;
             }
             return null;
         }

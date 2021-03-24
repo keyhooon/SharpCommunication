@@ -1,16 +1,15 @@
-﻿using SharpCommunication.Codec.Encoding;
-using SharpCommunication.Codec.Packets;
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
+using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec.Packets;
 
 namespace Demo.Codec
 {
-    public class Fault : IPacket, IAncestorPacket
+    public class Fault : IAncestorPacket
     {
 
         public bool OverCurrent { get; set; }
-        public bool OverTemprature { get; set; }
+        public bool OverTemperature { get; set; }
         public bool PedalSensor { get; set; }
         public bool Throttle { get; set; }
         public bool OverVoltage { get; set; }
@@ -22,7 +21,7 @@ namespace Demo.Codec
         {
 
             return $"Fault {{ OverCurrent : {OverCurrent}, " +
-                $"OverTemprature : {OverTemprature}, " +
+                $"OverTemperature : {OverTemperature}, " +
                 $"PedalSensor : {PedalSensor}, " +
                 $"Throttle : {Throttle}, " +
                 $"OverVoltage : {OverVoltage}, " +
@@ -32,17 +31,13 @@ namespace Demo.Codec
         }
         public class Encoding : AncestorPacketEncoding
         {
+            private const byte ByteCount = 1;
 
-            private readonly static byte byteCount = 1;
-            public override Type PacketType => typeof(Fault);
-
-            public override byte Id => 100;
-
-            public Encoding(EncodingDecorator encoding) : base(encoding)
+            public Encoding(EncodingDecorator encoding) : base(encoding, 10, typeof(Fault))
             {
 
             }
-            public Encoding() : base(null)
+            public Encoding() : this(null)
             {
 
             }
@@ -51,7 +46,7 @@ namespace Demo.Codec
             {
                 var o = (Fault)packet;
                 var value = ((byte)(
-                    (o.OverTemprature ?  0x02 : 0x00) | (o.OverCurrent ? 0x01 : 0x00) |
+                    (o.OverTemperature ?  0x02 : 0x00) | (o.OverCurrent ? 0x01 : 0x00) |
                     (o.Throttle ? 0x08 : 0x00) | (o.PedalSensor ? 0x04 : 0x00) |
                     (o.UnderVoltage ? 0x20 : 0x00) | (o.OverVoltage ? 0x10 : 0x00) |
                     (o.Drive ? 0x80 : 0x00) | (o.Motor ? 0x40 : 0x00)));
@@ -62,13 +57,13 @@ namespace Demo.Codec
 
             public override IPacket Decode(BinaryReader reader)
             {
-                var value = reader.ReadBytes(byteCount);
+                var value = reader.ReadBytes(ByteCount);
                 var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte)(current + t));
                 if (crc8 == reader.ReadByte())
                     return new Fault
                     {
                         OverCurrent = (value[0] & 0x01) == 0x01,
-                        OverTemprature = (value[0] & 0x02) == 0x02,
+                        OverTemperature = (value[0] & 0x02) == 0x02,
                         PedalSensor = (value[0] & 0x04) == 0x04,
                         Throttle = (value[0] & 0x08) == 0x08,
                         OverVoltage = (value[0] & 0x10) == 0x10,

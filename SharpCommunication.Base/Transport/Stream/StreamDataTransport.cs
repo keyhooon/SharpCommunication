@@ -1,23 +1,21 @@
-﻿using Microsoft.Extensions.Logging;
-using SharpCommunication.Channels;
+﻿using SharpCommunication.Channels;
 using SharpCommunication.Codec.Packets;
-using System.IO;
 
 namespace SharpCommunication.Transport.Stream
 {
     public class StreamDataTransport<TPacket> : DataTransport<TPacket> where TPacket : IPacket
     {
-        private ProducerConsumerStream InStream;
-        private ProducerConsumerStream OutStream;
+        private ProducerConsumerStream _inStream;
+        private ProducerConsumerStream _outStream;
         public StreamDataTransport(IChannelFactory<TPacket> channelFactory, DataTransportOption option) : base(channelFactory, option)
         {
 
         }
         private StreamDataTransport(ProducerConsumerStream inStream, ProducerConsumerStream outStream, IChannelFactory<TPacket> channelFactory, DataTransportOption option) : base(channelFactory, option)
         {
-            InStream = inStream;
-            OutStream = outStream;
-            _channels.Add(ChannelFactory.Create(InStream, OutStream));
+            _inStream = inStream;
+            _outStream = outStream;
+            _channels.Add(ChannelFactory.Create(_inStream, _outStream));
 
         }
 
@@ -25,24 +23,24 @@ namespace SharpCommunication.Transport.Stream
         public StreamDataTransport<TPacket> GetStreamDataTransportGateway()
         {
             if (IsOpen)
-                return new StreamDataTransport<TPacket>(OutStream, InStream, ChannelFactory, Option);
+                return new StreamDataTransport<TPacket>(_outStream, _inStream, ChannelFactory, Option);
             throw new System.Exception();
         }
 
-        protected override bool IsOpenCore => InStream != null && OutStream != null ;
+        protected override bool IsOpenCore => _inStream != null && _outStream != null ;
 
         protected override void CloseCore()
         {
-            InStream.Close();
-            OutStream.Close();
+            _inStream.Close();
+            _outStream.Close();
         }
 
         protected override void OpenCore()
         {
-            InStream = new ProducerConsumerStream();
-            OutStream = new ProducerConsumerStream();
+            _inStream = new ProducerConsumerStream();
+            _outStream = new ProducerConsumerStream();
 
-            _channels.Add(ChannelFactory.Create(InStream, OutStream));
+            _channels.Add(ChannelFactory.Create(_inStream, _outStream));
         }
     }
 }

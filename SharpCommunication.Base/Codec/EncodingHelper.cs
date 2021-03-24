@@ -129,9 +129,9 @@ namespace SharpCommunication.Codec
             return (uint)Math.Ceiling((dateTime.ToUniversalTime() -
                 new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds);
         }
-        public static DateTime ToUnixTime(this uint Second)
+        public static DateTime ToUnixTime(this uint second)
         {
-            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + TimeSpan.FromSeconds(Second);
+            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + TimeSpan.FromSeconds(second);
         }
 
     }

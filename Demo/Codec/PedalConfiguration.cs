@@ -1,11 +1,10 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 
-namespace Communication.Codec
+namespace Demo.Codec
 {
-    public class PedalConfiguration : IPacket, IAncestorPacket
+    public class PedalConfiguration : IAncestorPacket
     {
 
         public byte MagnetCount { get; set; }
@@ -18,11 +17,7 @@ namespace Communication.Codec
         public class Encoding : AncestorPacketEncoding
         {
 
-            public override byte Id => 7;
-
-            public override Type PacketType => typeof(PedalConfiguration);
-
-            public Encoding(EncodingDecorator encoding) : base(encoding)
+            public Encoding(EncodingDecorator encoding) : base(encoding, 7, typeof(PedalConfiguration))
             {
 
             }

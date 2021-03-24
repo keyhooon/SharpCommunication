@@ -1,7 +1,6 @@
-﻿using SharpCommunication.Codec.Encoding;
+﻿using System;
+using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
-using System;
-using System.IO;
 
 namespace Demo.Codec
 {
@@ -14,7 +13,7 @@ namespace Demo.Codec
         {
             get
             {
-                return new byte[] { DataId };
+                return new[] { DataId };
             }
             set
             {

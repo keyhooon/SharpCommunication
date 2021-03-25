@@ -23,7 +23,7 @@ namespace Demo.Codec
         public class Encoding : AncestorPacketEncoding
         {
 
-            public Encoding(EncodingDecorator encoding) : base(encoding, 5, typeof(LightSetting))
+            public Encoding(EncodingDecorator encoding) : base(encoding, 6, typeof(LightSetting))
             {
 
             }

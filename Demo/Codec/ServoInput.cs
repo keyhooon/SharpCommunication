@@ -31,7 +31,7 @@ namespace Demo.Codec
             private const double PedalBias = 0.0d;
             private const double CruiseBias = 0.0d;
 
-            public Encoding(EncodingDecorator encoding) : base(encoding, 9, typeof(ServoInput))
+            public Encoding(EncodingDecorator encoding) : base(encoding, 10, typeof(ServoInput))
             {
 
             }

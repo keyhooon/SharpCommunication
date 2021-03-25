@@ -7,6 +7,8 @@ using Demo.Codec;
 using System.Threading;
 using Demo.Transport;
 using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using SharpCommunication.Channels.Decorator;
 
 namespace Demo
@@ -20,12 +22,18 @@ namespace Demo
 
         private static void Main(string[] args)
         {
-            var serial = new SerialPort("com2", 9600);
+            
+                var configurationRoot = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("AppConfig.Json").Build();
+                var serial = new SerialPort("com2", 9600);
             serial.Open();
             var reader = new BinaryReader(serial.BaseStream);
             var writer = new BinaryWriter(serial.BaseStream);
             var option = new SerialPortDataTransportOption();
-            _dataTransport = new DeviceSerialDataTransport(option);
+            configurationRoot.GetSection(nameof(SerialPortDataTransportOption)).Bind(option);
+            
+            _dataTransport = new DeviceSerialDataTransport((new OptionsWrapper<SerialPortDataTransportOption>(option)));
             _dataTransport.Open();
             var b = new byte[] { 0xaa, 0xaa, 0x00, 0x64, 0x04, 0x04 };
             _dataTransport.Channels[0].DataReceived += Channel_DataReceived;

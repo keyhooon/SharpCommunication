@@ -8,30 +8,30 @@ namespace Demo.Service
 {
     class DeviceService
     {
-        private List<DataTransport<Device>> DataTransports;
+        private readonly List<DataTransport<Device>> _dataTransports;
         public event EventHandler<DataReceivedEventArg<Device>> DataReceived;
         public DeviceService()
         {
-            DataTransports = new List<DataTransport<Device>>();
+            _dataTransports = new List<DataTransport<Device>>();
         }
 
         public void Start()
         {
-            foreach (var dataTransport in DataTransports)
+            foreach (var dataTransport in _dataTransports)
             {
                 dataTransport.Open();
             }
         }
         public void Stop()
         {
-            foreach (var dataTransport in DataTransports)
+            foreach (var dataTransport in _dataTransports)
             {
                 dataTransport.Close();
             }
         }
         public void RegisterDataTransport(DataTransport<Device> dataTransport)
         {
-            DataTransports.Add(dataTransport);
+            _dataTransports.Add(dataTransport);
         }
         
     }

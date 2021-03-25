@@ -21,13 +21,8 @@ namespace Demo.Codec
         }
         public class Encoding : AncestorPacketEncoding
         {
-            private const byte ByteCount = 5;
 
-            public override byte Id => 8;
-
-            public override Type PacketType => typeof(PedalSetting);
-
-            public Encoding(EncodingDecorator encoding) : base(encoding, 8, typeof(PedalSetting))
+            public Encoding(EncodingDecorator encoding) : base(encoding, 9, typeof(PedalSetting))
             {
 
             }
@@ -54,7 +49,7 @@ namespace Demo.Codec
 
             public override IPacket Decode(BinaryReader reader)
             {
-                var value = reader.ReadBytes(ByteCount);
+                var value = reader.ReadBytes(5);
                 var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte)(current + t));
 
                 if (crc8 == reader.ReadByte())

@@ -28,7 +28,7 @@ namespace Demo.Codec
             private const double WheelSpeedBias = 0.0d;
             private const byte ByteCount = 5;
 
-            public Encoding(EncodingDecorator encoding) : base(encoding, 50, typeof(ServoOutput))
+            public Encoding(EncodingDecorator encoding) : base(encoding, 11, typeof(ServoOutput))
             {
 
             }

@@ -20,7 +20,7 @@ namespace Demo.Codec
         public class Encoding : FunctionPacketEncoding<ReadCommand>
         {
             private readonly CommandDelegate _command;
-            public Encoding(EncodingDecorator encoding, CommandDelegate command) : base(encoding, 3, typeof(CruiseCommand))
+            public Encoding(EncodingDecorator encoding, CommandDelegate command) : base(encoding, 3, typeof(ReadCommand))
             {
                 _command = command;
             }

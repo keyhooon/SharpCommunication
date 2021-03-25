@@ -31,9 +31,8 @@ namespace Demo.Codec
         }
         public class Encoding : AncestorPacketEncoding
         {
-            private const byte ByteCount = 1;
 
-            public Encoding(EncodingDecorator encoding) : base(encoding, 10, typeof(Fault))
+            public Encoding(EncodingDecorator encoding) : base(encoding, 5, typeof(Fault))
             {
 
             }
@@ -57,7 +56,7 @@ namespace Demo.Codec
 
             public override IPacket Decode(BinaryReader reader)
             {
-                var value = reader.ReadBytes(ByteCount);
+                var value = reader.ReadBytes(1);
                 var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte)(current + t));
                 if (crc8 == reader.ReadByte())
                     return new Fault

@@ -13,13 +13,13 @@ namespace Demo.Codec
         public override string ToString()
         {
 
-            return $"Cruise Command {{ {Command} }}";
+            return $"Light Command {{ {Command} }}";
         }
 
         public class Encoding : FunctionPacketEncoding<LightCommand>
         {
             private readonly CommandDelegate _command;
-            public Encoding(EncodingDecorator encoding, CommandDelegate command) : base(encoding, 3, typeof(CruiseCommand))
+            public Encoding(EncodingDecorator encoding, CommandDelegate command) : base(encoding, 2, typeof(LightCommand))
             {
                 _command = command;
             }

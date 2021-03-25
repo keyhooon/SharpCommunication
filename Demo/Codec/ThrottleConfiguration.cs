@@ -31,7 +31,7 @@ namespace Demo.Codec
             private const double MinBias = 0.0d;
             private const double MaxBias = 0.0d;
 
-            public Encoding(EncodingDecorator encoding) : base(encoding, 10, typeof(ThrottleConfiguration))
+            public Encoding(EncodingDecorator encoding) : base(encoding, 12, typeof(ThrottleConfiguration))
             {
 
             }

@@ -21,7 +21,7 @@ namespace Demo.Codec
         public class Encoding : FunctionPacketEncoding<CruiseCommand>
         {
             private readonly CommandDelegate _command;
-            public Encoding(EncodingDecorator encoding, CommandDelegate command) : base(encoding, 3, typeof(CruiseCommand))
+            public Encoding(EncodingDecorator encoding, CommandDelegate command) : base(encoding, 1, typeof(CruiseCommand))
             {
                 _command = command;
             }

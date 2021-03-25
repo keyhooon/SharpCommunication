@@ -17,7 +17,7 @@ namespace Demo.Codec
         public class Encoding : AncestorPacketEncoding
         {
 
-            public Encoding(EncodingDecorator encoding) : base(encoding, 7, typeof(PedalConfiguration))
+            public Encoding(EncodingDecorator encoding) : base(encoding, 8, typeof(PedalConfiguration))
             {
 
             }

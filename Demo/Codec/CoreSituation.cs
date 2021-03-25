@@ -26,7 +26,7 @@ namespace Demo.Codec
             private const double VoltageBias = 0.0d;
 
 
-            public Encoding(EncodingDecorator encoding) : base(encoding, 3, typeof(CoreSituation))
+            public Encoding(EncodingDecorator encoding) : base(encoding, 4, typeof(CoreSituation))
             {
 
             }

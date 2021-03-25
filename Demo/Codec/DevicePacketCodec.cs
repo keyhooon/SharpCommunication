@@ -14,9 +14,9 @@ namespace Demo.Codec
         private readonly List<PacketEncodingBuilder> _defaultCommandPacketEncodingBuilders = new List<PacketEncodingBuilder>(
             new [] 
             {
-                CruiseCommand.Encoding.CreateBuilder(),
-                LightCommand.Encoding.CreateBuilder(),
-                ReadCommand.Encoding.CreateBuilder()
+                CruiseCommand.Encoding.CreateBuilder((o)=>{}),
+                LightCommand.Encoding.CreateBuilder((o,o2)=>{}),
+                ReadCommand.Encoding.CreateBuilder((o)=>{})
             });
 
         private readonly List<PacketEncodingBuilder> _defaultDataPacketEncodingBuilders = new List<PacketEncodingBuilder>(

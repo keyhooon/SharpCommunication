@@ -1,0 +1,6 @@
+﻿{
+  "SerialPortDataTransportOption": {
+    "PortName": "Com4",
+    "BaudRate": 115200
+  }
+}

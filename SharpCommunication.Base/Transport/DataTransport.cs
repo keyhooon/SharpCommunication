@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec;
 using SharpCommunication.Codec.Packets;
@@ -14,52 +15,60 @@ namespace SharpCommunication.Transport
     {
         private bool _isOpen;
         private readonly CancellationTokenSource _tokenSource;
-        private readonly Task _checkingIsOpenedTask;
-        protected ObservableCollection<IChannel<TPacket>> Channels;
+        private readonly Task<Task> _checkingIsOpenedTask;
+        protected ObservableCollection<IChannel<TPacket>> InnerChannels;
         protected ILogger Log { get; }
         protected readonly IChannelFactory<TPacket> ChannelFactory;
-        public readonly DataTransportOption Option;
+        public readonly IOptions<DataTransportOption> Option;
         public event EventHandler IsOpenChanged;
         public event EventHandler CanOpenChanged;
         public event EventHandler CanCloseChanged;
 
-        protected DataTransport(IChannelFactory<TPacket> channelFactory, DataTransportOption option) : this(channelFactory, option, NullLoggerProvider.Instance.CreateLogger("DataTransport"))
+        protected DataTransport(IChannelFactory<TPacket> channelFactory, IOptions<DataTransportOption> option) : this(channelFactory, option, NullLoggerProvider.Instance.CreateLogger("DataTransport"))
         {
 
         }
-        protected DataTransport(IChannelFactory<TPacket> channelFactory, DataTransportOption option, ILogger log)
+
+        protected DataTransport(IChannelFactory<TPacket> channelFactory, IOptions<DataTransportOption> option,
+            ILogger log)
         {
             Log = log;
             Option = option;
             ChannelFactory = channelFactory;
-            _tokenSource = new CancellationTokenSource();
-            _channels = new ObservableCollection<IChannel<TPacket>>();
-            var token = _tokenSource.Token;
-            _checkingIsOpenedTask = Task.Factory.StartNew(async () =>
-            {
-                while (true)
-                {
-                    try
-                    {
-                        if (IsOpenCore != IsOpen)
-                        {
-                            IsOpen = IsOpenCore;
+            InnerChannels = new ObservableCollection<IChannel<TPacket>>();
+            Channels = new ReadOnlyObservableCollection<IChannel<TPacket>>(InnerChannels);
 
+            if (option.Value.AutoCheckIsOpen)
+            {
+                _tokenSource = new CancellationTokenSource();
+
+                _checkingIsOpenedTask = Task.Factory.StartNew(async () =>
+                {
+                    var token = _tokenSource.Token;
+                    while (true)
+                    {
+                        try
+                        {
+                            if (IsOpenCore != IsOpen)
+                            {
+                                IsOpen = IsOpenCore;
+                            }
+
+                            await Task.Delay(Option.Value.AutoCheckIsOpenTime, token);
+                            if (token.IsCancellationRequested)
+                                break;
                         }
-                        await Task.Delay(Option.AutoCheckIsOpenTime, token);
-                        if (token.IsCancellationRequested)
+                        catch (OperationCanceledException e)
+                        {
                             break;
+                        }
+                        catch (Exception)
+                        {
+                            await Task.Delay(1000);
+                        }
                     }
-                    catch (OperationCanceledException e)
-                    {
-                        break;
-                    }
-                    catch (Exception)
-                    {
-                        await Task.Delay(1000);
-                    }
-                }
-            });
+                });
+            }
         }
 
         public void Open()
@@ -100,7 +109,7 @@ namespace SharpCommunication.Transport
         }
 
 
-        public ReadOnlyObservableCollection<IChannel<TPacket>> Channels => new ReadOnlyObservableCollection<IChannel<TPacket>> (_channels);
+        public ReadOnlyObservableCollection<IChannel<TPacket>> Channels { get; }
 
         public ICodec<TPacket> Codec => ChannelFactory.Codec;
 
@@ -120,8 +129,12 @@ namespace SharpCommunication.Transport
         {
             if (IsOpen)
                 Close();
-            _tokenSource.Cancel();
-            Task.WaitAll(new[] { _checkingIsOpenedTask }, 1000);
+            if (Option.Value.AutoCheckIsOpen)
+            {
+                _tokenSource.Cancel();
+                Task.WaitAll(new Task[] {_checkingIsOpenedTask}, 1000);
+                _tokenSource?.Dispose();
+            }
         }
 
         protected virtual void OnIsOpenChanged()
@@ -129,11 +142,11 @@ namespace SharpCommunication.Transport
             IsOpenChanged?.Invoke(this, null);
             if (!IsOpen)
             {
-                foreach (var ch in _channels)
+                foreach (var ch in InnerChannels)
                 {
                     ch.Dispose();
                 }
-                _channels.Clear();
+                InnerChannels.Clear();
                 Log.LogInformation("Transport Layer is closed.");
             }else
                 Log.LogInformation("Transport Layer is Open.");

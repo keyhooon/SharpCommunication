@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using SharpCommunication.Codec;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 
@@ -6,38 +9,40 @@ namespace Demo.Codec
 {
     class CruiseCommand : IFunctionPacket
     {
-        public bool IsOn { get; set; }
-        public byte[] Param { 
-            get {
-                return new[] { IsOn ? (byte)0x01 : (byte)0x00 };
-            } 
-            set {
-                if (value != null && value.Length > 0 && value[0] == 0x01)
-                    IsOn = true;
-            }
-        }
-        public Action Action => throw new NotImplementedException();
+        public delegate void CommandDelegate(bool isOn);
+
+        public CommandDelegate Command { get; private set; }
         public override string ToString()
         {
 
-            return $"Cruise Command {{ Cruise : {IsOn} }}";
+            return $"Cruise Command {{ {Command} }}";
         }
 
         public class Encoding : FunctionPacketEncoding<CruiseCommand>
         {
-
-            public override byte ParameterByteCount => 1;
-            public override byte Id => 3;
-            public override Action<byte[]> ActionToDo { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-
-
-            public Encoding(EncodingDecorator encoding) : base(encoding)
+            private readonly CommandDelegate _command;
+            public Encoding(EncodingDecorator encoding, CommandDelegate command) : base(encoding, 3, typeof(CruiseCommand))
             {
+                _command = command;
+            }
+            public override void Encode(IPacket packet, BinaryWriter writer)
+            {
+                throw new NotSupportedException();
+            }
+
+            public override IPacket Decode(BinaryReader reader)
+            {
+                var isOn = reader.ReadByte();
+                var crc8 = isOn;
+                if (crc8 != reader.ReadByte()) 
+                    return null;
+                var packet = new CruiseCommand() {Command = _command};
+                packet.Command.Invoke(isOn != 0);
+                return packet;
 
             }
-            public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o));
+            public static PacketEncodingBuilder CreateBuilder(CommandDelegate command) =>
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o, command));
         }
     }
 }

@@ -21,7 +21,7 @@ namespace SharpCommunication.Codec.Encoding
         public EncodingDecorator Build() 
         {
             EncodingDecorator encoding = null;
-            for (int i = SetupActions.Count - 1; i >= 0; i--)
+            for (var i = SetupActions.Count - 1; i >= 0; i--)
                 encoding = SetupActions[i](encoding);
             return encoding;
         }

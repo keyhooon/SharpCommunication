@@ -36,15 +36,7 @@ namespace Demo.Codec
                 ThrottleConfiguration.Encoding.CreateBuilder()
             });
 
-        public override EncodingDecorator Encoding
-        {
-            get
-            {
-                if (_encoding == null)
-                    _encoding = _encodingBuilder.Build();
-                return _encoding;
-            }
-        }
+        public override EncodingDecorator Encoding => _encoding ??= _encodingBuilder.Build();
 
         public DevicePacketCodec(IEnumerable<PacketEncodingBuilder> PacketEncodingBuilderList)
         {

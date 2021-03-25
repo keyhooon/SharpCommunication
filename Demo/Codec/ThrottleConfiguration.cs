@@ -44,7 +44,7 @@ namespace Demo.Codec
             {
                 var o = (ThrottleConfiguration)packet;
                 var value = BitConverter.GetBytes((ushort)((o.FaultThreshold - FaultThresholdBias) / FaultThresholdBitResolution));
-                byte crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte) (current + t));
+                var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte) (current + t));
                 writer.Write(value);
                 value = BitConverter.GetBytes((ushort)((o.Min - MinBias) / MinBitResolution));
                 crc8 = value.Aggregate(crc8, (current, t) => (byte) (current + t));
@@ -58,7 +58,7 @@ namespace Demo.Codec
             public override IPacket Decode(BinaryReader reader)
             {
                 var value = reader.ReadBytes(ByteCount);
-                byte crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte) (current + t));
+                var crc8 = value.Aggregate<byte, byte>(0, (current, t) => (byte) (current + t));
                 if (crc8 == reader.ReadByte())
                     return new ThrottleConfiguration
                     {

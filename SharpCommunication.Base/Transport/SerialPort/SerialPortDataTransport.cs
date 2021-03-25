@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec.Packets;
 
@@ -8,12 +9,12 @@ namespace SharpCommunication.Transport.SerialPort
     {
         private System.IO.Ports.SerialPort _serialPort;
 
-        public SerialPortDataTransport(IChannelFactory<TPacket> channelFactory, SerialPortDataTransportOption option) : base(channelFactory, option)
+        public SerialPortDataTransport(IChannelFactory<TPacket> channelFactory, IOptions<SerialPortDataTransportOption> option) : base(channelFactory, option)
         {
 
         }
 
-        public SerialPortDataTransport(IChannelFactory<TPacket> channelFactory, SerialPortDataTransportOption option, ILogger log) : base(channelFactory, option, log)
+        public SerialPortDataTransport(IChannelFactory<TPacket> channelFactory, IOptions<SerialPortDataTransportOption> option, ILogger log) : base(channelFactory, option, log)
         {
 
         }
@@ -28,14 +29,14 @@ namespace SharpCommunication.Transport.SerialPort
 
         protected override void OpenCore()
         {
-            var option = ((SerialPortDataTransportOption)Option);
-            _serialPort = new System.IO.Ports.SerialPort(option.PortName, option.BaudRate, option.Parity, option.DataBits, option.StopBits)
+            var option = ((IOptions<SerialPortDataTransportOption>)Option);
+            _serialPort = new System.IO.Ports.SerialPort(option.Value.PortName, option.Value.BaudRate, option.Value.Parity, option.Value.DataBits, option.Value.StopBits)
             {
-                ReadTimeout = option.ReadTimeout
+                ReadTimeout = option.Value.ReadTimeout
             };
 
             _serialPort.Open();
-            _channels.Add(ChannelFactory.Create(_serialPort.BaseStream));
+            InnerChannels.Add(ChannelFactory.Create(_serialPort.BaseStream));
         }
     }
 }

@@ -6,7 +6,7 @@ using SharpCommunication.Codec.Packets;
 
 namespace Demo.Codec
 {
-    public class Data : IPacket, IDescendantPacket, IAncestorPacket
+    public class Data : IDescendantPacket, IAncestorPacket
     {
 
         public IAncestorPacket Content { get; set; }

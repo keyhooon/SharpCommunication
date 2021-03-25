@@ -3,46 +3,18 @@ using System.Runtime.CompilerServices;
 
 namespace SharpCommunication.Transport
 {
-    public class DataTransportOption : INotifyPropertyChanged
+    public class DataTransportOption 
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+
+
+        public DataTransportOption()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            AutoCheckIsOpen = true;
+            AutoCheckIsOpenTime = 500;
         }
 
-        public DataTransportOption(bool autoCheckIsOpen = true, int autoCheckIsOpenTime = 500 )
-        {
-            _autoCheckIsOpen = autoCheckIsOpen;
-            _autoCheckIsOpenTime = autoCheckIsOpenTime;
-        }
+        public bool AutoCheckIsOpen { get; set; }
 
-        private bool _autoCheckIsOpen;
-        private int _autoCheckIsOpenTime;
-
-
-        public bool AutoCheckIsOpen  
-        { 
-            get => _autoCheckIsOpen;
-            set
-            {
-                if (_autoCheckIsOpen == value)
-                    return;
-                _autoCheckIsOpen = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int AutoCheckIsOpenTime 
-        { 
-            get => _autoCheckIsOpenTime;
-            set
-            {
-                if (_autoCheckIsOpenTime == value)
-                    return;
-                _autoCheckIsOpenTime = value;
-                OnPropertyChanged();
-            }
-        }
+        public int AutoCheckIsOpenTime { get; set; }
     }
 }

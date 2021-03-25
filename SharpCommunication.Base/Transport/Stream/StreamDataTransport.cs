@@ -15,7 +15,7 @@ namespace SharpCommunication.Transport.Stream
         {
             _inStream = inStream;
             _outStream = outStream;
-            _channels.Add(ChannelFactory.Create(_inStream, _outStream));
+            InnerChannels.Add(ChannelFactory.Create(_inStream, _outStream));
 
         }
 
@@ -40,7 +40,7 @@ namespace SharpCommunication.Transport.Stream
             _inStream = new ProducerConsumerStream();
             _outStream = new ProducerConsumerStream();
 
-            _channels.Add(ChannelFactory.Create(_inStream, _outStream));
+            InnerChannels.Add(ChannelFactory.Create(_inStream, _outStream));
         }
     }
 }

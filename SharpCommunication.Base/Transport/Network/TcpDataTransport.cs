@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec.Packets;
 
@@ -9,26 +10,24 @@ namespace SharpCommunication.Transport.Network
 {
     public abstract class TcpDataTransport<TPacket> : DataTransport<TPacket> where TPacket : IPacket
     {
-        private readonly TcpDataTransportOption _option;
-
         private TcpListener _tcpListener;
 
 
-        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportOption option, ILogger log) : base(channelFactory, option, log)
+        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, IOptions<TcpDataTransportOption> option, ILogger log) : base(channelFactory, option, log)
         {
         }
 
 
-        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportOption option) : base(channelFactory, option)
+        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, IOptions<TcpDataTransportOption> option) : base(channelFactory, option)
         {
         }
 
         protected override void OpenCore()
         {
             Log.LogInformation("Starting ...");
-            var localEndPoint = new IPEndPoint(IPAddress.Any, _option.ListenPort);
+            var localEndPoint = new IPEndPoint(IPAddress.Any, ((IOptions <TcpDataTransportOption>) Option).Value.ListenPort);
             _tcpListener = new TcpListener(localEndPoint);
-            _tcpListener.Start(_option.BackLog);
+            _tcpListener.Start(((IOptions<TcpDataTransportOption>)Option).Value.BackLog);
 
 
 
@@ -45,7 +44,7 @@ namespace SharpCommunication.Transport.Network
                 var socket = _tcpListener.EndAcceptSocket(ar);
                 socket.ReceiveTimeout = 2000;
                 var networkStream = new NetworkStream(socket);
-                _channels.Add(ChannelFactory.Create(networkStream));
+                InnerChannels.Add(ChannelFactory.Create(networkStream));
 
                 _tcpListener.BeginAcceptSocket(TcpClientAccept, null);
             }

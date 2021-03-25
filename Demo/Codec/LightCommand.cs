@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 
@@ -6,42 +7,43 @@ namespace Demo.Codec
 {
     public class LightCommand : IFunctionPacket
     {
-        public byte LightId { get; set; }
-        public bool IsOn { get; set; }
-        public byte[] Param
-        {
-            get
-            {
-                return new[] { LightId,  IsOn ? (byte)0x01 : (byte)0x00 };
-            }
-            set
-            {
-                if (value != null && value.Length > 1)
-                {
-                    LightId = value[0];
-                    IsOn = value[1] == 0x01;
-                }
-            }
-        }
+        public delegate void CommandDelegate(byte lightId, bool isOn);
+
+        public CommandDelegate Command { get; private set; }
         public override string ToString()
         {
-            if (IsOn)
-                return $"Light Command {{ Light : {LightId}, State : On }}";
-            return $"Light Command {{ Light : {LightId}, State : Off }}";
+
+            return $"Cruise Command {{ {Command} }}";
         }
+
         public class Encoding : FunctionPacketEncoding<LightCommand>
         {
-            public override byte ParameterByteCount => 1;
-            public override byte Id => 2;
-
-            public override Action<byte[]> ActionToDo { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-            public Encoding(EncodingDecorator encoding) : base(encoding)
+            private readonly CommandDelegate _command;
+            public Encoding(EncodingDecorator encoding, CommandDelegate command) : base(encoding, 3, typeof(CruiseCommand))
             {
-
+                _command = command;
             }
-            public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o));
+            public override void Encode(IPacket packet, BinaryWriter writer)
+            {
+                throw new NotSupportedException();
+            }
+
+            public override IPacket Decode(BinaryReader reader)
+            {
+                var lightId = reader.ReadByte();
+                var isOn = reader.ReadByte();
+                var crc8 =(byte) (isOn + lightId);
+                if (crc8 != reader.ReadByte()) 
+                    return null;
+                var lightCommand = new LightCommand()
+                {
+                    Command = _command,
+                };
+                lightCommand.Command.Invoke(lightId, isOn != 0);
+                return lightCommand;
+            }
+            public static PacketEncodingBuilder CreateBuilder(CommandDelegate command) =>
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o, command));
         }
 
     }

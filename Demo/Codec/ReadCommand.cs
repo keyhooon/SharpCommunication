@@ -1,47 +1,50 @@
 ﻿using System;
+using System.IO;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 
 namespace Demo.Codec
 {
-    class ReadCommand : IFunctionPacket
+    public class ReadCommand : IFunctionPacket
     {
-        public byte DataId { get; set; }
+        public delegate void CommandDelegate(byte dataId);
 
-
-        public byte[] Param
-        {
-            get
-            {
-                return new[] { DataId };
-            }
-            set
-            {
-                if (value != null && value.Length > 0)
-                    DataId = value[0];
-
-            }
-        }
-
+        public CommandDelegate Command { get; private set; }
+       
         public override string ToString()
         {
 
-            return $"Read Command {{ Request Data: {DataId} }}";
+            return $"Read Command {{ {Command} }}";
         }
 
         public class Encoding : FunctionPacketEncoding<ReadCommand>
         {
-            public override byte ParameterByteCount => 1;
-            public override byte Id => 1;
-            public override Action<byte[]> ActionToDo { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-            public Encoding(EncodingDecorator encoding) : base(encoding)
+            private readonly CommandDelegate _command;
+            public Encoding(EncodingDecorator encoding, CommandDelegate command) : base(encoding, 3, typeof(CruiseCommand))
             {
-
+                _command = command;
             }
 
-            public static PacketEncodingBuilder CreateBuilder()=>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o));
+            public override void Encode(IPacket packet, BinaryWriter writer)
+            {
+                throw new NotSupportedException();
+            }
+
+            public override IPacket Decode(BinaryReader reader)
+            {
+                var dataId = reader.ReadByte();
+                var crc8 = dataId;
+                if (crc8 != reader.ReadByte()) 
+                    return null;
+                var readCommand = new ReadCommand()
+                {
+                    Command = _command,
+                };
+                readCommand.Command(dataId);
+                return readCommand;
+            }
+            public static PacketEncodingBuilder CreateBuilder(CommandDelegate command) =>
+                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(o => new Encoding(o,command));
         }
 
     }

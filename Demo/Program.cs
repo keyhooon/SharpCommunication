@@ -13,22 +13,23 @@ namespace Demo
 {
     class Program
     {
-        static List<string> list = new List<string>();
-        static int index = 0;
-        static object o = new object();
-        static DeviceSerialDataTransport dataTransport;
-        static void Main(string[] args)
+        private static readonly List<string> _list = new List<string>();
+        private static int _index;
+        private static readonly object _o = new object();
+        private static DeviceSerialDataTransport _dataTransport;
+
+        private static void Main(string[] args)
         {
-            SerialPort serial = new SerialPort("com2", 9600);
+            var serial = new SerialPort("com2", 9600);
             serial.Open();
             var reader = new BinaryReader(serial.BaseStream);
             var writer = new BinaryWriter(serial.BaseStream);
-            var option = new SerialPortDataTransportOption("com4", 9600);
-            dataTransport = new DeviceSerialDataTransport(option);
-            dataTransport.Open();
-            byte[] b = new byte[] { 0xaa, 0xaa, 0x00, 0x64, 0x04, 0x04 };
-            dataTransport.Channels[0].DataReceived += Channel_DataReceived;
-            Device packet = new Device() { Content = new Data() { Content = new Fault() { } } };
+            var option = new SerialPortDataTransportOption();
+            _dataTransport = new DeviceSerialDataTransport(option);
+            _dataTransport.Open();
+            var b = new byte[] { 0xaa, 0xaa, 0x00, 0x64, 0x04, 0x04 };
+            _dataTransport.Channels[0].DataReceived += Channel_DataReceived;
+            var packet = new Device() { Content = new Data() { Content = new Fault() { } } };
             while (true)
             {
                 //writer.Write(b);
@@ -38,22 +39,22 @@ namespace Demo
                     writer.Write(reader.ReadBytes(serial.BytesToRead));
                     ;
                 }
-                lock(o)
-                    while (list.Count > index)
-                        Console.WriteLine(list[index++]);
+                lock(_o)
+                    while (_list.Count > _index)
+                        Console.WriteLine(_list[_index++]);
 
-                (dataTransport.Channels[0]).Transmit(packet);
+                (_dataTransport.Channels[0]).Transmit(packet);
                 Thread.Sleep(100);
             }
         }
 
         private static void Channel_DataReceived(object sender, DataReceivedEventArg<Device> e)
         {
-            lock (o)
+            lock (_o)
             {
-                list.Add(e.Data.ToString());
-                list.Add($" {dataTransport.Channels[0].ToMonitoredChannel().MonitorBeginTime}, {dataTransport.Channels[0].ToMonitoredChannel().GetDataReceivedCount}");
-                list.Add($" {dataTransport.Channels[0].ToCachedChannel().Packet.Count}");
+                _list.Add(e.Data.ToString());
+                _list.Add($" {_dataTransport.Channels[0].ToMonitoredChannel().GetDataReceivedCount}, {_dataTransport.Channels[0].ToMonitoredChannel().LastPacketTime}");
+                _list.Add($" {_dataTransport.Channels[0].ToCachedChannel().Packet.Count}");
 
             }
 

@@ -23,10 +23,10 @@ namespace Demo
         private static void Main(string[] args)
         {
             
-                var configurationRoot = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("AppConfig.Json").Build();
-                var serial = new SerialPort("com2", 9600);
+            var configurationRoot = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("AppConfig.Json").Build();
+            var serial = new SerialPort("com2", 9600);
             serial.Open();
             var reader = new BinaryReader(serial.BaseStream);
             var writer = new BinaryWriter(serial.BaseStream);

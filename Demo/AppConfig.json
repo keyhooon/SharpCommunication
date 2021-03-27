@@ -1,6 +1,11 @@
 ﻿{
-  "SerialPortDataTransportOption": {
+  "DeviceSerialDataTransport": {
     "PortName": "Com4",
     "BaudRate": 115200
+  },
+  "GpsSerialDataTransport": {
+    "PortName": "Com5",
+    "BaudRate": 115200
   }
+
 }

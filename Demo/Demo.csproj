@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SharpCommunication.Base\SharpCommunication.Base.csproj" />
+    <ProjectReference Include="..\SharpCommunication.GPS\SharpCommunication.GPS.csproj" />
   </ItemGroup>
 
   <ItemGroup>

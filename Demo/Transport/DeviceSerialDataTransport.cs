@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SharpCommunication.Channels;
-using SharpCommunication.Channels.Decorator;
 using SharpCommunication.Codec;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Transport.SerialPort;

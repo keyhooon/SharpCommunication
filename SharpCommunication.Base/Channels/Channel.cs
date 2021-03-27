@@ -32,12 +32,10 @@ namespace SharpCommunication.Channels
             
             _receptionTask = Task.Factory.StartNew(async() =>
             {
-                while (true)
+                while (!cancellationToken.IsCancellationRequested)
                 {
                     try
                     {
-                        if (cancellationToken.IsCancellationRequested)
-                            break;
                         var packet = codec.Decode(Reader);
                         OnDataReceived(new DataReceivedEventArg<TPacket>(packet));
                     }

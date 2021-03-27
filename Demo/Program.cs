@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using SharpCommunication.Channels.Decorator;
+using SharpCommunication.Codec;
 using SharpCommunication.Codec.Encoding;
 
 namespace Demo
@@ -20,6 +21,8 @@ namespace Demo
         private static int _index;
         private static readonly object _o = new object();
         private static DeviceSerialDataTransport _dataTransport;
+        private static GpsSerialDataTransport _gpsDataTransport;
+
         private static readonly PacketEncodingBuilder[] _commandPacketEncodingBuilders = {
             CruiseCommand.Encoding.CreateBuilder((o)=>{}),
             LightCommand.Encoding.CreateBuilder((o,o2)=>{}),
@@ -53,20 +56,40 @@ namespace Demo
             var writer = new BinaryWriter(serial.BaseStream);
             var b = new byte[] { 0xaa, 0xaa, 0x00, 0x64, 0x04, 0x04 };
 
+            var gpsSerial = new SerialPort("com3", 9600);
+            gpsSerial.Open();
+            var gpsReader = new BinaryReader(gpsSerial.BaseStream);
+            var gpsWriter = new BinaryWriter(gpsSerial.BaseStream);
+            var gpsTestData = "$GNGNS,014035.00,4332.69262,S,17235.48549,E,RR,13,0.9,25.63,11.24,,*70\r\n";
+
             var configurationRoot = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("AppConfig.Json").Build();
             var option = new SerialPortDataTransportOption();
-            configurationRoot.GetSection(nameof(SerialPortDataTransportOption)).Bind(option);
-
+            configurationRoot.GetSection(nameof(DeviceSerialDataTransport)).Bind(option);
+            var gpsOption = new SerialPortDataTransportOption();
+            configurationRoot.GetSection(nameof(GpsSerialDataTransport)).Bind(option);
 
             var encoding = _devicePacketEncodingBuilders.Build();
             _dataTransport = new DeviceSerialDataTransport(
                 new OptionsWrapper<SerialPortDataTransportOption>(option),
                 encoding);
             _dataTransport.Open();
+
+            _gpsDataTransport = new GpsSerialDataTransport(new OptionsWrapper<SerialPortDataTransportOption>(option),new Gps.Encoding());
+            _gpsDataTransport.Channels[0].DataReceived += (sender, arg) =>
+            {
+                lock (_o)
+                {
+                    _list.Add(
+                        $" {_dataTransport.Channels[0].ToMonitoredChannel().GetDataReceivedCount}, {_dataTransport.Channels[0].ToMonitoredChannel().LastPacketTime}");
+                    _list.Add($" {_dataTransport.Channels[0].ToCachedChannel().Packet.Count}");
+                    _list.Add(arg.Data.ToString());
+                    _list.Add("\r\n");
+                }
+            };
             _dataTransport.Channels[0].DataReceived += Channel_DataReceived;
-            var packet = new Device() { Content = new Data() { Content = new Fault() { } } };
+            var packet = new Device() { Content = new Data() { Content = new Fault { } } };
             while (true)
             {
                 //writer.Write(b);
@@ -74,7 +97,7 @@ namespace Demo
                 {
                     //Console.WriteLine(reader.ReadBytes(serial.BytesToRead).ToHexString());
                     writer.Write(reader.ReadBytes(serial.BytesToRead));
-                    ;
+                    gpsWriter.Write(gpsTestData); ;
                 }
                 lock(_o)
                     while (_list.Count > _index)

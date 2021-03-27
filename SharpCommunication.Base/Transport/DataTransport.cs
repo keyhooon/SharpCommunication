@@ -45,7 +45,7 @@ namespace SharpCommunication.Transport
                 _checkingIsOpenedTask = Task.Factory.StartNew(async () =>
                 {
                     var token = _tokenSource.Token;
-                    while (true)
+                    while (!token.IsCancellationRequested)
                     {
                         try
                         {
@@ -55,8 +55,6 @@ namespace SharpCommunication.Transport
                             }
 
                             await Task.Delay(Option.Value.AutoCheckIsOpenTime, token);
-                            if (token.IsCancellationRequested)
-                                break;
                         }
                         catch (OperationCanceledException e)
                         {

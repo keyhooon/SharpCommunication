@@ -34,7 +34,7 @@ namespace SharpCommunication.Codec.Encoding
             if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
 
-            var enc = (IAncestorPacketEncoding<IAncestorPacket, TG>)encoding.FindDecoratedEncoding<IAncestorPacketEncoding<IAncestorPacket>>();
+            var enc = (IAncestorPacketEncoding<IAncestorPacket, TG>)encoding.FindDecoratedEncoding<AncestorPacketEncoding>();
             if (enc == null)
                 throw new NotSupportedException();
 

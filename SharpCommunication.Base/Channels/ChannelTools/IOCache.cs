@@ -1,34 +1,35 @@
 ﻿using SharpCommunication.Codec.Packets;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using SharpCommunication.Channels.Decorator;
 
 namespace SharpCommunication.Channels.ChannelTools
 {
     public class IoCache<TPacket> where TPacket : IPacket 
     {
 
+        
         public ObservableCollection<PacketCacheInfo<TPacket>> PacketCacheInfoCollection { get; internal set; }
-        private int _packetIndex;
-        public IoCache(IChannel<TPacket> cachededChannel, IEnumerable<ICachingManager<TPacket>> cacheManagers)
+        public IChannel<TPacket> Channel { get; }
+        public IoCache(IChannel<TPacket> cachedChannel, IEnumerable<ICachePolicy<TPacket>> cacheManagers)
         {
             PacketCacheInfoCollection = new ObservableCollection<PacketCacheInfo<TPacket>>();
-            _packetIndex = 0;
+            Channel = cachedChannel;
+            var packetIndex = 0;
             foreach (var cacheManager in cacheManagers)
             {
                 cacheManager.Bind(this);
             }
-            cachededChannel.DataReceived += (sender, arg) => {
-                PacketCacheInfoCollection.Add(new PacketCacheInfo<TPacket> { Packet = arg.Data, PacketDateTimeReceived = DateTime.Now, PacketIndex = _packetIndex++ });
+
+
+            Channel.DataReceived += (sender, arg) => {
+                PacketCacheInfoCollection.Add(new PacketCacheInfo<TPacket> { Packet = arg.Data, PacketDateTimeReceived = DateTime.Now, PacketIndex = packetIndex++ });
             };
         }
     }
-    public class PacketCacheInfo<TPacket> where TPacket: IPacket
-    {
-        public TPacket Packet { get; set; }
-        public DateTime PacketDateTimeReceived { get; set; }
-        public int PacketIndex { get; set; }
-    }
+
 
 
 

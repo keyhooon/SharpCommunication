@@ -1,4 +1,5 @@
-﻿using SharpCommunication.Codec.Packets;
+﻿using System;
+using SharpCommunication.Codec.Packets;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,14 +8,14 @@ namespace SharpCommunication.Codec.Encoding
     public static class PacketEncodingExtension
     {
 
-        public static EncodingDecorator FindDecoratedEncoding<T>(this EncodingDecorator packetEncoding) where T : IEncoding<IPacket>
+        public static T FindDecoratedEncoding<T>(this EncodingDecorator packetEncoding) where T : class, IEncoding<IPacket>
         {
-                while (packetEncoding is EncodingDecorator item)
-                {
-                    if (item is T)
-                        return item;
-                    packetEncoding = packetEncoding.Encoding;
-                }
+            while (packetEncoding is { } item)
+            {
+                if (item is T encoding)
+                    return encoding;
+                packetEncoding = packetEncoding.Encoding;
+            }
             return null;
         }
 
@@ -48,7 +49,14 @@ namespace SharpCommunication.Codec.Encoding
             mapItemBuilder.AddDecorate(item => new PropertyPacketEncoding(item, propertySize));
             return mapItemBuilder;
         }
+        public static EncodingDecorator GetChildEncoding<TP, TC>(this EncodingDecorator encodingDecorator) where TP : class, IDescendantPacket, new() where TC : IAncestorPacket
+        {
+            var descendantPacketEncoding = encodingDecorator.FindDecoratedEncoding<DescendantPacketEncoding<TP>>();
+            if (descendantPacketEncoding == null)
+                throw new ArgumentException();
+            return descendantPacketEncoding.EncodingDictionary[descendantPacketEncoding.IdDictionary[typeof(TC)]];
 
+        }
     }
     public static class HasDescendantPacketHelper
     {

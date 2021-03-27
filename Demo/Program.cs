@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using SharpCommunication.Channels.Decorator;
+using SharpCommunication.Codec.Encoding;
 
 namespace Demo
 {
@@ -19,23 +20,51 @@ namespace Demo
         private static int _index;
         private static readonly object _o = new object();
         private static DeviceSerialDataTransport _dataTransport;
+        private static readonly PacketEncodingBuilder[] _commandPacketEncodingBuilders = {
+            CruiseCommand.Encoding.CreateBuilder((o)=>{}),
+            LightCommand.Encoding.CreateBuilder((o,o2)=>{}),
+            ReadCommand.Encoding.CreateBuilder((o)=>{})
+        };
 
+        private static readonly PacketEncodingBuilder[] _dataPacketEncodingBuilders = {
+            BatteryConfiguration.Encoding.CreateBuilder(),
+            BatteryOutput.Encoding.CreateBuilder(),
+            CoreConfiguration.Encoding.CreateBuilder(),
+            CoreSituation.Encoding.CreateBuilder(),
+            Fault.Encoding.CreateBuilder(),
+            LightSetting.Encoding.CreateBuilder(),
+            LightState.Encoding.CreateBuilder(),
+            PedalConfiguration.Encoding.CreateBuilder(),
+            PedalSetting.Encoding.CreateBuilder(),
+            ServoInput.Encoding.CreateBuilder(),
+            ServoOutput.Encoding.CreateBuilder(),
+            ThrottleConfiguration.Encoding.CreateBuilder()
+        };
+
+        private static readonly PacketEncodingBuilder _devicePacketEncodingBuilders =
+            Device.Encoding.CreateBuilder(new[] {
+                Data.Encoding.CreateBuilder(_dataPacketEncodingBuilders),
+                Command.Encoding.CreateBuilder(_commandPacketEncodingBuilders)});
         private static void Main(string[] args)
         {
-            
-            var configurationRoot = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("AppConfig.Json").Build();
             var serial = new SerialPort("com2", 9600);
             serial.Open();
             var reader = new BinaryReader(serial.BaseStream);
             var writer = new BinaryWriter(serial.BaseStream);
+            var b = new byte[] { 0xaa, 0xaa, 0x00, 0x64, 0x04, 0x04 };
+
+            var configurationRoot = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("AppConfig.Json").Build();
             var option = new SerialPortDataTransportOption();
             configurationRoot.GetSection(nameof(SerialPortDataTransportOption)).Bind(option);
-            
-            _dataTransport = new DeviceSerialDataTransport((new OptionsWrapper<SerialPortDataTransportOption>(option)));
+
+
+            var encoding = _devicePacketEncodingBuilders.Build();
+            _dataTransport = new DeviceSerialDataTransport(
+                new OptionsWrapper<SerialPortDataTransportOption>(option),
+                encoding);
             _dataTransport.Open();
-            var b = new byte[] { 0xaa, 0xaa, 0x00, 0x64, 0x04, 0x04 };
             _dataTransport.Channels[0].DataReceived += Channel_DataReceived;
             var packet = new Device() { Content = new Data() { Content = new Fault() { } } };
             while (true)
@@ -58,12 +87,13 @@ namespace Demo
 
         private static void Channel_DataReceived(object sender, DataReceivedEventArg<Device> e)
         {
+            
             lock (_o)
             {
-                _list.Add(e.Data.ToString());
                 _list.Add($" {_dataTransport.Channels[0].ToMonitoredChannel().GetDataReceivedCount}, {_dataTransport.Channels[0].ToMonitoredChannel().LastPacketTime}");
                 _list.Add($" {_dataTransport.Channels[0].ToCachedChannel().Packet.Count}");
-
+                _list.Add(e.Data.ToString());
+                _list.Add("\r\n");
             }
 
         }

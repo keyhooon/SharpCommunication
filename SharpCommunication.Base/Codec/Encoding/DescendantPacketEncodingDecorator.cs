@@ -29,12 +29,13 @@ namespace SharpCommunication.Codec.Encoding
             _encodingDictionary = new Dictionary<byte, EncodingDecorator>();
             EncodingDictionary = new ReadOnlyDictionary<byte, EncodingDecorator>(_encodingDictionary);
         }
+
         public void Register(EncodingDecorator encoding)
         {
             if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
 
-            var enc = (IAncestorPacketEncoding<IAncestorPacket>) encoding.FindDecoratedEncoding<IAncestorPacketEncoding<IAncestorPacket>>();
+            var enc = encoding.FindDecoratedEncoding<IAncestorPacketEncoding<IAncestorPacket>>();
             if (enc == null)
                 throw new NotSupportedException();
 

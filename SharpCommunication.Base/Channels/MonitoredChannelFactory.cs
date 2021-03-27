@@ -5,24 +5,14 @@ using System.IO;
 
 namespace SharpCommunication.Channels
 {
-    public class MonitoredChannelFactory<TPacket> : IChannelFactory<TPacket> where TPacket : IPacket
+    public class MonitoredChannelFactory<TPacket> : ChannelFactory<TPacket> where TPacket : IPacket
     {
-        public ICodec<TPacket> Codec { get; protected set; }
+        public override IChannel<TPacket> Create(Stream stream) => 
+            new MonitoredChannel<TPacket>((Channel<TPacket>)base.Create(stream));
 
-        public MonitoredChannelFactory(ICodec<TPacket> codec)
-        {
-            Codec = codec;
-        }
+        public override IChannel<TPacket> Create(Stream inputStream, Stream outputStream) => 
+            new MonitoredChannel<TPacket>((Channel<TPacket>) base.Create(inputStream, outputStream));
 
-        public virtual IChannel<TPacket> Create(Stream stream)
-        {
-            return Create(stream, stream);
-        }
-
-        public IChannel<TPacket> Create(Stream inputStream, Stream outputStream)
-        {
-            return new MonitoredChannel<TPacket>(new Channel<TPacket>(Codec, inputStream, outputStream));
-
-        }
+        public MonitoredChannelFactory(ICodec<TPacket> codec) : base(codec) { }
     }
 }

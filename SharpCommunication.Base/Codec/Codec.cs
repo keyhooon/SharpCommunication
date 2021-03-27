@@ -5,10 +5,15 @@ using System.IO;
 
 namespace SharpCommunication.Codec
 {
-    public abstract class Codec<TData> : ICodec<TData> where TData : IPacket, new()
+    public class Codec<TData> : ICodec<TData> where TData : IPacket, new()
     {
         public Type DataType => typeof(TData);
-        public abstract EncodingDecorator Encoding { get; }
+        public EncodingDecorator Encoding { get; }
+
+        public Codec(EncodingDecorator encoding)
+        {
+            Encoding = encoding;
+        }
         public TData Decode(BinaryReader stream)
         {
             if (stream == null)

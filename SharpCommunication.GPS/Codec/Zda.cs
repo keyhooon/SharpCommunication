@@ -28,7 +28,7 @@ namespace SharpCommunication.Codec
     public class Zda : NmeaMessage
     {
 
-
+        public override string MessageType => "Zda";
         /// <summary>
         /// Gets the time of fix
         /// </summary>
@@ -36,7 +36,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("ZDA")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "ZDA", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding, "ZDA", typeof(Zda))
             {
             }
 

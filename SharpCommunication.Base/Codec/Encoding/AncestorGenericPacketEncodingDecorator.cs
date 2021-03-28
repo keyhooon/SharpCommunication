@@ -34,7 +34,19 @@ namespace SharpCommunication.Codec.Encoding
             return packet;
         }
     }
-
+    public class EncodingOperationFinishedEventArgs : EventArgs
+    {
+        public IPacket Packet { get; }
+        public EncodingOperationFinishedEventArgs(IPacket packet)
+        {
+            Packet = packet;
+        }
+    }
+    public interface IAncestorPacketEncoding<in T> : IEncoding<IPacket> where T : IAncestorPacket
+    {
+        byte Id { get; }
+        Type PacketType { get; }
+    }
     public interface IAncestorPacketEncoding<in T, out TG> : IEncoding<IPacket> where T : IAncestorPacket
     {
         TG Id { get; }

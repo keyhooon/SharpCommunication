@@ -28,10 +28,11 @@ namespace SharpCommunication.Codec
     public class Rmc : NmeaMessage
 	{
 
-		/// <summary>
-		/// Fix Time
-		/// </summary>
-		public DateTime FixTime { get; private set; }
+        public override string MessageType => "Rmc";
+        /// <summary>
+        /// Fix Time
+        /// </summary>
+        public DateTime FixTime { get; private set; }
 
 		/// <summary>
 		/// Gets a value whether the device is active
@@ -65,7 +66,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("RMC")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "RMC", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding, "RMC", typeof(Rmc))
             {
             }
 

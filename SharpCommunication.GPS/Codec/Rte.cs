@@ -36,6 +36,8 @@ namespace SharpCommunication.Codec
 
     public sealed class Rte : NmeaMessage, IMultiPartMessage<string>
     {
+
+        public override string MessageType => "Rte";
         /// <summary>
         /// Waypoint tpe
         /// </summary>
@@ -99,7 +101,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("RTE")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "RTE", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding, "RTE", typeof(Rte))
             {
             }
 

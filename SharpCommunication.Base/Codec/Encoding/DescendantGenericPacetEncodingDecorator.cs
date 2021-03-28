@@ -13,7 +13,7 @@ namespace SharpCommunication.Codec.Encoding
         public readonly IReadOnlyDictionary<string, EncodingDecorator> EncodingDictionary;
         private readonly IDictionary<Type, string> _idDictionary;
         private readonly IDictionary<string, EncodingDecorator> _encodingDictionary;
-
+        private int keyLength;
         public DescendantGenericPacketEncodingDecorator(EncodingDecorator encoding, IEnumerable<EncodingDecorator> encodingsList) : this(encoding)
         {
             foreach (var encodingItem in encodingsList)
@@ -34,12 +34,14 @@ namespace SharpCommunication.Codec.Encoding
             if (encoding == null)
                 throw new ArgumentNullException(nameof(encoding));
 
-            var enc = (IAncestorPacketEncoding<IAncestorPacket, TG>)encoding.FindDecoratedEncoding<AncestorPacketEncoding>();
+            var enc = (IAncestorPacketEncoding<IAncestorPacket, TG>)encoding.FindDecoratedEncoding<AncestorGenericPacketEncodingDecorator<TG>>();
             if (enc == null)
                 throw new NotSupportedException();
 
-            _idDictionary.Add(enc.PacketType, enc.Id.ToString());
-            _encodingDictionary.Add(enc.Id.ToString(), encoding);
+            var key = enc.Id.ToString();
+            _idDictionary.Add(enc.PacketType, key);
+            _encodingDictionary.Add(key, encoding);
+            keyLength = key.Length;
         }
 
         public override void Encode(IPacket packet, BinaryWriter writer)
@@ -53,7 +55,7 @@ namespace SharpCommunication.Codec.Encoding
 
         public override IPacket Decode(BinaryReader reader)
         {
-            var packetEncodingId = reader.ReadByte();
+            var packetEncodingId = new string(reader.ReadChars(keyLength));
             _encodingDictionary.TryGetValue(packetEncodingId.ToString(), out var encodingDecorator);
             var obj = new T
             {

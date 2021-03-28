@@ -28,7 +28,7 @@ namespace SharpCommunication.Codec
 
     public class Gsv : NmeaMessage, IMultiPartMessage<SatelliteVehicle>
     {
-
+        public override string MessageType => "Gsv";
 
         /// <summary>
         /// Total number of messages of this type in this cycle
@@ -71,7 +71,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("GSV")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GSV", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding, "GSV", typeof(Gsv))
             {
             }
 

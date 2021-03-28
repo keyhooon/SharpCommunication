@@ -27,7 +27,8 @@ namespace SharpCommunication.Codec
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Gns")]
 
     public class Gns : NmeaMessage
-	{
+    {
+        public override string MessageType => "Gns";
         /*
          * Example of GNS messages:
          * $GNGNS,014035.00,4332.69262,S,17235.48549,E,RR,13,0.9,25.63,11.24,,*70   //GLONASS
@@ -192,7 +193,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("GNS")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GNS", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding, "GNS", typeof(Gns))
             {
             }
 
@@ -232,7 +233,8 @@ namespace SharpCommunication.Codec
             }
 
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder()
+                    .AddDecorate(item => new Encoding(item));
         }
     }
 }

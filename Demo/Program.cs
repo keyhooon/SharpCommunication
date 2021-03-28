@@ -20,7 +20,7 @@ namespace Demo
         private static readonly List<string> _list = new List<string>();
         private static int _index;
         private static readonly object _o = new object();
-        private static DeviceSerialDataTransport _dataTransport;
+        // private static DeviceSerialDataTransport _dataTransport;
         private static GpsSerialDataTransport _gpsDataTransport;
 
         private static readonly PacketEncodingBuilder[] _commandPacketEncodingBuilders = {
@@ -50,13 +50,13 @@ namespace Demo
                 Command.Encoding.CreateBuilder(_commandPacketEncodingBuilders)});
         private static void Main(string[] args)
         {
-            var serial = new SerialPort("com2", 9600);
-            serial.Open();
-            var reader = new BinaryReader(serial.BaseStream);
-            var writer = new BinaryWriter(serial.BaseStream);
-            var b = new byte[] { 0xaa, 0xaa, 0x00, 0x64, 0x04, 0x04 };
+            // var serial = new SerialPort("com2", 115200);
+            // serial.Open();
+            // var reader = new BinaryReader(serial.BaseStream);
+            // var writer = new BinaryWriter(serial.BaseStream);
+            // var b = new byte[] { 0xaa, 0xaa, 0x00, 0x64, 0x04, 0x04 };
 
-            var gpsSerial = new SerialPort("com3", 9600);
+            var gpsSerial = new SerialPort("com3", 115200);
             gpsSerial.Open();
             var gpsReader = new BinaryReader(gpsSerial.BaseStream);
             var gpsWriter = new BinaryWriter(gpsSerial.BaseStream);
@@ -65,61 +65,62 @@ namespace Demo
             var configurationRoot = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("AppConfig.Json").Build();
-            var option = new SerialPortDataTransportOption();
-            configurationRoot.GetSection(nameof(DeviceSerialDataTransport)).Bind(option);
+            // var option = new SerialPortDataTransportOption();
+            // configurationRoot.GetSection(nameof(DeviceSerialDataTransport)).Bind(option);
             var gpsOption = new SerialPortDataTransportOption();
-            configurationRoot.GetSection(nameof(GpsSerialDataTransport)).Bind(option);
+            configurationRoot.GetSection(nameof(GpsSerialDataTransport)).Bind(gpsOption);
 
-            var encoding = _devicePacketEncodingBuilders.Build();
-            _dataTransport = new DeviceSerialDataTransport(
-                new OptionsWrapper<SerialPortDataTransportOption>(option),
-                encoding);
-            _dataTransport.Open();
+            // var encoding = _devicePacketEncodingBuilders.Build();
+            // _dataTransport = new DeviceSerialDataTransport(
+            //     new OptionsWrapper<SerialPortDataTransportOption>(option),
+            //     encoding);
+            // _dataTransport.Open();
 
-            _gpsDataTransport = new GpsSerialDataTransport(new OptionsWrapper<SerialPortDataTransportOption>(option),new Gps.Encoding());
+            _gpsDataTransport = new GpsSerialDataTransport(new OptionsWrapper<SerialPortDataTransportOption>(gpsOption), Gps.Encoding.CreateBuilder().Build());
+            _gpsDataTransport.Open();
             _gpsDataTransport.Channels[0].DataReceived += (sender, arg) =>
             {
                 lock (_o)
                 {
                     _list.Add(
-                        $" {_dataTransport.Channels[0].ToMonitoredChannel().GetDataReceivedCount}, {_dataTransport.Channels[0].ToMonitoredChannel().LastPacketTime}");
-                    _list.Add($" {_dataTransport.Channels[0].ToCachedChannel().Packet.Count}");
+                        $" {_gpsDataTransport.Channels[0].ToMonitoredChannel().GetDataReceivedCount}, {_gpsDataTransport.Channels[0].ToMonitoredChannel().LastPacketTime}");
+                    _list.Add($" {_gpsDataTransport.Channels[0].ToCachedChannel().Packet.Count}");
                     _list.Add(arg.Data.ToString());
                     _list.Add("\r\n");
                 }
             };
-            _dataTransport.Channels[0].DataReceived += Channel_DataReceived;
-            var packet = new Device() { Content = new Data() { Content = new Fault { } } };
+            // _dataTransport.Channels[0].DataReceived += Channel_DataReceived;
+            // var packet = new Device() { Content = new Data() { Content = new Fault { } } };
             while (true)
             {
                 //writer.Write(b);
-                if (serial.BytesToRead > 0)
-                {
+                // if (serial.BytesToRead > 0)
+                // {
                     //Console.WriteLine(reader.ReadBytes(serial.BytesToRead).ToHexString());
-                    writer.Write(reader.ReadBytes(serial.BytesToRead));
+                    //writer.Write(reader.ReadBytes(serial.BytesToRead));
                     gpsWriter.Write(gpsTestData); ;
-                }
+                // }
                 lock(_o)
                     while (_list.Count > _index)
                         Console.WriteLine(_list[_index++]);
 
-                (_dataTransport.Channels[0]).Transmit(packet);
-                Thread.Sleep(100);
+                // (_dataTransport.Channels[0]).Transmit(packet);
+                Thread.Sleep(1000);
             }
         }
 
-        private static void Channel_DataReceived(object sender, DataReceivedEventArg<Device> e)
-        {
-            
-            lock (_o)
-            {
-                _list.Add($" {_dataTransport.Channels[0].ToMonitoredChannel().GetDataReceivedCount}, {_dataTransport.Channels[0].ToMonitoredChannel().LastPacketTime}");
-                _list.Add($" {_dataTransport.Channels[0].ToCachedChannel().Packet.Count}");
-                _list.Add(e.Data.ToString());
-                _list.Add("\r\n");
-            }
-
-        }
+        // private static void Channel_DataReceived(object sender, DataReceivedEventArg<Device> e)
+        // {
+        //     
+        //     lock (_o)
+        //     {
+        //         _list.Add($" {_dataTransport.Channels[0].ToMonitoredChannel().GetDataReceivedCount}, {_dataTransport.Channels[0].ToMonitoredChannel().LastPacketTime}");
+        //         _list.Add($" {_dataTransport.Channels[0].ToCachedChannel().Packet.Count}");
+        //         _list.Add(e.Data.ToString());
+        //         _list.Add("\r\n");
+        //     }
+        //
+        // }
 
     }
 }

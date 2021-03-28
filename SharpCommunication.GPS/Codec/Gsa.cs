@@ -27,6 +27,8 @@ namespace SharpCommunication.Codec
 
     public class Gsa : NmeaMessage
     {
+
+        public override string MessageType => "Gsa";
         /// <summary>
         /// Mode
         /// </summary>
@@ -62,7 +64,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("GSA")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GSA", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding, "GSA", typeof(Gsa))
             {
             }
 

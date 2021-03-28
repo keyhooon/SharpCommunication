@@ -30,8 +30,10 @@ namespace SharpCommunication.Codec
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly",
         MessageId = "Gpbod")]
 
-    public class Bod : NmeaMessage, IAncestorPacket
+    public class Bod : NmeaMessage
     {
+
+        public override string MessageType => "Bod";
 
 
         /// <summary>

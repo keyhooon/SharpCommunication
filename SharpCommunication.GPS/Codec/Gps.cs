@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 
 namespace SharpCommunication.Codec
 {
-    public class Gps : IDescendantPacket, IPropertyPacket
+    public class Gps : IDescendantPacket, IPropertyPacket<string>
     {
-        public byte[] PropertyBinary { get; set; }
+        public string Property { get; set; }
         public IAncestorPacket Content { get; set; }
+
+        public override string ToString()
+        {
+            return $"Gps {{ Type : {Property}, Content : {Content?.ToString()} }}";
+        }
 
         public class Encoding : DescendantGenericPacketEncodingDecorator<Gps, string>
         {
@@ -27,8 +33,8 @@ namespace SharpCommunication.Codec
 
             public static PacketEncodingBuilder CreateBuilder() =>
                 PacketEncodingBuilder.CreateDefaultBuilder()
-                    .AddDecorate(o => new HeaderPacketEncoding(o, BitConverter.GetBytes('$')))
-                    .AddDecorate(o => new PropertyPacketEncoding(o, 2))
+                    .WithHeader(new [] {BitConverter.GetBytes('$')[0]})
+                    .WithStringProperty(2)
                     .AddDecorate(o => new Encoding());
         }
     }

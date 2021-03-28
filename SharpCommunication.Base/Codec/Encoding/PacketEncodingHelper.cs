@@ -44,11 +44,23 @@ namespace SharpCommunication.Codec.Encoding
             mapItemBuilder.AddDecorate(item => new UnixTimeEpochPacketEncoding(item));
             return mapItemBuilder;
         }
-        public static PacketEncodingBuilder WithProperty(this PacketEncodingBuilder mapItemBuilder, byte propertySize) 
+        public static PacketEncodingBuilder WithProperty<T>(this PacketEncodingBuilder mapItemBuilder, byte propertySize, Func<IPropertyPacket<T>, byte[]> Encode, Action<byte[], IPropertyPacket<T>> Decode)
         {
-            mapItemBuilder.AddDecorate(item => new PropertyPacketEncoding(item, propertySize));
+            mapItemBuilder.AddDecorate(item => new PropertyPacketEncoding<T>(item, propertySize, Encode, Decode));
             return mapItemBuilder;
         }
+        public static PacketEncodingBuilder WithStringProperty(this PacketEncodingBuilder mapItemBuilder, byte propertySize)
+        {
+            mapItemBuilder.AddDecorate(item => new PropertyPacketEncoding<string>(item, propertySize,
+                (packet) => System.Text.Encoding.UTF8.GetBytes(packet.Property),
+                (bytes, packet) => packet.Property = System.Text.Encoding.UTF8.GetString(bytes)));
+
+            return mapItemBuilder;
+        }
+
+
+
+
         public static EncodingDecorator GetChildEncoding<TP, TC>(this EncodingDecorator encodingDecorator) where TP : class, IDescendantPacket, new() where TC : IAncestorPacket
         {
             var descendantPacketEncoding = encodingDecorator.FindDecoratedEncoding<DescendantPacketEncoding<TP>>();

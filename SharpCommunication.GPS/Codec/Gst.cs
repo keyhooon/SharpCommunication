@@ -26,6 +26,7 @@ namespace SharpCommunication.Codec
 
     public class Gst : NmeaMessage
     {
+        public override string MessageType => "Gst";
         /// <summary>
         /// UTC of position fix
         /// </summary>
@@ -78,7 +79,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("GST")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GST", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding, "GST", typeof(Gst))
             {
             }
 

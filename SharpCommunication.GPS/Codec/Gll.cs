@@ -24,13 +24,13 @@ namespace SharpCommunication.Codec
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Gll")]
     public class Gll : NmeaMessage
-	{
+    {
 
-
-		/// <summary>
-		/// Latitude
-		/// </summary>
-		public double Latitude { get; private set; }
+        public override string MessageType => "Gll";
+        /// <summary>
+        /// Latitude
+        /// </summary>
+        public double Latitude { get; private set; }
 
 		/// <summary>
 		/// Longitude
@@ -59,7 +59,7 @@ namespace SharpCommunication.Codec
 
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GLL", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding, "GLL", typeof(Gll))
             {
             }
 

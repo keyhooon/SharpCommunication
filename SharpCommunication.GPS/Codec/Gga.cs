@@ -26,13 +26,13 @@ namespace SharpCommunication.Codec
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Gpgga")]
 
     public class Gga : NmeaMessage
-	{
+    {
 
-
-		/// <summary>
-		/// Time of day fix was taken
-		/// </summary>
-		public TimeSpan FixTime { get; private set; }
+        public override string MessageType => "Gga";
+        /// <summary>
+        /// Time of day fix was taken
+        /// </summary>
+        public TimeSpan FixTime { get; private set; }
 		
 		/// <summary>
 		/// Latitude
@@ -93,7 +93,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("GGA")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GGA", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding, "GGA", typeof(Gga))
             {
             }
 

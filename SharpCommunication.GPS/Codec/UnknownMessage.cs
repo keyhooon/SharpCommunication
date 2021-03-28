@@ -20,5 +20,6 @@ namespace SharpCommunication.Codec
     public class UnknownMessage : NmeaMessage
 	{
 
+        public override string MessageType => "---";
     }
 }

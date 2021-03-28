@@ -1,8 +1,8 @@
 ﻿namespace SharpCommunication.Codec.Packets
 {
-    public interface IPropertyPacket : IPacket
+    public interface IPropertyPacket<T> : IPacket 
     {
-        byte[] PropertyBinary { get; set; }
+        T Property { get; set; }
 
     }
 }

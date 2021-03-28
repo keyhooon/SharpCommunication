@@ -27,6 +27,8 @@ namespace SharpCommunication.Codec
 
     public class Rmb : NmeaMessage
     {
+
+        public override string MessageType => "Rmb";
         /// <summary>
         /// Data status
         /// </summary>
@@ -94,7 +96,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("RMB")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "RMB", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding, "RMB", typeof(Rmb))
             {
             }
 

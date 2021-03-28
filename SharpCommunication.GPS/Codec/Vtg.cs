@@ -30,7 +30,7 @@ namespace SharpCommunication.Codec
     public class Vtg : NmeaMessage
     {
 
-
+        public override string MessageType => "Vtg";
         /// <summary>
         ///  Course over ground relative to true north
         /// </summary>
@@ -53,7 +53,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("VTG")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "VTG", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding, "VTG", typeof(Vtg))
             {
             }
 

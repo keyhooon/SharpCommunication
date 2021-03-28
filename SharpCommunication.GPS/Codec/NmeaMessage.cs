@@ -27,9 +27,9 @@ namespace SharpCommunication.Codec
     /// <summary>
     /// NMEA Message base class.
     /// </summary>
-    public class NmeaMessage: IDescendantPacket,IPropertyPacket
+    public abstract class NmeaMessage: IDescendantPacket, IPropertyPacket<string>, IAncestorPacket
     {
-        public byte[] PropertyBinary { get; set; }
+        string IPropertyPacket<string>.Property { get; set; }
         public IAncestorPacket Content { get; set; }
         /// <summary>
         /// Gets the NMEA message parts.
@@ -39,7 +39,7 @@ namespace SharpCommunication.Codec
         /// <summary>
         /// Gets the NMEA type id for the message.
         /// </summary>
-        public string MessageType { get; }
+        public abstract string MessageType { get; }
 
         /// <summary>
         /// Gets the talker ID for this message (
@@ -77,7 +77,7 @@ namespace SharpCommunication.Codec
         /// </returns>
         public override string ToString()
         {
-            return string.Format(CultureInfo.InvariantCulture, "${0},{1}*{2:X2}", MessageType, string.Join(",", MessageParts), Checksum);
+            return $"{MessageType} {{ {string.Join(",", MessageParts)} }}";
         }
 
 
@@ -96,8 +96,10 @@ namespace SharpCommunication.Codec
                 var parts = new List<string>();
                 var ch = reader.ReadChar();
                 var sb = new StringBuilder();
-
-                while (ch == '\r')
+                if (ch != ',')
+                    throw new FormatException();
+                ch = reader.ReadChar();
+                while (ch != '\r')
                 {
 
                     if (ch == ',')
@@ -111,7 +113,7 @@ namespace SharpCommunication.Codec
                     }
                     ch = reader.ReadChar();
                 }
-
+                parts.Add(sb.ToString());
                 NmeaMessage decodeCore = (NmeaMessage) DecodeCore(parts);
                 decodeCore.MessageParts = new ReadOnlyCollection<string>(parts);
                 return decodeCore;

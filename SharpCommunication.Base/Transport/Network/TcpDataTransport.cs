@@ -13,21 +13,21 @@ namespace SharpCommunication.Transport.Network
         private TcpListener _tcpListener;
 
 
-        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, IOptions<TcpDataTransportOption> option, ILogger log) : base(channelFactory, option, log)
+        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, IOptionsMonitor<TcpDataTransportOption> option, ILogger log) : base(channelFactory, option, log)
         {
         }
 
 
-        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, IOptions<TcpDataTransportOption> option) : base(channelFactory, option)
+        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, IOptionsMonitor<TcpDataTransportOption> option) : base(channelFactory, option)
         {
         }
 
         protected override void OpenCore()
         {
             Log.LogInformation("Starting ...");
-            var localEndPoint = new IPEndPoint(IPAddress.Any, ((IOptions <TcpDataTransportOption>) Option).Value.ListenPort);
+            var localEndPoint = new IPEndPoint(IPAddress.Any, ((IOptionsMonitor<TcpDataTransportOption>) Option).CurrentValue.ListenPort);
             _tcpListener = new TcpListener(localEndPoint);
-            _tcpListener.Start(((IOptions<TcpDataTransportOption>)Option).Value.BackLog);
+            _tcpListener.Start(((IOptionsMonitor<TcpDataTransportOption>)Option).CurrentValue.BackLog);
 
 
 

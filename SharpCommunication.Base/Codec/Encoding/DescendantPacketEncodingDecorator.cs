@@ -7,7 +7,7 @@ using System.IO;
 namespace SharpCommunication.Codec.Encoding
 {
 
-    public class DescendantPacketEncoding<T> : EncodingDecorator, IDescendantPacketEncoding where T: IDescendantPacket, new()
+    public class DescendantPacketEncoding<T> : DescendantGenericPacketEncodingDecorator<T,byte>, IDescendantPacketEncoding where T: IDescendantPacket, new()
         {
         public readonly IReadOnlyDictionary<Type, byte> IdDictionary;
         public readonly IReadOnlyDictionary<byte, EncodingDecorator> EncodingDictionary ;

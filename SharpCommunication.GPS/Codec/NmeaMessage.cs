@@ -27,10 +27,9 @@ namespace SharpCommunication.Codec
     /// <summary>
     /// NMEA Message base class.
     /// </summary>
-    public abstract class NmeaMessage: IDescendantPacket, IPropertyPacket<string>, IAncestorPacket
+    public abstract class NmeaMessage: IPropertyPacket<string>, IAncestorPacket
     {
         string IPropertyPacket<string>.Property { get; set; }
-        public IAncestorPacket Content { get; set; }
         /// <summary>
         /// Gets the NMEA message parts.
         /// </summary>

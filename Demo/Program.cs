@@ -105,7 +105,7 @@ namespace Demo
                         Console.WriteLine(_list[_index++]);
 
                 // (_dataTransport.Channels[0]).Transmit(packet);
-                Thread.Sleep(1000);
+                Thread.Sleep(10);
             }
         }
 

@@ -8,6 +8,7 @@
     <PackageProjectUrl>https://github.com/keyhooon/SharpCommunication</PackageProjectUrl>
     <RepositoryType></RepositoryType>
     <RepositoryUrl>https://github.com/keyhooon/SharpCommunication</RepositoryUrl>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -3,6 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+            <PackageProjectUrl>https://github.com/keyhooon/SharpCommunication</PackageProjectUrl>
+    <RepositoryType></RepositoryType>
+    <RepositoryUrl>https://github.com/keyhooon/SharpCommunication</RepositoryUrl>    
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

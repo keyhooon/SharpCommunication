@@ -8,11 +8,11 @@ namespace SharpCommunication.Transport.Stream
     {
         private ProducerConsumerStream _inStream;
         private ProducerConsumerStream _outStream;
-        public StreamDataTransport(IChannelFactory<TPacket> channelFactory, IOptions<DataTransportOption> option) : base(channelFactory, option)
+        public StreamDataTransport(IChannelFactory<TPacket> channelFactory, DataTransportOption option) : base(channelFactory, option)
         {
 
         }
-        private StreamDataTransport(ProducerConsumerStream inStream, ProducerConsumerStream outStream, IChannelFactory<TPacket> channelFactory, IOptions<DataTransportOption> option) : base(channelFactory, option)
+        private StreamDataTransport(ProducerConsumerStream inStream, ProducerConsumerStream outStream, IChannelFactory<TPacket> channelFactory, DataTransportOption option) : base(channelFactory, option)
         {
             _inStream = inStream;
             _outStream = outStream;

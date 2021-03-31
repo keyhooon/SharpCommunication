@@ -8,26 +8,26 @@ using SharpCommunication.Codec.Packets;
 
 namespace SharpCommunication.Transport.Network
 {
-    public abstract class TcpDataTransport<TPacket> : DataTransport<TPacket> where TPacket : IPacket
+    public class TcpDataTransport<TPacket> : DataTransport<TPacket> where TPacket : IPacket
     {
         private TcpListener _tcpListener;
 
 
-        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, IOptionsMonitor<TcpDataTransportOption> option, ILogger log) : base(channelFactory, option, log)
+        public TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportOption option, ILogger log) : base(channelFactory, option, log)
         {
         }
 
 
-        protected TcpDataTransport(IChannelFactory<TPacket> channelFactory, IOptionsMonitor<TcpDataTransportOption> option) : base(channelFactory, option)
+        public TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportOption option) : base(channelFactory, option)
         {
         }
 
         protected override void OpenCore()
         {
             Log.LogInformation("Starting ...");
-            var localEndPoint = new IPEndPoint(IPAddress.Any, ((IOptionsMonitor<TcpDataTransportOption>) Option).CurrentValue.ListenPort);
+            var localEndPoint = new IPEndPoint(IPAddress.Any, ((TcpDataTransportOption) Option).ListenPort);
             _tcpListener = new TcpListener(localEndPoint);
-            _tcpListener.Start(((IOptionsMonitor<TcpDataTransportOption>)Option).CurrentValue.BackLog);
+            _tcpListener.Start(((TcpDataTransportOption)Option).BackLog);
 
 
 

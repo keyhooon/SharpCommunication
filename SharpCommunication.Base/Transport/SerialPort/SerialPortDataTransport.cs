@@ -9,12 +9,12 @@ namespace SharpCommunication.Transport.SerialPort
     {
         private System.IO.Ports.SerialPort _serialPort;
 
-        public SerialPortDataTransport(IChannelFactory<TPacket> channelFactory, IOptionsMonitor<SerialPortDataTransportOption> option) : base(channelFactory, option)
+        public SerialPortDataTransport(IChannelFactory<TPacket> channelFactory, SerialPortDataTransportOption option) : base(channelFactory, option)
         {
 
         }
 
-        public SerialPortDataTransport(IChannelFactory<TPacket> channelFactory, IOptionsMonitor<SerialPortDataTransportOption> option, ILogger log) : base(channelFactory, option, log)
+        public SerialPortDataTransport(IChannelFactory<TPacket> channelFactory, SerialPortDataTransportOption option, ILogger log) : base(channelFactory, option, log)
         {
 
         }
@@ -29,8 +29,8 @@ namespace SharpCommunication.Transport.SerialPort
 
         protected override void OpenCore()
         {
-            var option = ((IOptionsMonitor<SerialPortDataTransportOption>)Option);
-            var serialPortDataTransportOption = option.CurrentValue;
+            var option = ((SerialPortDataTransportOption)Option);
+            var serialPortDataTransportOption = option;
             _serialPort = new System.IO.Ports.SerialPort(serialPortDataTransportOption.PortName, serialPortDataTransportOption.BaudRate, serialPortDataTransportOption.Parity, serialPortDataTransportOption.DataBits, serialPortDataTransportOption.StopBits)
             {
                 ReadTimeout = serialPortDataTransportOption.ReadTimeout

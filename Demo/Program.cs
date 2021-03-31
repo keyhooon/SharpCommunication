@@ -76,21 +76,8 @@ namespace Demo
             //     encoding);
             // _dataTransport.Open();
 
-            _gpsDataTransport = new GpsSerialDataTransport(new OptionsWrapper<SerialPortDataTransportOption>(gpsOption), Gps.Encoding.CreateBuilder().Build());
+            _gpsDataTransport = new GpsSerialDataTransport(gpsOption, Gps.Encoding.CreateBuilder().Build());
             _gpsDataTransport.Open();
-            ((AncestorGenericPacketEncodingDecorator<string>) (_gpsDataTransport.Codec.Encoding
-                    .GetChildEncoding<Gps, Gns>())).DecodeFinished +=
-                (sender, eventArgs) =>
-                {
-                    lock (_o)
-                    {
-                        _list.Add(
-                            $" {_gpsDataTransport.Channels[0].ToMonitoredChannel().GetDataReceivedCount}, {_gpsDataTransport.Channels[0].ToMonitoredChannel().LastPacketTime}");
-                        _list.Add($" {_gpsDataTransport.Channels[0].ToCachedChannel().Packet.Count}");
-                        _list.Add(eventArgs.Packet.ToString());
-                        _list.Add("\r\n");
-                    }
-                };
             _gpsDataTransport.Channels[0].DataReceived += (sender, arg) =>
             {
                 lock (_o)

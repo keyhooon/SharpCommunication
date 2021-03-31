@@ -36,10 +36,9 @@ namespace Demo.Service
 
 
         private DeviceSerialDataTransport _deviceSerialDataTransport;
-        public DeviceService(DeviceSerialDataTransport deviceSerialDataTransport, EncodingDecorator deviceEncoding)
+        public DeviceService(DeviceSerialDataTransport deviceSerialDataTransport)
         {
             _deviceSerialDataTransport = deviceSerialDataTransport;
- //           deviceEncoding.GetChildEncoding<Device,Command>().GetChildEncoding<Command,CruiseCommand>().
         }
         
     }

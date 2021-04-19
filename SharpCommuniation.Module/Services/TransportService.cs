@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Prism.Mvvm;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec;
@@ -33,9 +34,11 @@ namespace SharpCommunication.Module.Services
             var dataTransportOption = new SerialPortDataTransportOption();
             namedConfigurationSection.Bind(dataTransportOption);
             var codec = new Codec<T>(encoding);
+            var monitoredCachedChannelFactory = new MonitoredCachedChannelFactory<T>(codec);
             return serviceCollection
                 .AddSingleton(codec)
-                .AddSingleton(new SerialPortDataTransport<T>(new MonitoredCachedChannelFactory<T>(codec),
+                .AddSingleton(monitoredCachedChannelFactory)
+                .AddSingleton(new SerialPortDataTransport<T>(monitoredCachedChannelFactory,
                     dataTransportOption));
         }
         public static IServiceCollection AddNetworkTransport<T>(

@@ -16,4 +16,8 @@ namespace SharpCommunication.Channels
         event EventHandler<DataReceivedEventArg<TPacket>> DataReceived;
         event EventHandler<Exception> ErrorReceived;
     }
+    public interface IChannel : IChannel<IPacket>
+    {
+        
+    }
 }

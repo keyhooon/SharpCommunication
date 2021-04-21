@@ -32,7 +32,13 @@ namespace SharpCommunication.Module.ViewModels
             StopBits = ((SerialPortDataTransportOption)_dataTransport.Option).StopBits;
             DataBits = ((SerialPortDataTransportOption)_dataTransport.Option).DataBits;
             ReadTimeout = ((SerialPortDataTransportOption)_dataTransport.Option).ReadTimeout;
+            _dataTransport.IsOpenChanged += (sender, args) =>
+            {
+                RaisePropertyChanged(nameof(IsOpen));
+            };
         }
+
+        public bool IsOpen => _dataTransport.IsOpen;
 
         public string PortName
         {

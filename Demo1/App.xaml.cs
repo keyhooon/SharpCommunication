@@ -30,6 +30,7 @@ namespace GPSModule
             var configurationRoot = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("AppConfig.json", optional: true, true).Build();
+          
             containerRegistry.RegisterServices(collection =>
             {
                 collection
@@ -59,17 +60,11 @@ namespace GPSModule
                                     .WithView(typeof(MapView))
                                     .WithExtraView(new Dictionary<string, IEnumerable<Type>>
                                     {
-                                        {"PopupToolBarRegion", new[] {typeof(CachedChannelView) }}, 
-                                        { "ToolsRegion", new[] {typeof(TransportConfigView) }}
-                                    })),
-                                compositeMapNavigatorService.RegisterItem("Device\\GPS\\Message",MapItemBuilder
-                                    .CreateDefaultBuilder("Message")
-                                    .WithImagePackIcon(PackIconKind.MessageBookmark)
-                                    .WithToolBars(new[]{ typeof(ServiceToolBar1View)})
-                                    .WithView(typeof(NmeaView))
-                                    .WithExtraView(new Dictionary<string, IEnumerable<Type>>
-                                    {
-                                        {"PopupToolBarRegion", new[] {typeof(CachedChannelView) }},
+                                        {"PopupToolBarRegion", new[]
+                                        {
+                                            typeof(CachedChannelView),
+                                            typeof(NmeaView)
+                                        }}, 
                                         { "ToolsRegion", new[] {typeof(TransportConfigView) }}
                                     })),
                             })

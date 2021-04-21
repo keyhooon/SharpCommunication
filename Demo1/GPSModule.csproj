@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaterialDesignUnityBootStrap" Version="1.0.7" />
+    <PackageReference Include="MaterialDesignUnityBootStrap" Version="1.0.8" />
     <PackageReference Include="NetTopologySuite" Version="2.2.0" />
     <PackageReference Include="XAML.MapControl" Version="5.6.0" />
   </ItemGroup>

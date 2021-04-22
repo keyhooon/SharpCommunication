@@ -15,6 +15,7 @@ using Prism.Regions;
 using SharpCommunication.Codec;
 using SharpCommunication.Module.Services;
 using SharpCommunication.Module.Views;
+using SharpCommunication.Transport.SerialPort;
 using Unity;
 
 namespace GPSModule
@@ -34,7 +35,7 @@ namespace GPSModule
             containerRegistry.RegisterServices(collection =>
             {
                 collection
-                    .AddSerialPortTransport<Gps>(new Gps.Encoding(), configurationRoot.GetSection("GpsConfig"))
+                    .AddSerialPortTransport<Gps>(new Gps.Encoding(), SerialPortDataTransportSettings.Default)
                     .AddSingleton<GpsService>();
             });
         }

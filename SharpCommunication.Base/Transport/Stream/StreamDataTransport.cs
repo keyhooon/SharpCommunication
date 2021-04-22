@@ -8,11 +8,11 @@ namespace SharpCommunication.Transport.Stream
     {
         private ProducerConsumerStream _inStream;
         private ProducerConsumerStream _outStream;
-        public StreamDataTransport(IChannelFactory<TPacket> channelFactory, DataTransportOption option) : base(channelFactory, option)
+        public StreamDataTransport(IChannelFactory<TPacket> channelFactory, StreamDataTransportSettings settings) : base(channelFactory, settings)
         {
 
         }
-        private StreamDataTransport(ProducerConsumerStream inStream, ProducerConsumerStream outStream, IChannelFactory<TPacket> channelFactory, DataTransportOption option) : base(channelFactory, option)
+        private StreamDataTransport(ProducerConsumerStream inStream, ProducerConsumerStream outStream, IChannelFactory<TPacket> channelFactory, StreamDataTransportSettings settings) : base(channelFactory, settings)
         {
             _inStream = inStream;
             _outStream = outStream;
@@ -24,7 +24,7 @@ namespace SharpCommunication.Transport.Stream
         public StreamDataTransport<TPacket> GetStreamDataTransportGateway()
         {
             if (IsOpen)
-                return new StreamDataTransport<TPacket>(_outStream, _inStream, ChannelFactory, Option);
+                return new StreamDataTransport<TPacket>(_outStream, _inStream, ChannelFactory, (StreamDataTransportSettings)Settings);
             throw new System.Exception();
         }
 

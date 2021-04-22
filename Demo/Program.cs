@@ -67,7 +67,7 @@ namespace Demo
                 .AddJsonFile("AppConfig.Json").Build();
             // var option = new SerialPortDataTransportOption();
             // configurationRoot.GetSection(nameof(DeviceSerialDataTransport)).Bind(option);
-            var gpsOption = new SerialPortDataTransportOption();
+            var gpsOption = new SerialPortDataTransportSettings();
             configurationRoot.GetSection(nameof(GpsSerialDataTransport)).Bind(gpsOption);
 
             // var encoding = _devicePacketEncodingBuilders.Build();

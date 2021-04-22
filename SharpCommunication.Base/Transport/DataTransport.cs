@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec;
 using SharpCommunication.Codec.Packets;
+using SharpCommunication.Transport.SerialPort;
 
 namespace SharpCommunication.Transport
 {
@@ -19,26 +20,26 @@ namespace SharpCommunication.Transport
         protected ObservableCollection<IChannel<TPacket>> InnerChannels;
         protected ILogger Log { get; }
         protected readonly IChannelFactory<TPacket> ChannelFactory;
-        public readonly DataTransportOption Option;
+        public readonly DataTransportSettings Settings;
         public event EventHandler IsOpenChanged;
         public event EventHandler CanOpenChanged;
         public event EventHandler CanCloseChanged;
 
-        protected DataTransport(IChannelFactory<TPacket> channelFactory, DataTransportOption option) : this(channelFactory, option, NullLoggerProvider.Instance.CreateLogger("DataTransport"))
+        protected DataTransport(IChannelFactory<TPacket> channelFactory, DataTransportSettings setting) : this(channelFactory, setting, NullLoggerProvider.Instance.CreateLogger("DataTransport"))
         {
 
         }
 
-        protected DataTransport(IChannelFactory<TPacket> channelFactory, DataTransportOption option,
+        protected DataTransport(IChannelFactory<TPacket> channelFactory, DataTransportSettings setting,
             ILogger log)
         {
             Log = log;
-            Option = option;
+            Settings = setting;
             ChannelFactory = channelFactory;
             InnerChannels = new ObservableCollection<IChannel<TPacket>>();
             Channels = new ReadOnlyObservableCollection<IChannel<TPacket>>(InnerChannels);
 
-            if (option.AutoCheckIsOpen)
+            if (setting.AutoCheckIsOpen)
             {
                 _tokenSource = new CancellationTokenSource();
 
@@ -54,7 +55,7 @@ namespace SharpCommunication.Transport
                                 IsOpen = IsOpenCore;
                             }
 
-                            await Task.Delay(Option.AutoCheckIsOpenTime, token);
+                            await Task.Delay(Settings.AutoCheckIsOpenTime, token);
                         }
                         catch (OperationCanceledException e)
                         {
@@ -127,7 +128,7 @@ namespace SharpCommunication.Transport
         {
             if (IsOpen)
                 Close();
-            if (Option.AutoCheckIsOpen)
+            if (Settings.AutoCheckIsOpen)
             {
                 _tokenSource.Cancel();
                 Task.WaitAll(new Task[] {_checkingIsOpenedTask}, 1000);

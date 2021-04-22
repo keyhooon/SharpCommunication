@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec.Packets;
+using SharpCommunication.Transport.SerialPort;
 
 namespace SharpCommunication.Transport.Network
 {
@@ -13,21 +14,21 @@ namespace SharpCommunication.Transport.Network
         private TcpListener _tcpListener;
 
 
-        public TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportOption option, ILogger log) : base(channelFactory, option, log)
+        public TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportSettings sttings, ILogger log) : base(channelFactory, sttings, log)
         {
         }
 
 
-        public TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportOption option) : base(channelFactory, option)
+        public TcpDataTransport(IChannelFactory<TPacket> channelFactory, TcpDataTransportSettings sttings) : base(channelFactory, sttings)
         {
         }
 
         protected override void OpenCore()
         {
             Log.LogInformation("Starting ...");
-            var localEndPoint = new IPEndPoint(IPAddress.Any, ((TcpDataTransportOption) Option).ListenPort);
+            var localEndPoint = new IPEndPoint(IPAddress.Any, ((TcpDataTransportSettings) Settings).ListenPort);
             _tcpListener = new TcpListener(localEndPoint);
-            _tcpListener.Start(((TcpDataTransportOption)Option).BackLog);
+            _tcpListener.Start(((TcpDataTransportSettings)Settings).BackLog);
 
 
 

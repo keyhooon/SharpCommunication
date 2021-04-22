@@ -29,30 +29,27 @@ namespace SharpCommunication.Module.Services
         public static IServiceCollection AddSerialPortTransport<T>(
             this IServiceCollection serviceCollection, 
             EncodingDecorator encoding,
-            IConfiguration namedConfigurationSection) where T: IPacket, new()
+            SerialPortDataTransportSettings settings) where T: IPacket, new()
         {
-            var dataTransportOption = new SerialPortDataTransportOption();
-            namedConfigurationSection.Bind(dataTransportOption);
             var codec = new Codec<T>(encoding);
             var monitoredCachedChannelFactory = new MonitoredCachedChannelFactory<T>(codec);
             return serviceCollection
                 .AddSingleton(codec)
                 .AddSingleton(monitoredCachedChannelFactory)
                 .AddSingleton(new SerialPortDataTransport<T>(monitoredCachedChannelFactory,
-                    dataTransportOption));
+                    settings));
         }
         public static IServiceCollection AddNetworkTransport<T>(
             this IServiceCollection serviceCollection,
             EncodingDecorator encoding,
-            IConfiguration namedConfigurationSection) where T : IPacket, new()
+            TcpDataTransportSettings settings) where T : IPacket, new()
         {
-            var dataTransportOption = new TcpDataTransportOption();
-            namedConfigurationSection.Bind(dataTransportOption);
+
             var codec = new Codec<T>(encoding);
             return serviceCollection
                 .AddSingleton(codec)
                 .AddSingleton(new TcpDataTransport<T>(new MonitoredCachedChannelFactory<T>(codec),
-                    dataTransportOption));
+                    settings));
         }
     }
 }

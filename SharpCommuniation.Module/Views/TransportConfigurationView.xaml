@@ -14,7 +14,7 @@
     xmlns:xamlConverter="clr-namespace:WpfInfrastructure.XamlConverter;assembly=WpfInfrastructure"
     mc:Ignorable="d">
     <UserControl.Resources />
-    <materialDesign:Card Margin="5">
+    <materialDesign:Card Margin="5" materialDesign:ShadowAssist.ShadowDepth="Depth0">
         <materialDesign:ColorZone Mode="PrimaryMid">
 
             <Expander Background="{StaticResource PrimaryHueMidBrush}">

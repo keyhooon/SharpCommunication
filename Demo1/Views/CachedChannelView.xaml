@@ -8,15 +8,10 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     compositeContentNavigator:ViewManager.HeaderPackIcon="GpsFixed"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
         <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}">
-            <Viewbox
-                Width="150"
-                Height="150"
-                Margin="10">
+            <Viewbox Margin="10">
                 <loadingIndicator:LoadingIndicator
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
@@ -29,38 +24,37 @@
             </Viewbox>
         </materialDesign:TransitioningContent>
         <materialDesign:TransitioningContent OpeningEffectsOffset="{materialDesign:IndexedItemOffsetMultiplier 0:0:0.05}">
-            <StackPanel Visibility="{Binding Loaded, Converter={StaticResource BoolToVisConverter}}">
-                <materialDesign:ColorZone Margin="5" Mode="PrimaryDark">
-                    <DockPanel>
-                        <TextBlock
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            DockPanel.Dock="Top"
-                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                            Text="{Binding MonitoredChannelDecorator.GetDataReceivedCount}" />
-                        <TextBlock
-                            Margin="5"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            DockPanel.Dock="Bottom"
-                            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                            Text="{Binding MonitoredChannelDecorator.LastPacketTime}" />
-                        <TextBlock Width="200" HorizontalAlignment="Left">
-                            <TextBlock.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignHeadline6TextBlock}" TargetType="TextBlock">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsOpen}" Value="True">
-                                            <Setter Property="Text" Value="Connected" />
-                                        </DataTrigger>
+            <StackPanel Width="200" Visibility="{Binding Loaded, Converter={StaticResource BoolToVisConverter}}">
+                <DockPanel>
+                    <TextBlock
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        DockPanel.Dock="Top"
+                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                        Text="{Binding MonitoredChannelDecorator.GetDataReceivedCount}" />
+                    <TextBlock
+                        Margin="5"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        DockPanel.Dock="Bottom"
+                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                        Text="{Binding MonitoredChannelDecorator.LastPacketTime}" />
+                    <TextBlock Margin="5" HorizontalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style BasedOn="{StaticResource MaterialDesignHeadline6TextBlock}" TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsOpen}" Value="True">
+                                        <Setter Property="Text" Value="Connected" />
+                                    </DataTrigger>
 
-                                    </Style.Triggers>
-                                    <Setter Property="Text" Value="Not Connected" />
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
+                                </Style.Triggers>
+                                <Setter Property="Text" Value="Not Connected" />
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
 
-                    </DockPanel>
-                </materialDesign:ColorZone>
+                </DockPanel>
+                <Separator />
                 <ItemsControl ItemsSource="{Binding CachedChannelDecorator.Packet}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>

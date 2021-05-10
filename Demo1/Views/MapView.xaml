@@ -12,30 +12,28 @@
     <compositeContentNavigator:ViewManager.HeaderChipIcon>
         <materialDesign:PackIcon Kind="MapMarker" />
     </compositeContentNavigator:ViewManager.HeaderChipIcon>
-    <materialDesign:Card Margin="20" materialDesign:ShadowAssist.ShadowDepth="Depth5">
-        <materialDesign:ColorZone VerticalAlignment="Stretch" Mode="PrimaryDark">
-            <Grid>
-                <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource InverseBoolToVisConverter}}">
-                    <Viewbox
-                        Width="150"
-                        Height="150"
-                        Margin="10">
-                        <loadingIndicator:LoadingIndicator
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
-                            IsActive="True"
-                            Mode="Arcs"
-                            SpeedRatio="1.2" />
-                    </Viewbox>
-                </materialDesign:TransitioningContent>
-                <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource BoolToVisConverter}}">
 
-                    <Grid>
-                        <xamlMap:Map CurrentLocation="{Binding Location}" />
-                    </Grid>
-                </materialDesign:TransitioningContent>
+    <Grid Margin="15">
+        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource InverseBoolToVisConverter}}">
+            <Viewbox
+                Width="150"
+                Height="150"
+                Margin="10">
+                <loadingIndicator:LoadingIndicator
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                    IsActive="True"
+                    Mode="Arcs"
+                    SpeedRatio="1.2" />
+            </Viewbox>
+        </materialDesign:TransitioningContent>
+        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource BoolToVisConverter}}">
+
+            <Grid>
+                <xamlMap:Map CurrentLocation="{Binding Location}" />
             </Grid>
-        </materialDesign:ColorZone>
-    </materialDesign:Card>
+        </materialDesign:TransitioningContent>
+    </Grid>
+
 </UserControl>

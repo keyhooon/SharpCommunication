@@ -11,16 +11,16 @@ namespace Demo.Transport
     public class DeviceSerialDataTransport : SerialPortDataTransport<Device>
     {
 
-        public DeviceSerialDataTransport(SerialPortDataTransportOption option, EncodingDecorator deviceEncoding, ILogger logger) :
+        public DeviceSerialDataTransport(SerialPortDataTransportSettings settings, EncodingDecorator deviceEncoding, ILogger logger) :
             base(new MonitoredCachedChannelFactory<Device>(
                     new Codec<Device>(deviceEncoding)),
-                option,
+                settings,
                 logger)
         { }
-        public DeviceSerialDataTransport(SerialPortDataTransportOption option, EncodingDecorator deviceEncoding) :
+        public DeviceSerialDataTransport(SerialPortDataTransportSettings settings, EncodingDecorator deviceEncoding) :
             base(new MonitoredCachedChannelFactory<Device>(
                     new Codec<Device>(deviceEncoding)),
-                option)
+                settings)
         { }
 
     }

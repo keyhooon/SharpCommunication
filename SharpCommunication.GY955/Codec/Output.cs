@@ -1,19 +1,22 @@
-﻿using System;
+﻿using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec.Packets;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 
 namespace SharpCommunication.GY955.Codec
 {
-    public class Output
+    public class Output : IListDescendantPacket
     {
         public VectorDataType Types { get; set; }
-        public AccuratedVector Accelerator { get; set; }
-        public AccuratedVector Magnetometer { get; set; }
-        public AccuratedVector Gyroscope { get; set; }
+        public Accelerometer Acc { get; set; }
+        public Magnetometer Mag{ get; set; }
+        public Gyroscope Gyr{ get; set; }
         public Vector3? Euler { get; set; }
         public Vector4? Quaternion { get; set; }
         public Level SystemAccuracy { get; set; }
+        public List<IAncestorPacket> ContentsList { get ; set ; }
 
         public override string ToString()
         {
@@ -32,16 +35,26 @@ namespace SharpCommunication.GY955.Codec
 
         }
 
-    }
+        public class Encoding : DescendantFlagPacketEncoding<Output>
+        {
+            public Encoding() : base(null)
+            {
+                var typeInfo = typeof(NmeaMessage).GetTypeInfo();
+                foreach (var subclass in typeInfo.Assembly.DefinedTypes.Where(t => t.IsSubclassOf(typeof(NmeaMessage.Encoding))))
+                {
+                    var attr = subclass.GetCustomAttribute<NmeaMessageTypeAttribute>(false);
+                    if (attr == null || subclass.IsAbstract)
+                        continue;
+                    Register(PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => (EncodingDecorator)subclass.DeclaredConstructors.First(c => c.GetParameters().Length == 1).Invoke(new object[] { item })).Build());
+                }
+            }
 
-    
-
-    public class AccuratedVector
-    {
-        public Level Accuracy { get; set; }
-
-        public Vector3 Value { get; set; }
-
+            public static PacketEncodingBuilder CreateBuilder() =>
+                PacketEncodingBuilder.CreateDefaultBuilder()
+                    .WithHeader(new byte[] { 0x5A, 0x5A })
+                    .WithDescendantFlag<Output>(true)
+                    .AddDecorate(o => new Encoding());
+        }
 
     }
     public enum Level

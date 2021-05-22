@@ -19,6 +19,21 @@ namespace SharpCommunication.Codec.Encoding
             return null;
         }
 
+        public static PacketEncodingBuilder WithDescendantFlag<T>(this PacketEncodingBuilder mapItemBuilder, IEnumerable<PacketEncodingBuilder> encodingBuiledersList, bool containLength = false) where T : IListDescendantPacket, new()
+        {
+            mapItemBuilder.AddDecorate(item => new DescendantFlagPacketEncoding<T>(item, encodingBuiledersList.Select(o => o.Build()).ToList(),containLength));
+            return mapItemBuilder;
+        }
+        public static PacketEncodingBuilder WithDescendantFlag<T>(this PacketEncodingBuilder mapItemBuilder, IEnumerable<EncodingDecorator> encodingsList, bool containLength = false) where T : IListDescendantPacket, new()
+        {
+            mapItemBuilder.AddDecorate(item => new DescendantFlagPacketEncoding<T>(item, encodingsList, containLength));
+            return mapItemBuilder;
+        }
+        public static PacketEncodingBuilder WithDescendantFlag<T>(this PacketEncodingBuilder mapItemBuilder, bool containLength = false) where T : IListDescendantPacket, new()
+        {
+            mapItemBuilder.AddDecorate(item => new DescendantFlagPacketEncoding<T>(item, containLength));
+            return mapItemBuilder;
+        }
         public static PacketEncodingBuilder WithDescendant<T>(this PacketEncodingBuilder mapItemBuilder, IEnumerable<PacketEncodingBuilder> encodingBuiledersList) where T : IDescendantPacket, new()
         {
             mapItemBuilder.AddDecorate(item => new DescendantPacketEncoding<T>(item, encodingBuiledersList.Select(o => o.Build()).ToList()));

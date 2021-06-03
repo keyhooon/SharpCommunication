@@ -16,15 +16,15 @@ namespace Demo.Transport
     public class GpsSerialDataTransport : SerialPortDataTransport<Gps>
     {
 
-        public GpsSerialDataTransport(SerialPortDataTransportSettings option, EncodingDecorator deviceEncoding, ILogger logger) :
+        public GpsSerialDataTransport(SerialPortDataTransportSettings option, ILogger logger) :
             base(new MonitoredCachedChannelFactory<Gps>(
-                    new Codec<Gps>(deviceEncoding)),
+                    new Codec<Gps>(Gps.Encoding.CreateBuilder().Build())),
                 option,
                 logger)
         { }
-        public GpsSerialDataTransport(SerialPortDataTransportSettings option, EncodingDecorator deviceEncoding) :
+        public GpsSerialDataTransport(SerialPortDataTransportSettings option) :
             base(new MonitoredCachedChannelFactory<Gps>(
-                    new Codec<Gps>(deviceEncoding)),
+                    new Codec<Gps>(Gps.Encoding.CreateBuilder().Build())),
                 option)
         { }
 

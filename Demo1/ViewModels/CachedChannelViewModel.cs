@@ -1,4 +1,6 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Prism.Mvvm;
@@ -12,28 +14,44 @@ namespace GPSModule.ViewModels
 {
     public class CachedChannelViewModel: BindableBase, INavigationAware
     {
+        public class CachedMonitoredChannel
+        {
+            public CachedMonitoredChannel(IChannel<Gps> channel, CachedChannel<Gps> cached, MonitoredChannel<Gps> monitored)
+            {
+                Cached = cached;
+                Channel = channel;
+                Monitored = monitored;
+            }
+            public IChannel<Gps> Channel { get; set; }
+            public CachedChannel<Gps> Cached { get; set; }
+            public MonitoredChannel<Gps> Monitored { get; set; }
+
+        }
         private readonly SerialPortDataTransport<Gps> _dataTransport;
         private bool _loaded;
-
-
+        private List<CachedMonitoredChannel> _channelsList;
 
         public CachedChannelViewModel(SerialPortDataTransport<Gps> dataTransport)
         {
             _dataTransport = dataTransport;
             ((INotifyCollectionChanged) dataTransport.Channels).CollectionChanged += (sender, args) =>
             {
-                RaisePropertyChanged(nameof(CachedChannelDecorator));
-                RaisePropertyChanged(nameof(MonitoredChannelDecorator));
+                ChannelsList = dataTransport.Channels.Select(o =>  new CachedMonitoredChannel(o, o.ToCachedChannel(), o.ToMonitoredChannel() )).ToList();
             };
             _dataTransport.IsOpenChanged += (sender, args) =>
                 RaisePropertyChanged(nameof(IsOpen));
             Loaded = false;
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await Task.Delay(1000);
+                }
+            });
 
         }
 
-        public CachedChannel<Gps> CachedChannelDecorator => _dataTransport.Channels.FirstOrDefault()?.ToCachedChannel();
-        public MonitoredChannel<Gps> MonitoredChannelDecorator => _dataTransport.Channels.FirstOrDefault()?.ToMonitoredChannel();
-        public IChannel<Gps> ChannelDecorator => _dataTransport.Channels.FirstOrDefault();
+        public List<CachedMonitoredChannel> ChannelsList { get => _channelsList; private set => SetProperty(ref _channelsList, value); }
         public bool IsOpen => _dataTransport.IsOpen;
 
         public bool Loaded
@@ -44,7 +62,6 @@ namespace GPSModule.ViewModels
 
         public async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            await Task.Delay(2000);
             Loaded = true;
         }
 

@@ -28,10 +28,9 @@ namespace SharpCommunication.Module.Services
     {
         public static IServiceCollection AddSerialPortTransport<T>(
             this IServiceCollection serviceCollection, 
-            EncodingDecorator encoding,
+            Codec<T> codec,
             SerialPortDataTransportSettings settings) where T: IPacket, new()
         {
-            var codec = new Codec<T>(encoding);
             var monitoredCachedChannelFactory = new MonitoredCachedChannelFactory<T>(codec);
             return serviceCollection
                 .AddSingleton(codec)

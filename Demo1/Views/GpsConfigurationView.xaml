@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="GPSModule.Views.TransportConfigView"
+    x:Class="GPSModule.Views.GpsConfigurationView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
@@ -16,5 +16,5 @@
     xmlns:xamlConverter="clr-namespace:WpfInfrastructure.XamlConverter;assembly=WpfInfrastructure"
     MaxHeight="500"
     prism:ViewModelLocator.AutoWireViewModel="True">
-    <views:TransportConfigurationView />
+    <views:SerialPortTransportConfigurationView />
 </UserControl>

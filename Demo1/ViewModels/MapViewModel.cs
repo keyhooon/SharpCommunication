@@ -12,12 +12,9 @@ namespace GPSModule.ViewModels
     {
         public MapViewModel(GpsService gpsService)
         {
-            gpsService.PropertyChanged += (sender, args) =>
+            gpsService.GllChanged += (sender, args) =>
             {
-                if (args.PropertyName == nameof(gpsService.Gll))
-                {
                     Location = new Location(gpsService.Gll.Latitude, gpsService.Gll.Longitude);
-                }
             };
         }
 

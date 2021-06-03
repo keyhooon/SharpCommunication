@@ -9,9 +9,9 @@ namespace SharpCommunication.Module.Views
     /// <summary>
     /// Interaction logic for SerialPortConfigView.xaml
     /// </summary>
-    public partial class TransportConfigurationView : UserControl
+    public partial class SerialPortTransportConfigurationView : UserControl
     {
-        public TransportConfigurationView()
+        public SerialPortTransportConfigurationView()
         {
             InitializeComponent();
         }

@@ -14,11 +14,11 @@ using SharpCommunication.Transport.SerialPort;
 
 namespace GPSModule.ViewModels
 {
-    public class TransportConfigViewModel : TransportConfigurationViewModel<Gps>
+    public class GpsConfigurationViewModel : SerialPortTransportConfigurationViewModel<Gps>
     {
         private readonly IEventAggregator _eventAggregator;
 
-        public TransportConfigViewModel(SerialPortDataTransport<Gps> dataTransport, IEventAggregator eventAggregator) : base(dataTransport)
+        public GpsConfigurationViewModel(SerialPortDataTransport<Gps> dataTransport, IEventAggregator eventAggregator) : base(dataTransport)
         {
             _eventAggregator = eventAggregator;
         }

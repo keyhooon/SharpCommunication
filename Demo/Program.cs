@@ -76,14 +76,14 @@ namespace Demo
             //     encoding);
             // _dataTransport.Open();
 
-            _gpsDataTransport = new GpsSerialDataTransport(gpsOption, Gps.Encoding.CreateBuilder().Build());
+            _gpsDataTransport = new GpsSerialDataTransport(gpsOption);
             _gpsDataTransport.Open();
             _gpsDataTransport.Channels[0].DataReceived += (sender, arg) =>
             {
                 lock (_o)
                 {
                     _list.Add(
-                        $" {_gpsDataTransport.Channels[0].ToMonitoredChannel().GetDataReceivedCount}, {_gpsDataTransport.Channels[0].ToMonitoredChannel().LastPacketTime}");
+                        $" {_gpsDataTransport.Channels[0].ToMonitoredChannel().DataReceivedCount}, {_gpsDataTransport.Channels[0].ToMonitoredChannel().LastPacketTime}");
                     _list.Add($" {_gpsDataTransport.Channels[0].ToCachedChannel().Packet.Count}");
                     _list.Add(arg.Data.ToString());
                     _list.Add("\r\n");

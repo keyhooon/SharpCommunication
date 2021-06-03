@@ -27,7 +27,8 @@ namespace SharpCommunication.Codec
                     var attr = subclass.GetCustomAttribute<NmeaMessageTypeAttribute>(false);
                     if (attr == null || subclass.IsAbstract)
                         continue;
-                    Register(PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => (EncodingDecorator)subclass.DeclaredConstructors.First(c => c.GetParameters().Length == 1).Invoke(new object[] {item})).Build());
+                    Register(PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(
+                        item => (EncodingDecorator)subclass.DeclaredConstructors.First(c => c.GetParameters().Length == 1).Invoke(new object[] {item})).Build());
                 }
             }
 

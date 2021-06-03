@@ -35,7 +35,7 @@ namespace GPSModule
             containerRegistry.RegisterServices(collection =>
             {
                 collection
-                    .AddSerialPortTransport<Gps>(new Gps.Encoding(), SerialPortDataTransportSettings.Default)
+                    .AddSerialPortTransport(new Codec<Gps>(Gps.Encoding.CreateBuilder().Build()), SerialPortDataTransportSettings.Default)
                     .AddSingleton<GpsService>();
             });
         }
@@ -57,7 +57,7 @@ namespace GPSModule
                                 compositeMapNavigatorService.RegisterItem("Device\\GPS\\Map",MapItemBuilder
                                     .CreateDefaultBuilder("Map")
                                     .WithImagePackIcon(PackIconKind.MapMarker)
-                                    .WithToolBars(new[]{ typeof(ServiceToolBar1View)})
+                                    .WithToolBars(new[]{ typeof(GpsServiceToolBarView)})
                                     .WithView(typeof(MapView))
                                     .WithExtraView(new Dictionary<string, IEnumerable<Type>>
                                     {
@@ -66,7 +66,7 @@ namespace GPSModule
                                             typeof(CachedChannelView),
                                             typeof(NmeaView)
                                         }}, 
-                                        { "ToolsRegion", new[] {typeof(TransportConfigView) }}
+                                        { "ToolsRegion", new[] {typeof(GpsConfigurationView) }}
                                     })),
                             })
                     )

@@ -60,7 +60,7 @@ namespace SharpCommunication.Codec.Encoding
             var obj = new T
             {
                 Content = (IAncestorPacket)encodingDecorator?.Decode(reader)
-            };
+            }; 
             return obj;
         }
 

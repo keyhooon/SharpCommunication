@@ -184,7 +184,7 @@ namespace SharpCommunication.Codec
 		/// <summary>
 		/// eference station ID1, range 0000-4095 - Null if talker ID is GN, additional GNS messages follow with GP and/or GL Reference station ID
         /// </summary>
-        public string DgpsStationId { get; private set; }
+        public int DgpsStationId { get; private set; }
 
         /// <summary>
         /// Navigational status
@@ -217,8 +217,7 @@ namespace SharpCommunication.Codec
                 ret.GeoidalSeparation = StringToDouble(message[9]);
                 var timeInSeconds = StringToDouble(message[10]);
                 ret.TimeSinceLastDgpsUpdate = !double.IsNaN(timeInSeconds) ? TimeSpan.FromSeconds(timeInSeconds) : TimeSpan.MaxValue;
-                if (message[11].Length > 0)
-                    ret.DgpsStationId = message[11];
+                ret.DgpsStationId = message[11].Length > 0 ? int.Parse(message[1], CultureInfo.InvariantCulture) : -1;
 
                 if (message.Count <= 12) return ret;
                 ret.Status = message[12] switch

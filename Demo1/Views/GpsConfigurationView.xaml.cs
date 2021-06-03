@@ -1,13 +1,14 @@
-﻿using System.Windows.Controls;
+﻿using SharpCommunication.Module.Views;
+using System.Windows.Controls;
 
 namespace GPSModule.Views
 {
     /// <summary>
     /// Interaction logic for ToolView
     /// </summary>
-    public partial class TransportConfigView : UserControl
+    public partial class GpsConfigurationView : UserControl
     {
-        public TransportConfigView()
+        public GpsConfigurationView()
         {
             InitializeComponent();
         }

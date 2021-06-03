@@ -47,8 +47,6 @@ namespace SharpCommunication.Codec
         }
         public static string ToHexString(this byte byt)
         {
-            if (byt == null)
-                throw new ArgumentNullException($"bytes");
             return (new byte[] { byt }).ToHexString();
         }
 

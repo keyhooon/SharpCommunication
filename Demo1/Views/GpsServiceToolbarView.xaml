@@ -1,5 +1,5 @@
 ﻿<ToolBar
-    x:Class="GPSModule.Views.ServiceToolBar1View"
+    x:Class="GPSModule.Views.GpsServiceToolBarView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"

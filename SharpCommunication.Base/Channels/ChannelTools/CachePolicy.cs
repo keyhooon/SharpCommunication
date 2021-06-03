@@ -20,7 +20,11 @@ namespace SharpCommunication.Channels.ChannelTools
             ioCache.Channel.DataReceived += (sender, arg) =>
             {
                 if (ioCache.PacketCacheInfoCollection.Count > CacheCount)
-                    ioCache.PacketCacheInfoCollection.RemoveAt(0);
+                    lock (ioCache.PacketCacheInfoCollection)
+                    {
+                        ioCache.PacketCacheInfoCollection.RemoveAt(0);
+                    }
+                    
             };
         }
     }
@@ -42,7 +46,13 @@ namespace SharpCommunication.Channels.ChannelTools
                     {
                         foreach (var item in e.NewItems)
                         {
-                            _timer.Add((PacketCacheInfo<TPacket>)item,new Timer((state) => ioCache.PacketCacheInfoCollection.Remove((PacketCacheInfo<TPacket>)state), (PacketCacheInfo<TPacket>)item, ExpireTime, Timeout.InfiniteTimeSpan)) ;
+                            _timer.Add((PacketCacheInfo<TPacket>)item, new Timer((state) =>
+                            {
+                                lock (ioCache.PacketCacheInfoCollection)
+                                {
+                                    ioCache.PacketCacheInfoCollection.Remove((PacketCacheInfo<TPacket>)state);
+                                }
+                            }, (PacketCacheInfo<TPacket>)item, ExpireTime, Timeout.InfiniteTimeSpan));
                         }
 
                         break;
@@ -51,6 +61,7 @@ namespace SharpCommunication.Channels.ChannelTools
                     {
                         foreach(var item in e.OldItems)
                         {
+                            _timer[(PacketCacheInfo<TPacket>)item].Dispose();
                             _timer.Remove((PacketCacheInfo<TPacket>)item);
                         }
 

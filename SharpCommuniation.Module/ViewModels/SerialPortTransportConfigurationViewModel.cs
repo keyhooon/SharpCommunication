@@ -1,14 +1,12 @@
 ﻿using System;
 using System.IO.Ports;
-using Prism.Commands;
-using Prism.Mvvm;
 using Prism.Regions;
 using SharpCommunication.Codec.Packets;
 using SharpCommunication.Transport.SerialPort;
 
 namespace SharpCommunication.Module.ViewModels
 {
-    public class TransportConfigurationViewModel<T> : BindableBase where T : IPacket
+    public class SerialPortTransportConfigurationViewModel<T> : TransportViewModel<T> where T : IPacket
     {
         private readonly SerialPortDataTransport<T> _dataTransport;
 
@@ -18,29 +16,20 @@ namespace SharpCommunication.Module.ViewModels
         private StopBits _stopBits;
         private int _dataBits;
         private int _readTimeout;
-        private DelegateCommand _openCommand;
-        private DelegateCommand _closeCommand;
+
         private SerialPortDataTransportSettings serialPortDataTransportSettings;
-        public TransportConfigurationViewModel(SerialPortDataTransport<T> dataTransport )
+        public SerialPortTransportConfigurationViewModel(SerialPortDataTransport<T> dataTransport ) :base(dataTransport)
         {
-            _dataTransport = dataTransport;
-            _dataTransport.CanOpenChanged += delegate { OpenCommand.RaiseCanExecuteChanged();  };
-            _dataTransport.CanCloseChanged += delegate { CloseCommand.RaiseCanExecuteChanged(); };
-            
-            serialPortDataTransportSettings = (SerialPortDataTransportSettings) _dataTransport.Settings;
+            serialPortDataTransportSettings = (SerialPortDataTransportSettings)dataTransport.Settings;
             PortName = serialPortDataTransportSettings.PortName;
             BaudRate = serialPortDataTransportSettings.BaudRate;
             Parity = serialPortDataTransportSettings.Parity;
             StopBits = serialPortDataTransportSettings.StopBits;
             DataBits = serialPortDataTransportSettings.DataBits;
             ReadTimeout = serialPortDataTransportSettings.ReadTimeout;
-            _dataTransport.IsOpenChanged += (sender, args) =>
-            {
-                RaisePropertyChanged(nameof(IsOpen));
-            };
         }
 
-        public bool IsOpen => _dataTransport.IsOpen;
+
 
         public string PortName
         {
@@ -82,10 +71,7 @@ namespace SharpCommunication.Module.ViewModels
                 () => { serialPortDataTransportSettings.ReadTimeout = value;});
         }
 
-        public DelegateCommand OpenCommand =>
-            _openCommand ??= new DelegateCommand(_dataTransport.Open, () => _dataTransport.CanOpen);
-        public DelegateCommand CloseCommand =>
-            _closeCommand ??= new DelegateCommand(_dataTransport.Close, () => _dataTransport.CanClose);
+
 
     }
 }

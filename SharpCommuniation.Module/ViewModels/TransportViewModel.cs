@@ -1,32 +1,38 @@
 ﻿using Prism.Commands;
-using Prism.Events;
 using Prism.Mvvm;
-using SharpCommunication.Codec;
+using SharpCommunication.Codec.Packets;
+using SharpCommunication.Transport;
 using SharpCommunication.Transport.SerialPort;
 
-namespace GPSModule.ViewModels
+namespace SharpCommunication.Module.ViewModels
 {
-    public class ServiceToolbar1ViewModel : BindableBase
+    public abstract class TransportViewModel<T> : BindableBase where T : IPacket
     {
-        private readonly SerialPortDataTransport<Gps> _dataTransport;
-        private readonly IEventAggregator _eventAggregator;
         private DelegateCommand _openCommand;
         private DelegateCommand _closeCommand;
-        
-        public ServiceToolbar1ViewModel(SerialPortDataTransport<Gps> dataTransport,IEventAggregator eventAggregator)
+
+        private readonly DataTransport<T> _dataTransport;
+
+        public TransportViewModel(DataTransport<T> dataTransport)
         {
             _dataTransport = dataTransport;
-            _eventAggregator = eventAggregator;
             _dataTransport.CanOpenChanged += delegate { OpenCommand.RaiseCanExecuteChanged(); };
             _dataTransport.CanCloseChanged += delegate { CloseCommand.RaiseCanExecuteChanged(); };
-            _dataTransport.IsOpenChanged += delegate { RaisePropertyChanged(nameof(IsOpen)); };
+
+            
+            _dataTransport.IsOpenChanged += (sender, args) =>
+            {
+                RaisePropertyChanged(nameof(IsOpen));
+            };
         }
-        
         public DelegateCommand OpenCommand =>
-            _openCommand ??= new DelegateCommand(_dataTransport.Open, () => _dataTransport.CanOpen);
+            _openCommand ??= new DelegateCommand(()=>
+            {
+                _dataTransport.Open();
+            }, () => _dataTransport.CanOpen);
         public DelegateCommand CloseCommand =>
             _closeCommand ??= new DelegateCommand(_dataTransport.Close, () => _dataTransport.CanClose);
-        
+
         public bool IsOpen => _dataTransport.IsOpen;
     }
 }

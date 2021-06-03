@@ -7,7 +7,7 @@ using SharpCommunication.Codec.Packets;
 
 namespace Demo.Codec
 {
-    class CruiseCommand : IFunctionPacket
+    public class CruiseCommand : IFunctionPacket
     {
         public delegate void CommandDelegate(bool isOn);
 

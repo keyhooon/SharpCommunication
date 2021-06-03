@@ -11,13 +11,14 @@ namespace SharpCommunication.Channels.ChannelTools
     {
 
 
-        public ObservableCollection<PacketCacheInfo<TPacket>> PacketCacheInfoCollection => Channel.Packet;
+        public ObservableCollection<PacketCacheInfo<TPacket>> PacketCacheInfoCollection;
         public CachedChannel<TPacket> Channel { get; }
         private int packetIndex;
         public IoCache(CachedChannel<TPacket> cachedChannel, IEnumerable<ICachePolicy<TPacket>> cachePolicies)
         {
-            packetIndex = 0;
 
+            packetIndex = 0;
+            PacketCacheInfoCollection = new ObservableCollection<PacketCacheInfo<TPacket>>();
             Channel = cachedChannel;
             foreach (var cachePolicy in cachePolicies)
             {
@@ -25,9 +26,6 @@ namespace SharpCommunication.Channels.ChannelTools
             }
 
             Channel.DataReceived += OnDataReceived;
-        }
-        private void OnDataReceivedFirstTime(object sender, DataReceivedEventArg<TPacket> arg)
-        {
         }
 
         private void OnDataReceived(object sender, DataReceivedEventArg<TPacket> arg)

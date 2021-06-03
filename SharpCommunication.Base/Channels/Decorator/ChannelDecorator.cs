@@ -1,6 +1,7 @@
 ﻿using SharpCommunication.Codec;
 using SharpCommunication.Codec.Packets;
 using System;
+using System.ComponentModel;
 using System.IO;
 
 namespace SharpCommunication.Channels.Decorator
@@ -20,5 +21,6 @@ namespace SharpCommunication.Channels.Decorator
         public override BinaryWriter Writer => InnerChannel.Writer;
         public override void Transmit(TPacket packet) => InnerChannel.Transmit(packet);
         public override void Dispose() => InnerChannel.Dispose();
+
     }
 }

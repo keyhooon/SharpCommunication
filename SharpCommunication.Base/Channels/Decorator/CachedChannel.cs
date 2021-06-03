@@ -7,12 +7,12 @@ namespace SharpCommunication.Channels.Decorator
 {
     public class CachedChannel<TPacket> : ChannelDecorator<TPacket> where TPacket : IPacket
     {
-        public ObservableCollection<PacketCacheInfo<TPacket>> Packet;
+        public ReadOnlyObservableCollection<PacketCacheInfo<TPacket>> Packet;
         private IoCache<TPacket> ioCache;
         public CachedChannel(Channel<TPacket> innerChannel) : base(innerChannel)
         {
-            Packet = new ObservableCollection<PacketCacheInfo<TPacket>>();
             ioCache = new IoCache<TPacket>(this, new ICachePolicy<TPacket>[] { new LimitCountPacketCachePolicy<TPacket>(), new ExpireTimePacketCachePolicy<TPacket>()});
+            Packet = new ReadOnlyObservableCollection<PacketCacheInfo<TPacket>>(ioCache.PacketCacheInfoCollection);
         }
 
 

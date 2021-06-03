@@ -5,11 +5,9 @@ using SharpCommunication.Codec.Packets;
 
 namespace SharpCommunication.Channels.Decorator
 {
-    public class MonitoredChannel<TPacket> : ChannelDecorator<TPacket>, INotifyPropertyChanged where TPacket : IPacket
+    public class MonitoredChannel<TPacket> : ChannelDecorator<TPacket> where TPacket : IPacket
     {
-        private DateTime lastPacketTime;
-        private DateTime firstPacketTime;
-        private int dataReceivedCount;
+
 
         private IoMonitor<TPacket> IoMonitor { get; set; }
         public MonitoredChannel(Channel<TPacket> innerChannel) : base(innerChannel)
@@ -17,36 +15,10 @@ namespace SharpCommunication.Channels.Decorator
             IoMonitor = new IoMonitor<TPacket>(this);
         }
 
-        public int DataReceivedCount { 
-            get => dataReceivedCount; 
-            set
-            {
-                dataReceivedCount = value;
-                OnPropertyChanged(nameof(DataReceivedCount));
-            }
-        }
-        public DateTime FirstPacketTime { 
-            get => firstPacketTime; 
-            set
-            {
-                firstPacketTime = value;
-                OnPropertyChanged(nameof(FirstPacketTime));
-            }
-        }
-        public DateTime LastPacketTime { 
-            get => lastPacketTime; 
-            set
-            {
-                lastPacketTime = value;
-                OnPropertyChanged(nameof(LastPacketTime));
-            }
-        }
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public int DataReceivedCount => IoMonitor.DataReceivedCount;
+        public DateTime FirstPacketTime => IoMonitor.FirstPacketTime;
+        public DateTime LastPacketTime => IoMonitor.LastPacketTime;
 
-        public event PropertyChangedEventHandler PropertyChanged;
     }
     public static class MonitoredChannelExtension
     {

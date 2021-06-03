@@ -7,7 +7,6 @@ namespace SharpCommunication.Channels.ChannelTools
 {
     public class IoMonitor<TPacket> where TPacket : IPacket
     {
-
         public MonitoredChannel<TPacket> MonitoredChannel { get; }
 
         public IoMonitor(MonitoredChannel<TPacket> monitoredChannel)
@@ -23,19 +22,17 @@ namespace SharpCommunication.Channels.ChannelTools
                 LastPacketTime = DateTime.Now;
             };
         }
-        public DateTime FirstPacketTime { 
-            get { return MonitoredChannel.FirstPacketTime; } 
-            set { MonitoredChannel.FirstPacketTime = value; } 
+        public DateTime FirstPacketTime {
+            get;
+            set;
         }
-        public DateTime LastPacketTime { 
-            get { return MonitoredChannel.LastPacketTime; }
-            set { MonitoredChannel.LastPacketTime = value; } 
+        public DateTime LastPacketTime {
+            get;
+            set;
         }
-        public int DataReceivedCount { 
-            get { return MonitoredChannel.DataReceivedCount; } 
-            set { MonitoredChannel.DataReceivedCount = value; } 
+        public int DataReceivedCount {
+            get;
+            set;
         }
-
-public event EventHandler ParameterChanged;
     }
 }

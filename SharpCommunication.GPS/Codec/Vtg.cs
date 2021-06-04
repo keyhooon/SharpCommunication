@@ -53,7 +53,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("VTG")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "VTG", typeof(Vtg))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -68,9 +68,9 @@ namespace SharpCommunication.Codec
                 ret.SpeedInKph = StringToDouble(message[6]);
                 return ret;
             }
-
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("VTG", typeof(Vtg)).AddDecorate(o => new Encoding(null));
+
         }
     }
 }

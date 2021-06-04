@@ -91,7 +91,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("GGA")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GGA", typeof(Gga))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -118,7 +118,7 @@ namespace SharpCommunication.Codec
             }
 
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("GGA",typeof(Gga)).AddDecorate(o => new Encoding(null));
         }
 		/// <summary>
 		/// Fix quality

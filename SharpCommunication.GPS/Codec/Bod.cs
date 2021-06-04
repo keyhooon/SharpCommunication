@@ -58,7 +58,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("BOD")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "BOD", typeof(Bod))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -79,9 +79,8 @@ namespace SharpCommunication.Codec
                     ret.OriginId = parts[5];
                 return ret;
             }
-
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("BOD", typeof(Bod)).AddDecorate(o => new Encoding(null));
         }
     }
 }

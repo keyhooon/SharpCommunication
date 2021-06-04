@@ -59,7 +59,7 @@ namespace SharpCommunication.Codec
 
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GLL", typeof(Gll))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -92,9 +92,9 @@ namespace SharpCommunication.Codec
 
                 return ret;
             }
-
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("GLL", typeof(Gll)).AddDecorate(o => new Encoding(null));
+
         }
         /// <summary>
         /// Positioning system Mode Indicator

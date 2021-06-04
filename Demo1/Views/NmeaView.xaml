@@ -91,7 +91,7 @@
                             Margin="10"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            ItemsSource="{Binding SatelliteVehicles}">
+                            ItemsSource="{Binding SVs}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <Grid />
@@ -150,7 +150,7 @@
                         <ItemsControl
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            ItemsSource="{Binding SatelliteVehicles}">
+                            ItemsSource="{Binding SVs}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel Orientation="Horizontal" />
@@ -222,23 +222,23 @@
                                 <TextBlock Grid.Row="2" Text="HDOP" />
                                 <TextBlock Grid.Row="3" Text="VDOP" />
                                 <TextBlock Grid.Row="4" Text="PDOP" />
-                                <TextBlock Grid.Column="1" Text="{Binding GsaMessage.GpsMode}" />
+                                <TextBlock Grid.Column="1" Text="{Binding Dop.GpsMode}" />
                                 <TextBlock
                                     Grid.Row="1"
                                     Grid.Column="1"
-                                    Text="{Binding GsaMessage.FixMode}" />
+                                    Text="{Binding Dop.FixMode}" />
                                 <TextBlock
                                     Grid.Row="2"
                                     Grid.Column="1"
-                                    Text="{Binding GsaMessage.Hdop}" />
+                                    Text="{Binding Dop.Hdop}" />
                                 <TextBlock
                                     Grid.Row="3"
                                     Grid.Column="1"
-                                    Text="{Binding GsaMessage.Vdop}" />
+                                    Text="{Binding Dop.Vdop}" />
                                 <TextBlock
                                     Grid.Row="4"
                                     Grid.Column="1"
-                                    Text="{Binding GsaMessage.Pdop}" />
+                                    Text="{Binding Dop.Pdop}" />
                             </Grid>
                         </Grid>
                     </materialDesign:ColorZone>
@@ -273,11 +273,11 @@
                                 <TextBlock
                                     Grid.Row="0"
                                     Grid.Column="1"
-                                    Text="{Binding GllMessage.Latitude, StringFormat={}{0:0.000000}}" />
+                                    Text="{Binding Position.Latitude, StringFormat={}{0:0.000000}}" />
                                 <TextBlock
                                     Grid.Row="1"
                                     Grid.Column="1"
-                                    Text="{Binding GllMessage.Longitude, StringFormat={}{0:0.000000}}" />
+                                    Text="{Binding Position.Longitude, StringFormat={}{0:0.000000}}" />
                             </Grid>
                         </Grid>
                     </materialDesign:ColorZone>
@@ -305,7 +305,7 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <TextBlock Grid.Row="0" Text="Fix" />
-                                <TextBlock Grid.Column="1" Text="{Binding GllMessage.FixTime}" />
+                                <TextBlock Grid.Column="1" Text="{Binding FixDateTime}" />
                             </Grid>
                         </Grid>
                     </materialDesign:ColorZone>

@@ -193,7 +193,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("GNS")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GNS", typeof(Gns))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -230,10 +230,9 @@ namespace SharpCommunication.Codec
                 };
                 return ret;
             }
-
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder()
-                    .AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("GNS", typeof(Gns)).AddDecorate(o => new Encoding(null));
+
         }
     }
 }

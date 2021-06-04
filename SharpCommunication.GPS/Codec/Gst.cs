@@ -79,7 +79,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("GST")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GST", typeof(Gst))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -98,9 +98,9 @@ namespace SharpCommunication.Codec
                 ret.SigmaHeightError = StringToDouble(message[7]);
                 return ret;
             }
-
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("GST", typeof(Gst)).AddDecorate(o => new Encoding(null));
+
         }
     }
 }

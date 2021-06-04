@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using Prism.Mvvm;
 using Prism.Regions;
 using SharpCommunication.Channels;
@@ -14,40 +16,76 @@ namespace GPSModule.ViewModels
 {
     public class CachedChannelViewModel : BindableBase, INavigationAware
     {
-        public class CachedMonitoredChannel
+        public class ChannelInfo : BindableBase
         {
-            public CachedMonitoredChannel(IChannel<Gps> channel, CachedChannel<Gps> cached, MonitoredChannel<Gps> monitored)
+            private DateTime lastPacketTime;
+            private DateTime firstPacketTime;
+            private int dataReceivedCount;
+            private ObservableCollection<PacketCacheInfo<Gps>> internalPacketsList;
+            public ChannelInfo(IChannel<Gps> channel)
             {
-                Cached = cached;
+                
                 Channel = channel;
-                Monitored = monitored;
+                var Cached = channel.ToCachedChannel();
+                var Monitored = channel.ToMonitoredChannel();
+                Monitored.DataReceived += (sender, e) =>
+                {
+                    Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        DataReceivedCount = Monitored.DataReceivedCount;
+                        FirstPacketTime = Monitored.FirstPacketTime;
+                        LastPacketTime = Monitored.LastPacketTime;
+                    });
+                };
+                ((INotifyCollectionChanged)Cached.Packet).CollectionChanged += (sender, e) =>
+                 {
+                     Application.Current.Dispatcher.InvokeAsync(() =>
+                     {
+                         if ((e.NewItems?.Count ?? 0) != 0)
+                         {
+                             foreach (PacketCacheInfo<Gps> item in e.NewItems)
+                             {
+                                 internalPacketsList.Add(item);
+                             }
+                         }
+                         if ((e.OldItems?.Count ?? 0) != 0)
+                         {
+                             foreach (PacketCacheInfo<Gps> item in e.OldItems)
+                             {
+                                 internalPacketsList.Remove(item);
+                             }
+                         }
+                     });
+                 };
+                internalPacketsList = new ObservableCollection<PacketCacheInfo<Gps>>();
+                PacketsList = new ReadOnlyObservableCollection<PacketCacheInfo<Gps>>(internalPacketsList);
             }
+            public ReadOnlyObservableCollection<PacketCacheInfo<Gps>> PacketsList { get; set; }
+            public int DataReceivedCount { get => dataReceivedCount; set => SetProperty(ref dataReceivedCount, value); }
+            public DateTime FirstPacketTime { get => firstPacketTime; set => SetProperty(ref firstPacketTime, value); }
+            public DateTime LastPacketTime { get => lastPacketTime; set => SetProperty(ref lastPacketTime, value); }
             public IChannel<Gps> Channel { get; set; }
-            public CachedChannel<Gps> Cached { get; set; }
-            public MonitoredChannel<Gps> Monitored { get; set; }
-
         }
         private readonly SerialPortDataTransport<Gps> _dataTransport;
         private bool _loaded;
-        private List<CachedMonitoredChannel> _channelsList;
-        private CachedMonitoredChannel channel;
+        private List<ChannelInfo> _channelInfosList;
+
 
         public CachedChannelViewModel(SerialPortDataTransport<Gps> dataTransport)
         {
             _dataTransport = dataTransport;
             ((INotifyCollectionChanged)dataTransport.Channels).CollectionChanged += (sender, args) =>
            {
-               ChannelsList = dataTransport.Channels.Select(o => new CachedMonitoredChannel(o, o.ToCachedChannel(), o.ToMonitoredChannel())).ToList();
-               Channel = ChannelsList.FirstOrDefault();
+               ChannelInfosList = dataTransport.Channels.Select(o => new ChannelInfo(o)).ToList();
+
            };
             _dataTransport.IsOpenChanged += (sender, args) =>
                 RaisePropertyChanged(nameof(IsOpen));
             Loaded = false;
         }
 
-        public List<CachedMonitoredChannel> ChannelsList { get => _channelsList; private set => SetProperty(ref _channelsList, value); }
+        public List<ChannelInfo> ChannelInfosList { get => _channelInfosList; private set => SetProperty(ref _channelInfosList, value); }
 
-        public CachedMonitoredChannel Channel { get => channel; set => channel = value; }
         public bool IsOpen => _dataTransport.IsOpen;
 
         public bool Loaded

@@ -71,7 +71,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("GSV")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GSV", typeof(Gsv))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -95,9 +95,9 @@ namespace SharpCommunication.Codec
                 ret.SVs = svs.ToArray();
                 return ret;
             }
-
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("GSV", typeof(Gsv)).AddDecorate(o => new Encoding(null));
+
         }
     }
     /// <summary>

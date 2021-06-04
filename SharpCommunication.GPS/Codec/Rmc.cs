@@ -66,7 +66,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("RMC")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "RMC", typeof(Rmc))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -95,9 +95,8 @@ namespace SharpCommunication.Codec
                     ret.MagneticVariation *= -1;
 				return ret;
             }
-
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+    PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("RMC", typeof(Rmc)).AddDecorate(o => new Encoding(null));
         }
 	}
 }

@@ -101,7 +101,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("RTE")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "RTE", typeof(Rte))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -118,9 +118,9 @@ namespace SharpCommunication.Codec
                 ret.Waypoints = message.Skip(4).ToArray();
                 return ret;
             }
-
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("RTE", typeof(Rte)).AddDecorate(o => new Encoding(null));
+
         }
     }
 }

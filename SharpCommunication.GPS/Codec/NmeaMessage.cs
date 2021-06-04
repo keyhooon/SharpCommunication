@@ -81,9 +81,10 @@ namespace SharpCommunication.Codec
         }
 
 
-        public abstract class Encoding : AncestorGenericPacketEncodingDecorator<string>
+        public abstract class Encoding : EncodingDecorator
         {
-            protected Encoding(EncodingDecorator encoding, string id, Type packetType) : base(encoding, id, packetType)
+
+            protected Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
             public override void Encode(IPacket packet, BinaryWriter writer)

@@ -49,6 +49,12 @@ namespace SharpCommunication.Codec.Encoding
             mapItemBuilder.AddDecorate(item => new DescendantPacketEncoding<T>(item));
             return mapItemBuilder;
         }
+
+        public static PacketEncodingBuilder WithAncestorGeneric<T>(this PacketEncodingBuilder mapItemBuilder, T id, Type packetType) 
+        {
+            mapItemBuilder.AddDecorate(item => new AncestorGenericPacketEncodingDecorator<T>(item, id, packetType));
+            return mapItemBuilder;
+        }
         public static PacketEncodingBuilder WithHeader(this PacketEncodingBuilder mapItemBuilder, byte[] header)
         {
             mapItemBuilder.AddDecorate(item => new HeaderPacketEncoding(item, header));

@@ -100,7 +100,7 @@ namespace SharpCommunication.Codec
                 if (ch != ',')
                     throw new FormatException();
                 ch = reader.ReadChar();
-                while (ch != '\r')
+                while (ch != '*')
                 {
 
                     if (ch == ',')
@@ -115,6 +115,15 @@ namespace SharpCommunication.Codec
                     ch = reader.ReadChar();
                 }
                 parts.Add(sb.ToString());
+                sb.Clear();
+                ch = reader.ReadChar();
+                while (ch != '\r')
+                {
+                    sb.Append(ch);
+                    ch = reader.ReadChar();
+                }
+                parts.Add(sb.ToString());
+                var checksum = sb.ToString();
                 NmeaMessage decodeCore = (NmeaMessage) DecodeCore(parts);
                 decodeCore.MessageParts = new ReadOnlyCollection<string>(parts);
                 return decodeCore;

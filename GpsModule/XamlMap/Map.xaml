@@ -7,22 +7,19 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:xamlMap="clr-namespace:GPSModule.XamlMap"
-    xmlns:xamlMap1="clr-namespace:GPSModule.XamlMap"
-    xmlns:xamlMap2="clr-namespace:GPSModule.XamlMap"
     d:DesignHeight="450"
     d:DesignWidth="800"
     AnimationDuration="00:00:1"
     Center="35.68, 51.4"
     Foreground="#DD171717"
-    IsManipulationEnabled="True"
     ManipulationInertiaStarting="MapManipulationInertiaStarting"
-    ManipulationMode="Translate"
     MapLayer="{x:Static map:MapTileLayer.OpenStreetMapTileLayer}"
     MaxZoomLevel="19"
     MinZoomLevel="7"
     MouseLeave="MapMouseLeave"
     MouseMove="MapMouseMove"
     MouseRightButtonDown="MapMouseRightButtonDown"
+    MouseWheelZoomDelta="1"
     ZoomLevel="15"
     mc:Ignorable="d">
 
@@ -43,34 +40,34 @@
         map:MapPanel.Location="{Binding CurrentLocation}"
         Kind="MapMarker" />
 
-    <!--  <map:MapItemsControl  -->
-    <!--  x:Name="ItemsControl"  -->
-    <!--  ItemTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"  -->
-    <!--  ItemsSource="{Binding Path=ItemsSource, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"  -->
-    <!--  SelectedItem="{Binding Path=SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"  -->
-    <!--  SelectionMode="Extended">  -->
-    <!--     <map:MapItemsControl.ItemContainerStyle> -->
-    <!--         <Style TargetType="map:MapItem"> -->
-    <!--             <Setter Property="map:MapPanel.Location" Value="{Binding Location, Converter={StaticResource DbGeographyToLocationConverter}}" /> -->
-    <!--             <Setter Property="VerticalAlignment" Value="Bottom" /> -->
-    <!--             <Setter Property="Foreground" Value="Black" /> -->
-    <!--             <Setter Property="Visibility"> -->
-    <!--                 <Setter.Value> -->
-    <!--                     <MultiBinding Converter="{StaticResource LocationToVisibilityConverter}"> -->
-    <!--                         <Binding Path="(map:MapPanel.ParentMap)" RelativeSource="{RelativeSource Self}" /> -->
-    <!--                         <Binding Path="(map:MapPanel.ViewportPosition)" RelativeSource="{RelativeSource Self}" /> -->
-    <!--                     </MultiBinding> -->
-    <!--                 </Setter.Value> -->
-    <!--             </Setter> -->
-    <!--             <Style.Triggers> -->
-    <!--                 <Trigger Property="IsSelected" Value="True"> -->
-    <!--                     <Setter Property="Panel.ZIndex" Value="1" /> -->
-    <!--                     <Setter Property="Foreground" Value="OrangeRed" /> -->
-    <!--                 </Trigger> -->
-    <!--             </Style.Triggers> -->
-    <!--         </Style> -->
-    <!--     </map:MapItemsControl.ItemContainerStyle> -->
-    <!-- </map:MapItemsControl> -->
+    <map:MapItemsControl
+        x:Name="ItemsControl"
+        ItemTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"
+        ItemsSource="{Binding Path=ItemsSource, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"
+        SelectedItem="{Binding Path=SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"
+        SelectionMode="Extended">
+        <map:MapItemsControl.ItemContainerStyle>
+            <Style TargetType="map:MapItem">
+                <Setter Property="map:MapPanel.Location" Value="{Binding Location, Converter={StaticResource DbGeographyToLocationConverter}}" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="Visibility">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource LocationToVisibilityConverter}">
+                            <Binding Path="(map:MapPanel.ParentMap)" RelativeSource="{RelativeSource Self}" />
+                            <Binding Path="(map:MapPanel.Location)" RelativeSource="{RelativeSource Self}" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Panel.ZIndex" Value="1" />
+                        <Setter Property="Foreground" Value="OrangeRed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </map:MapItemsControl.ItemContainerStyle>
+    </map:MapItemsControl>
 
 
     <DockPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
@@ -115,6 +112,7 @@
                 Background="#AADDDDDD"
                 BorderBrush="#00000000"
                 Click="CurrentLocationViewButton_OnClick"
+                Focusable="False"
                 Foreground="#DD171717">
                 <materialDesign:PackIcon Background="Transparent" Kind="CrosshairsGps" />
             </Button>

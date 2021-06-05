@@ -101,19 +101,47 @@
                                 <DataTemplate DataType="codec:SatelliteVehicle">
                                     <gpsModule:PolarPlacementItem Azimuth="{Binding Azimuth}" Elevation="{Binding Elevation}">
                                         <Canvas Width="8" Height="8">
-                                            <Ellipse
-                                                Width="8"
-                                                Height="8"
-                                                Fill="{DynamicResource PrimaryHueDarkForegroundBrush}">
+                                            <Image
+                                                Canvas.Left="-32"
+                                                Canvas.Top="-32"
+                                                Width="32"
+                                                Height="32"
+                                                Opacity=".5">
+                                                <Image.Style>
+                                                    <Style xmlns:gp="clr-namespace:SharpCommunication.Codec;assembly=SharpCommunication.GPS" TargetType="Image">
+                                                        <Setter Property="Source" Value="/Assets/Rs.png" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding System}" Value="{x:Static gp:SatelliteSystem.Gps}">
+                                                                <Setter Property="Source" Value="/Assets/US.png" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                            <Ellipse Width="8" Height="8">
+                                                <Ellipse.Style>
+                                                    <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="Ellipse">
+                                                        <Setter Property="Fill" Value="Green" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding SignalToNoiseRatio}" Value="0">
+                                                                <Setter Property="Fill" Value="Red" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Ellipse.Style>
                                                 <Ellipse.ToolTip>
                                                     <StackPanel>
                                                         <TextBlock Text="{Binding Azimuth, StringFormat=Azimuth: \{0\}}" />
                                                         <TextBlock Text="{Binding Elevation, StringFormat=Elevation: \{0\}}" />
                                                         <TextBlock Text="{Binding SignalToNoiseRatio, StringFormat=SNR: \{0\}}" />
+                                                        <TextBlock Text="{Binding System, StringFormat=System: \{0\}}" />
                                                     </StackPanel>
                                                 </Ellipse.ToolTip>
                                             </Ellipse>
-                                            <TextBlock Margin="8,-8" Text="{Binding PrnNumber}" />
+                                            <TextBlock
+                                                Margin="8,-8"
+                                                Opacity=".5"
+                                                Text="{Binding Id}" />
                                         </Canvas>
                                     </gpsModule:PolarPlacementItem>
                                 </DataTemplate>
@@ -158,21 +186,33 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="codec:SatelliteVehicle">
-                                    <Border
-                                        Width="20"
-                                        Height="{Binding SignalToNoiseRatio}"
-                                        Margin="0,0,10,0"
-                                        VerticalAlignment="Bottom"
-                                        Background="{DynamicResource PrimaryHueDarkForegroundBrush}"
-                                        BorderBrush="{DynamicResource AccentForegroundBrush}"
-                                        BorderThickness="1"
-                                        ToolTip="{Binding SignalToNoiseRatio}">
+                                    <Grid VerticalAlignment="Bottom">
+                                        <Border
+                                            Width="20"
+                                            Height="{Binding SignalToNoiseRatio}"
+                                            Margin="0,0,0,0"
+                                            Background="Green"
+                                            BorderBrush="{DynamicResource AccentForegroundBrush}"
+                                            BorderThickness="1"
+                                            ToolTip="{Binding SignalToNoiseRatio}" />
                                         <TextBlock
                                             HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
                                             FontWeight="Bold"
                                             Foreground="{DynamicResource AccentForegroundBrush}"
-                                            Text="{Binding PrnNumber}" />
-                                    </Border>
+                                            Text="{Binding Id}">
+                                            <TextBlock.Style>
+                                                <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="White" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SignalToNoiseRatio}" Value="0">
+                                                            <Setter Property="Foreground" Value="Red" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

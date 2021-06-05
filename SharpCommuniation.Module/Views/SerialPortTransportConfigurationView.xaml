@@ -12,16 +12,16 @@
     xmlns:serial="clr-namespace:System.IO.Ports;assembly=System"
     xmlns:valueConverter="clr-namespace:SharpCommunication.Module.ValueConverter"
     xmlns:xamlConverter="clr-namespace:WpfInfrastructure.XamlConverter;assembly=WpfInfrastructure"
-    mc:Ignorable="d" d:DesignWidth="284.51" d:DesignHeight="141.827">
+    d:DesignHeight="141.827"
+    d:DesignWidth="367.51"
+    mc:Ignorable="d">
     <UserControl.Resources />
     <materialDesign:Card Margin="5" materialDesign:ShadowAssist.ShadowDepth="Depth0">
-        <materialDesign:ColorZone Mode="PrimaryMid">
+        <materialDesign:ColorZone>
 
-            <Expander Background="{StaticResource PrimaryHueMidBrush}">
+            <Expander Background="{StaticResource PrimaryHueDarkBrush}">
                 <Expander.Header>
-                    <ToolBar
-                        materialDesign:ColorZoneAssist.Mode="PrimaryMid"
-                        Background="Transparent">
+                    <ToolBar materialDesign:ColorZoneAssist.Mode="PrimaryMid" Background="Transparent">
                         <ToolBar.Header>
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon
@@ -71,6 +71,7 @@
                         <RowDefinition Height="40" />
                         <RowDefinition Height="40" />
                         <RowDefinition Height="40" />
+                        <RowDefinition Height="40" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
 
@@ -91,6 +92,10 @@
                         Grid.Row="5"
                         Grid.Column="0"
                         Text="Stop Bits" />
+                    <TextBlock
+                        Grid.Row="6"
+                        Grid.Column="0"
+                        Text="Timeout" />
                     <ComboBox
                         Grid.Row="1"
                         Grid.Column="1"
@@ -136,7 +141,7 @@
                     <ComboBox
                         Grid.Row="3"
                         Grid.Column="1"
-                        Margin="5,0"
+                        Margin="5"
                         IsEditable="False"
                         IsEnabled="{Binding IsOpen, Converter={StaticResource InvBoolConverter}}"
                         ItemsSource="{Binding Source={module:EnumBindingSource {x:Type serial:Parity}}}"
@@ -144,7 +149,7 @@
                     <ComboBox
                         Grid.Row="4"
                         Grid.Column="1"
-                        Margin="5,0"
+                        Margin="5"
                         IsEditable="False"
                         IsEnabled="{Binding IsOpen, Converter={StaticResource InvBoolConverter}}"
                         SelectedItem="{Binding DataBits}">
@@ -159,11 +164,18 @@
                     <ComboBox
                         Grid.Row="5"
                         Grid.Column="1"
-                        Margin="5,0"
+                        Margin="5"
                         IsEditable="False"
                         IsEnabled="{Binding IsOpen, Converter={StaticResource InvBoolConverter}}"
                         ItemsSource="{Binding Source={module:EnumBindingSource {x:Type serial:StopBits}}}"
                         SelectedItem="{Binding StopBits}" />
+                    <TextBox
+                        Grid.Row="6"
+                        Grid.Column="1"
+                        Margin="5,5"
+                        VerticalContentAlignment="Bottom"
+                        IsEnabled="{Binding IsOpen, Converter={StaticResource InvBoolConverter}}"
+                        Text="{Binding ReadTimeout}" />
                 </Grid>
             </Expander>
         </materialDesign:ColorZone>

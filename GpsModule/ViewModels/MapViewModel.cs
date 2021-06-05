@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Prism.Mvvm;
 using Prism.Regions;
+using System.Windows;
 
 namespace GPSModule.ViewModels
 {
@@ -14,14 +15,14 @@ namespace GPSModule.ViewModels
         {
             gpsService.GllChanged += (sender, args) =>
             {
-                    Location = new Location(gpsService.Gll.Latitude, gpsService.Gll.Longitude);
+                   Application.Current.Dispatcher.InvokeAsync(()=> CurrentLocation = new Location(gpsService.Position.Latitude, gpsService.Position.Longitude));
             };
         }
 
         private Location _location;
         private bool _isLoaded;
 
-        public Location Location
+        public Location CurrentLocation
         {
             get => _location;
             set => SetProperty(ref _location, value);

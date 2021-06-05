@@ -67,8 +67,10 @@ namespace GPSModule.XamlMap
             //MapLayer = MapTileLayer.OpenStreetMapTileLayer;
   
            InitializeComponent();
-           // TileImageLoader.Cache = new MapControl.Caching.ImageFileCache($"{Directory.GetCurrentDirectory()}\\Map");
-           // TileImageLoader.MaxCacheExpiration = TimeSpan.MaxValue;
+            ImageLoader.HttpClient.DefaultRequestHeaders.Add("User-Agent", "XAML Map Control Test Application");
+
+            TileImageLoader.Cache = new MapControl.Caching.ImageFileCache($"{Directory.GetCurrentDirectory()}\\Map");
+           TileImageLoader.MaxCacheExpiration = TimeSpan.MaxValue;
         }
 
         // private void MapMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -90,7 +92,7 @@ namespace GPSModule.XamlMap
 
         private void MapMouseMove(object sender, MouseEventArgs e)
         {
-            var location = MapProjection.MapToLocation(e.GetPosition(this));
+            var location = ViewToLocation(e.GetPosition(this));
 
             MouseLocation.Text = location.GetPrettyString();
         }

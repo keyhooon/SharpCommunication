@@ -31,7 +31,7 @@
         <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource BoolToVisConverter}}">
 
             <Grid>
-                <xamlMap:Map CurrentLocation="{Binding Location}" />
+                <xamlMap:Map CurrentLocation="{Binding CurrentLocation}" />
             </Grid>
         </materialDesign:TransitioningContent>
     </Grid>

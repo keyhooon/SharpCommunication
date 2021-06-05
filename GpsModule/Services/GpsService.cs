@@ -48,6 +48,8 @@ namespace GPSModule.Services
 
         public GpsService(SerialPortDataTransport<Gps> dataTransport, Codec<Gps> codec) : base(dataTransport, codec)
         {
+            gpsSVs = new List<SatelliteVehicleInView>();
+            glonassSVs = new List<SatelliteVehicleInView>();
             ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["BOD"]).DecodeFinished +=
                 (sender, e) =>
                 {
@@ -126,11 +128,13 @@ namespace GPSModule.Services
                 (sender, e) =>
                 {
                     _gsv = (Gsv)e.Packet;
-                    if (_gsv.MessageType == "GP")
+                    if (_gsv.SVs.Count == 0)
+                        return;
+                    if (_gsv.SVs.First().PrnNumber < 64)
                     {
                         if (_gsv.MessageNumber == 1)
                         {
-                            gpsSVs = new List<SatelliteVehicleInView>(Gsv.TotalMessages * 4);
+                            gpsSVs = new List<SatelliteVehicleInView>(_gsv.TotalMessages * 4);
                         }
                         foreach (var sv in _gsv.SVs)
                         {
@@ -140,9 +144,9 @@ namespace GPSModule.Services
                         if(_gsv.MessageNumber == _gsv.TotalMessages)
                             RaisePropertyChanged(nameof(GpsSVs));
                     }
-                    if (_gsv.MessageType == "GL")
+                    else if (_gsv.SVs.First().PrnNumber < 128 )
                     {
-                        if (Gsv.MessageNumber == 1)
+                        if (_gsv.MessageNumber == 1)
                         {
                             glonassSVs = new List<SatelliteVehicleInView>(_gsv.TotalMessages * 4);
                         }

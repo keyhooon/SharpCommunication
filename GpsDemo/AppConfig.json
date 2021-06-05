@@ -15,11 +15,6 @@
     "ContentMapRegionName": "ContentMapRegion",
     "HeaderRegionName": "HeaderRegion"
   },
-  "GpsConfig": {
-    "PortName": "COM3",
-    "BaudRate": 115200,
-    "ReadTimeout" : 1000000 
-  },
   "Logging": {
     "LogLevel": { // All providers, LogLevel applies to all the enabled providers.
       "Default": "Error", // Default logging, Error and higher.

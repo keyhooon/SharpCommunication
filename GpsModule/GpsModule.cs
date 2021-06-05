@@ -11,6 +11,7 @@ using MaterialDesignThemes.Wpf;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Prism.Ioc;
+using Prism.Modularity;
 using Prism.Regions;
 using SharpCommunication.Codec;
 using SharpCommunication.Module.Services;
@@ -20,32 +21,12 @@ using Unity;
 
 namespace GPSModule
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : MaterialDesignUnityBootStrap.App
+    public class GpsModule : IModule
     {
-        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        public void OnInitialized(IContainerProvider containerProvider)
         {
-            base.RegisterTypes(containerRegistry);
-            var configurationRoot = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("AppConfig.json", optional: true, true).Build();
-          
-            containerRegistry.RegisterServices(collection =>
-            {
-                collection
-                    .AddSerialPortTransport(new Codec<Gps>(Gps.Encoding.CreateBuilder().Build()), SerialPortDataTransportSettings.Default)
-                    .AddSingleton<GpsService>();
-            });
-        }
-        protected override void OnInitialized()
-        {
-            base.OnInitialized();
-            
 
-
-            var compositeMapNavigatorService = Container.Resolve<CompositeMapNavigatorService>();
+            var compositeMapNavigatorService = containerProvider.Resolve<CompositeMapNavigatorService>();
             compositeMapNavigatorService.RegisterItem("Device", MapItemBuilder
                 .CreateDefaultBuilder("Device")
                     .WithImagePackIcon(PackIconKind.Plus)
@@ -65,14 +46,28 @@ namespace GPSModule
                                         {
                                             typeof(CachedChannelView),
                                             typeof(NmeaView)
-                                        }}, 
+                                        }},
                                         { "ToolsRegion", new[] {typeof(GpsConfigurationView) }}
                                     })),
                             })
                     )
                 })
             );
+        }
+
+        public void RegisterTypes(IContainerRegistry containerRegistry)
+        {
           
+            var configurationRoot = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("AppConfig.json", optional: true, true).Build();
+
+            containerRegistry.RegisterServices(collection =>
+            {
+                collection
+                    .AddSerialPortTransport(new Codec<Gps>(Gps.Encoding.CreateBuilder().Build()), SerialPortDataTransportSettings.Default)
+                    .AddSingleton<GpsService>();
+            });
         }
     }
 }

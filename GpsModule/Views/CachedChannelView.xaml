@@ -55,7 +55,7 @@
                                         VerticalAlignment="Bottom"
                                         DockPanel.Dock="Bottom"
                                         Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                        Text="{Binding LastPacketTime}" />
+                                        Text="{Binding FirstPacketTime}" />
                                 </DockPanel>
                                 <Separator />
                                 <ItemsControl ItemsSource="{Binding PacketsList}">

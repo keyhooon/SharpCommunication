@@ -8,8 +8,8 @@ namespace GPSModule.XamlMap
     {
         public static string GetPrettyString(this Location val)
         {
-            var latsign = (val.Latitude >= 0);
-            var lonsign = (val.Longitude >= 0);
+            var latsign = val.Latitude >= 0;
+            var lonsign = val.Longitude >= 0;
             var location = new Location(Math.Abs(val.Latitude), Math.Abs(val.Longitude));
 
             var lat1 = decimal.ToInt32((decimal)location.Latitude);

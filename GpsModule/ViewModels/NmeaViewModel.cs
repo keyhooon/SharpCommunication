@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using GPSModule.Services;
 using GPSModule.Services.Models;
 using Prism.Mvvm;
@@ -25,18 +26,23 @@ namespace GPSModule.ViewModels
             GpsService.PropertyChanged += (sender, e) =>
             {
                 if (e.PropertyName == nameof(GpsService.GpsSVs) || e.PropertyName == nameof(GpsService.GlonassSVs))
-                {
                     sVs = GpsService.GpsSVs.Concat(GpsService.GlonassSVs).ToList();
-                    RaisePropertyChanged(nameof(SVs));
-                }              
             };
+        var timer = new DispatcherTimer(TimeSpan.FromSeconds(1), DispatcherPriority.Background, (sender, e) =>
+            {
+                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(SVs)));
+                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(FixDateTime)));
+                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(Position)));
+                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(Dop)));
+
+            }, Application.Current.Dispatcher);
         }
         public bool IsLoaded
         {
             get => _isLoaded;
             set => SetProperty(ref _isLoaded, value);
         }
-        public DateTime FixDateTime => GpsService.FixDateTime;
+        public TimeSpan FixDateTime => GpsService.Position?.UniversalTimeCoordinated??TimeSpan.Zero;
 
         public GpsData GpsData => GpsService.GpsData;
 

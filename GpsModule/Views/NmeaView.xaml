@@ -109,10 +109,10 @@
                                                 Opacity=".5">
                                                 <Image.Style>
                                                     <Style xmlns:gp="clr-namespace:SharpCommunication.Codec;assembly=SharpCommunication.GPS" TargetType="Image">
-                                                        <Setter Property="Source" Value="/Assets/Rs.png" />
+                                                        <Setter Property="Source" Value="pack://application:,,,/GPSModule;component/Assets/Rs.png" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding System}" Value="{x:Static gp:SatelliteSystem.Gps}">
-                                                                <Setter Property="Source" Value="/Assets/US.png" />
+                                                                <Setter Property="Source" Value="pack://application:,,,/GPSModule;component/Assets/US.png" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>

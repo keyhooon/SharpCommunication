@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo", "Demo\Demo.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GPSModule", "GpsModule\GPSModule.csproj", "{3644F1D8-0D1D-4484-A436-291E322AEC6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GpsDemo", "GpsDemo\GpsDemo.csproj", "{366346D7-DB56-46D4-A238-4F54FE81937C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GpsDemo", "GpsDemo\GpsDemo.csproj", "{366346D7-DB56-46D4-A238-4F54FE81937C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gy955Module", "Gy955Module\Gy955Module.csproj", "{B8D888CD-7CC9-405A-AB73-659C9D48B554}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +113,18 @@ Global
 		{366346D7-DB56-46D4-A238-4F54FE81937C}.Release|iPhone.Build.0 = Release|Any CPU
 		{366346D7-DB56-46D4-A238-4F54FE81937C}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{366346D7-DB56-46D4-A238-4F54FE81937C}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Release|iPhone.Build.0 = Release|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{B8D888CD-7CC9-405A-AB73-659C9D48B554}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

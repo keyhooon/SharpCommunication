@@ -1,28 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using CompositeContentNavigator.Services;
 using CompositeContentNavigator.Services.MapItems;
 using CompositeContentNavigator.Services.MapItems.Data;
-using GPSModule.Services;
-using GPSModule.Views;
+using Gy955Module.Views;
 using MaterialDesignThemes.Wpf;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Prism.Ioc;
 using Prism.Modularity;
 using Prism.Regions;
 using SharpCommunication.Codec;
-using SharpCommunication.Module.Services;
-using SharpCommunication.Module.Views;
+using SharpCommunication.GY955.Codec;
 using SharpCommunication.Module.Services;
 using SharpCommunication.Transport.SerialPort;
-using Unity;
 
-namespace GPSModule
+namespace Gy955Module
 {
-    public class GpsModule : IModule
+    public class Gy955Module : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
@@ -32,9 +26,9 @@ namespace GPSModule
                 .CreateDefaultBuilder("Device")
                     .WithImagePackIcon(PackIconKind.Plus)
                     .WithChild(new Collection<MapItem> {
-                    compositeMapNavigatorService.RegisterItem("Device\\GPS",MapItemBuilder
-                            .CreateDefaultBuilder("GPS")
-                            .WithImagePackIcon(PackIconKind.CrosshairsGps)
+                    compositeMapNavigatorService.RegisterItem("Device\\IMU",MapItemBuilder
+                            .CreateDefaultBuilder("IMU")
+                            .WithImagePackIcon(PackIconKind.Compass)
                             .WithChild(new Collection<MapItem>{
                                 compositeMapNavigatorService.RegisterItem("Device\\GPS\\Map",MapItemBuilder
                                     .CreateDefaultBuilder("Map")
@@ -61,7 +55,7 @@ namespace GPSModule
             containerRegistry.RegisterServices(collection =>
             {
                 collection
-                    .AddSerialPortTransport(new Codec<Gps>(Gps.Encoding.CreateBuilder().Build()), SerialPortDataTransportSettings.Default)
+                    .AddSerialPortTransport(new Codec<Gy955>(new Gy955.Encoding()), SerialPortDataTransportSettings.Default)
                     .AddSingleton<GpsService>();
             });
         }

@@ -46,9 +46,7 @@
                                     <TextBlock>
                                         <Run FontSize="32" Text="UART CHANNEL " />
                                         <Run FontSize="12" Text="{Binding DataReceivedCount, StringFormat={}({0})}" />
-
                                     </TextBlock>
-
                                     <TextBlock
                                         Margin="5"
                                         HorizontalAlignment="Right"
@@ -80,16 +78,13 @@
                                                         TextWrapping="NoWrap" />
                                                 </Grid>
                                             </materialDesign:Card>
-
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-
             </StackPanel>
         </materialDesign:TransitioningContent>
     </Grid>

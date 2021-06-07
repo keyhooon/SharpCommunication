@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MaterialDesignUnityBootStrap" Version="1.0.9" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpCommuniation.Module\SharpCommunication.Module.csproj" />
+    <ProjectReference Include="..\SharpCommunication.Base\SharpCommunication.Base.csproj" />
+    <ProjectReference Include="..\SharpCommunication.GY955\SharpCommunication.GY955.csproj" />
+  </ItemGroup>
+</Project>

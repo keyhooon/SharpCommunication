@@ -1,7 +1,6 @@
 ﻿using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -15,7 +14,7 @@ namespace SharpCommunication.GY955.Codec
         public Vector3? Acc { get; set; }
         public Vector3? Mag { get; set; }
         public Vector3? Gyr { get; set; }
-        public Vector3? YRP { get; set; }
+        public Vector3? Yrp { get; set; }
         public Vector4? Q4 { get; set; }
         public Level SystemAccuracy { get; set; }
         public Level MagAccuracy { get; set; }
@@ -32,8 +31,8 @@ namespace SharpCommunication.GY955.Codec
                 sb.Append($"Gyroscope {{ X : {Gyr.Value.X}, Y : {Gyr.Value.Y}, Z : {Gyr.Value.Z}, ");
             if (Types.HasFlag(VectorDataType.Magnetometer) && Mag != null)
                 sb.Append($"Magnetometer {{ X : {Mag.Value.X}, Y : {Mag.Value.Y}, Z : {Mag.Value.Z}, ");
-            if (Types.HasFlag(VectorDataType.Euler) && YRP != null)
-                sb.Append($"Euler {{ X : {YRP.Value.X}, Y : {YRP.Value.Y}, Z : {YRP.Value.Z}, ");
+            if (Types.HasFlag(VectorDataType.Euler) && Yrp != null)
+                sb.Append($"Euler {{ X : {Yrp.Value.X}, Y : {Yrp.Value.Y}, Z : {Yrp.Value.Z}, ");
             if (Types.HasFlag(VectorDataType.Quaternion) && Q4 != null)
                 sb.Append($"Quaternion {{ X : {Q4.Value.X}, Y : {Q4.Value.Y}, Z : {Q4.Value.Z}, ");
             return sb.ToString();
@@ -90,7 +89,7 @@ namespace SharpCommunication.GY955.Codec
                 }
                 if (result.Types.HasFlag(VectorDataType.Euler))
                 {
-                    result.YRP = new Vector3(
+                    result.Yrp = new Vector3(
                         BitConverter.ToInt16(data, index),
                         BitConverter.ToInt16(data, index + 2),
                         BitConverter.ToInt16(data, index + 4));
@@ -152,9 +151,9 @@ namespace SharpCommunication.GY955.Codec
                 }
                 if (output.Types.HasFlag(VectorDataType.Euler))
                 {
-                    BitConverter.GetBytes((short)output.YRP.Value.X).CopyTo(bytes, index);
-                    BitConverter.GetBytes((short)output.YRP.Value.Y).CopyTo(bytes, index + 2);
-                    BitConverter.GetBytes((short)output.YRP.Value.Z).CopyTo(bytes, index + 4);
+                    BitConverter.GetBytes((short)output.Yrp.Value.X).CopyTo(bytes, index);
+                    BitConverter.GetBytes((short)output.Yrp.Value.Y).CopyTo(bytes, index + 2);
+                    BitConverter.GetBytes((short)output.Yrp.Value.Z).CopyTo(bytes, index + 4);
                     index += 6;
                 }
                 if (output.Types.HasFlag(VectorDataType.Quaternion))

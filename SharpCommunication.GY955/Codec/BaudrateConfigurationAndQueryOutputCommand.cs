@@ -62,10 +62,7 @@ namespace SharpCommunication.GY955.Codec
             {
                 var data = reader.ReadByte();
                 var crc8 = (byte)(data + 0xA5);
-                if (crc8 != reader.ReadByte())
-                    return null;
-                return new BaudrateConfigurationAndQueryOutput() { Value = data };
-
+                return crc8 != reader.ReadByte() ? null : new BaudrateConfigurationAndQueryOutput() { Value = data };
             }
 
             public static PacketEncodingBuilder CreateBuilder() =>

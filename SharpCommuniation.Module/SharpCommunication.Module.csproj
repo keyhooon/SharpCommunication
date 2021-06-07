@@ -7,15 +7,12 @@
             <PackageProjectUrl>https://github.com/keyhooon/SharpCommunication</PackageProjectUrl>
     <RepositoryType></RepositoryType>
     <RepositoryUrl>https://github.com/keyhooon/SharpCommunication</RepositoryUrl>    
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MaterialDesignUnityBootStrap" Version="1.0.9" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SharpCommunication.Base\SharpCommunication.Base.csproj" />
+    <PackageReference Include="SharpCommunication.Base" Version="1.0.11" />
   </ItemGroup>
 
 </Project>

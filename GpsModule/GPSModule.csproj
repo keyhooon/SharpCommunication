@@ -6,6 +6,8 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon />
     <StartupObject />
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,12 +30,9 @@
   <ItemGroup>
     <PackageReference Include="MaterialDesignUnityBootStrap" Version="1.0.9" />
     <PackageReference Include="NetTopologySuite" Version="2.2.0" />
+    <PackageReference Include="SharpCommunication.GPS" Version="1.0.3" />
+    <PackageReference Include="SharpCommunication.Module" Version="1.0.2" />
     <PackageReference Include="XAML.MapControl" Version="5.6.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SharpCommuniation.Module\SharpCommunication.Module.csproj" />
-    <ProjectReference Include="..\SharpCommunication.GPS\SharpCommunication.GPS.csproj" />
   </ItemGroup>
 
 </Project>

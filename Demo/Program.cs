@@ -2,15 +2,12 @@
 using System;
 using System.IO;
 using System.IO.Ports;
-using SharpCommunication.Channels;
 using Demo.Codec;
 using System.Threading;
 using Demo.Transport;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using SharpCommunication.Channels.Decorator;
-using SharpCommunication.Codec;
 using SharpCommunication.Codec.Encoding;
 
 namespace Demo

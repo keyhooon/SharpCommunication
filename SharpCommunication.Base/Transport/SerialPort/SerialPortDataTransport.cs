@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec.Packets;
 

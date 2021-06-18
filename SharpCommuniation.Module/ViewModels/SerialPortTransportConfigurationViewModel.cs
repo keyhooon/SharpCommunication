@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO.Ports;
-using Prism.Regions;
+﻿using System.IO.Ports;
 using SharpCommunication.Codec.Packets;
 using SharpCommunication.Transport.SerialPort;
 
@@ -17,8 +15,9 @@ namespace SharpCommunication.Module.ViewModels
         private int _dataBits;
         private int _readTimeout;
 
-        private SerialPortDataTransportSettings serialPortDataTransportSettings;
-        public SerialPortTransportConfigurationViewModel(SerialPortDataTransport<T> dataTransport ) :base(dataTransport)
+        private readonly SerialPortDataTransportSettings serialPortDataTransportSettings;
+
+        protected SerialPortTransportConfigurationViewModel(SerialPortDataTransport<T> dataTransport ) :base(dataTransport)
         {
             serialPortDataTransportSettings = (SerialPortDataTransportSettings)dataTransport.Settings;
             PortName = serialPortDataTransportSettings.PortName;

@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
-namespace SharpCommunication.Transport
+﻿namespace SharpCommunication.Transport
 {
     public class DataTransportOption 
     {

@@ -1,13 +1,13 @@
 ﻿using System.Windows.Controls;
 
-namespace GPSModule.Views
+namespace ImuModule.Views
 {
     /// <summary>
     /// Interaction logic for ToolView
     /// </summary>
-    public partial class GpsConfigurationView : UserControl
+    public partial class ImuConfigurationView : UserControl
     {
-        public GpsConfigurationView()
+        public ImuConfigurationView()
         {
             InitializeComponent();
         }

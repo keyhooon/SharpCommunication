@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GPSModule.Services.Models
+﻿namespace GPSModule.Services.Models
 {
     public class SatelliteVehicleInView : Satellite
     {

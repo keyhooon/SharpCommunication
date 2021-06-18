@@ -1,8 +1,5 @@
 ﻿using GPSModule.Services;
 using MapControl;
-using MaterialDesignUnityBootStrap.Config;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Prism.Mvvm;
 using Prism.Regions;
 using System.Windows;

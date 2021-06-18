@@ -17,4 +17,19 @@
     <ProjectReference Include="..\SharpCommunication.Base\SharpCommunication.Base.csproj" />
     <ProjectReference Include="..\SharpCommunication.GY955\SharpCommunication.GY955.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\CachedChannelView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Views\ImuConfigurationView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Views\ImuServiceToolbarView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+    <Page Update="Views\ImuView.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+    </Page>
+  </ItemGroup>
 </Project>

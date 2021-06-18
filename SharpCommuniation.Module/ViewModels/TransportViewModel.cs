@@ -2,7 +2,6 @@
 using Prism.Mvvm;
 using SharpCommunication.Codec.Packets;
 using SharpCommunication.Transport;
-using SharpCommunication.Transport.SerialPort;
 
 namespace SharpCommunication.Module.ViewModels
 {
@@ -13,7 +12,7 @@ namespace SharpCommunication.Module.ViewModels
 
         private readonly DataTransport<T> _dataTransport;
 
-        public TransportViewModel(DataTransport<T> dataTransport)
+        protected TransportViewModel(DataTransport<T> dataTransport)
         {
             _dataTransport = dataTransport;
             _dataTransport.CanOpenChanged += delegate { OpenCommand.RaiseCanExecuteChanged(); };

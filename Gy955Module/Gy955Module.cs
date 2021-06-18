@@ -4,17 +4,18 @@ using System.Collections.ObjectModel;
 using CompositeContentNavigator.Services;
 using CompositeContentNavigator.Services.MapItems;
 using CompositeContentNavigator.Services.MapItems.Data;
-using Gy955Module.Views;
+using ImuModule.Services;
+using ImuModule.Views;
 using MaterialDesignThemes.Wpf;
+using Microsoft.Extensions.DependencyInjection;
 using Prism.Ioc;
 using Prism.Modularity;
-using Prism.Regions;
 using SharpCommunication.Codec;
 using SharpCommunication.GY955.Codec;
 using SharpCommunication.Module.Services;
 using SharpCommunication.Transport.SerialPort;
 
-namespace Gy955Module
+namespace ImuModule
 {
     public class Gy955Module : IModule
     {
@@ -30,19 +31,19 @@ namespace Gy955Module
                             .CreateDefaultBuilder("IMU")
                             .WithImagePackIcon(PackIconKind.Compass)
                             .WithChild(new Collection<MapItem>{
-                                compositeMapNavigatorService.RegisterItem("Device\\GPS\\Map",MapItemBuilder
-                                    .CreateDefaultBuilder("Map")
+                                compositeMapNavigatorService.RegisterItem("Device\\IMU\\Diamond",MapItemBuilder
+                                    .CreateDefaultBuilder("Diamond")
                                     .WithImagePackIcon(PackIconKind.MapMarker)
-                                    .WithToolBars(new[]{ typeof(GpsServiceToolBarView)})
+                                    .WithToolBars(new[]{ typeof(ImuServiceToolBarView)})
                                     .WithView(typeof(MapView))
                                     .WithExtraView(new Dictionary<string, IEnumerable<Type>>
                                     {
                                         {"PopupToolBarRegion", new[]
                                         {
                                             typeof(CachedChannelView),
-                                            typeof(NmeaView)
+                                            typeof(ImuView)
                                         }},
-                                        { "ToolsRegion", new[] {typeof(GpsConfigurationView) }}
+                                        { "ToolsRegion", new[] {typeof(ImuConfigurationView) }}
                                     })),
                             })
                     )
@@ -56,7 +57,7 @@ namespace Gy955Module
             {
                 collection
                     .AddSerialPortTransport(new Codec<Gy955>(new Gy955.Encoding()), SerialPortDataTransportSettings.Default)
-                    .AddSingleton<GpsService>();
+                    .AddSingleton<ImuService>();
             });
         }
     }

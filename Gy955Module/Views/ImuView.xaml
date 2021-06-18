@@ -1,0 +1,102 @@
+﻿<UserControl
+    x:Class="ImuModule.Views.ImuView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:compositeContentNavigator="clr-namespace:CompositeContentNavigator;assembly=CompositeContentNavigator"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:loadingIndicator="clr-namespace:MaterialDesignUnityBootStrap.LoadingIndicator;assembly=MaterialDesignUnityBootStrap"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    compositeContentNavigator:ViewManager.HeaderDisplay="Message"
+    compositeContentNavigator:ViewManager.HeaderPackIcon="Satellite"
+    ClipToBounds="True"
+    mc:Ignorable="d">
+
+    <Grid VerticalAlignment="Center">
+        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:1}" Visibility="{Binding IsLoaded, Converter={StaticResource InverseBoolToVisConverter}}">
+            <Viewbox
+                Width="150"
+                Height="150"
+                Margin="10">
+                <loadingIndicator:LoadingIndicator
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
+                    IsActive="True"
+                    Mode="Arcs"
+                    SpeedRatio="1.2" />
+            </Viewbox>
+        </materialDesign:TransitioningContent>
+
+        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:1}" Visibility="{Binding IsLoaded, Converter={StaticResource BoolToVisConverter}}">
+            <Grid VerticalAlignment="Stretch">
+                <UserControl.Resources>
+                    <Style BasedOn="{StaticResource MaterialDesignTitleTextBlock}" TargetType="{x:Type TextBlock}">
+                        <Setter Property="Margin" Value="5,5,0,5" />
+                        <Setter Property="HorizontalAlignment" Value="Right" />
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </UserControl.Resources>
+                <GroupBox
+                    Margin="5"
+                    VerticalAlignment="Bottom"
+                    Style="{DynamicResource MaterialDesignCardGroupBox}">
+                    <GroupBox.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon VerticalAlignment="Center" Kind="ViewDashboard" />
+                            <TextBlock
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+                                Text="Angles" />
+                        </StackPanel>
+                    </GroupBox.Header>
+
+
+                    <Grid
+                        Grid.Column="1"
+                        Margin="20"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="150" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="1" Text="Heading" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Text="{Binding Euler.X, StringFormat={}{0:000.00}°}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Text="Elevation" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Text="{Binding Euler.Y, StringFormat={}{0:000.00}°}" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Text="Bank" />
+                        <TextBlock
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Text="{Binding Euler.Z, StringFormat={}{0:000.00}°}" />
+                    </Grid>
+
+                </GroupBox>
+
+            </Grid>
+        </materialDesign:TransitioningContent>
+    </Grid>
+
+</UserControl>

@@ -1,13 +1,13 @@
 ﻿using System.Windows.Controls;
 
-namespace GPSModule.Views
+namespace ImuModule.Views
 {
     /// <summary>
     /// Interaction logic for NmeaView.xaml
     /// </summary>
-    public partial class NmeaView : UserControl
+    public partial class ImuView : UserControl
     {
-        public NmeaView()
+        public ImuView()
         {
             InitializeComponent();
         }

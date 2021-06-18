@@ -1,10 +1,5 @@
-﻿using GPSModule.Services;
-using Prism.Commands;
-using Prism.Events;
-using Prism.Mvvm;
-using SharpCommunication.Codec;
+﻿using SharpCommunication.Codec;
 using SharpCommunication.Module.ViewModels;
-using SharpCommunication.Transport;
 using SharpCommunication.Transport.SerialPort;
 
 namespace GPSModule.ViewModels

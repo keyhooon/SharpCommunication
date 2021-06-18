@@ -1,7 +1,6 @@
 ﻿using SharpCommunication.Channels.Decorator;
 using SharpCommunication.Codec.Packets;
 using System;
-using System.ComponentModel;
 
 namespace SharpCommunication.Channels.ChannelTools
 {

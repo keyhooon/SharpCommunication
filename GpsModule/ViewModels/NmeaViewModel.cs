@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using GPSModule.Services;
 using GPSModule.Services.Models;
 using Prism.Mvvm;
 using Prism.Regions;
-using SharpCommunication.Codec;
 
 namespace GPSModule.ViewModels
 {
@@ -25,17 +22,28 @@ namespace GPSModule.ViewModels
             GpsService = gpsService;
             GpsService.PropertyChanged += (sender, e) =>
             {
-                if (e.PropertyName == nameof(GpsService.GpsSVs) || e.PropertyName == nameof(GpsService.GlonassSVs))
+                if (e.PropertyName is nameof(GpsService.GpsSVs) or nameof(GpsService.GlonassSVs))
                     sVs = GpsService.GpsSVs.Concat(GpsService.GlonassSVs).ToList();
             };
-        var timer = new DispatcherTimer(TimeSpan.FromSeconds(1), DispatcherPriority.Background, (sender, e) =>
+            var timer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher)
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            timer.Tick += (sender, e) =>
             {
                 Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(SVs)));
                 Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(FixDateTime)));
                 Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(Position)));
                 Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(Dop)));
 
-            }, Application.Current.Dispatcher);
+            };
+            gpsService.IsOpenChanged += (_, _) =>
+            {
+                if (gpsService.IsOpen)
+                    timer.Start();
+                else
+                    timer.Stop();
+            };
         }
         public bool IsLoaded
         {

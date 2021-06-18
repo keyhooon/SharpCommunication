@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SharpCommunication.Transport.SerialPort;
+﻿using SharpCommunication.Transport.SerialPort;
 
 namespace SharpCommunication.Transport.Stream
 {

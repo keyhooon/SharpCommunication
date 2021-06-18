@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 

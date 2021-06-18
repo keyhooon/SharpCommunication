@@ -1,8 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using SharpCommunication.Codec.Packets;
-using SharpCommunication.Module.ViewModels;
-using SharpCommunication.Transport;
+﻿using System.Windows.Controls;
 
 namespace SharpCommunication.Module.Views
 {

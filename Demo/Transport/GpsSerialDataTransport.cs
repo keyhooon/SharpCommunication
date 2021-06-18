@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Demo.Codec;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec;
-using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Transport.SerialPort;
 
 namespace Demo.Transport

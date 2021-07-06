@@ -16,7 +16,7 @@
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
     <Grid Margin="15">
-        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource InverseBoolToVisConverter}}">
+        <!--<materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource InverseBoolToVisConverter}}">
             <Viewbox
                 Width="150"
                 Height="150"
@@ -30,26 +30,40 @@
                     SpeedRatio="1.2" />
             </Viewbox>
         </materialDesign:TransitioningContent>
-        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource BoolToVisConverter}}">
+        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource BoolToVisConverter}}">-->
 
-            <Grid>
-                <h:HelixViewport3D
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    CoordinateSystemLabelForeground="White"
-                    ShowCoordinateSystem="True"
-                    ShowFrameRate="True"
-                    ShowViewCube="False">
-                    <h:HelixViewport3D.Camera>
-                        <OrthographicCamera
-                            FarPlaneDistance="20000"
-                            LookDirection="-10,0,-1"
-                            NearPlaneDistance="1"
-                            Position="10,0,1"
-                            UpDirection="0,0,1" />
-                    </h:HelixViewport3D.Camera>
-                    <h:DefaultLights />
-                    <ModelVisual3D Content="{Binding ModelGroup}">
+        <Grid>
+            <h:HelixViewport3D
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                CoordinateSystemLabelForeground="White"
+                IsRotationEnabled="False"
+                IsZoomEnabled="False"
+                ShowFrameRate="True"
+                ShowViewCube="False">
+                <h:HelixViewport3D.Camera>
+                    <OrthographicCamera
+                        FarPlaneDistance="20000"
+                        LookDirection="-10,0,-1"
+                        NearPlaneDistance="1"
+                        Position="10,0,1"
+                        UpDirection="0,0,1" />
+                </h:HelixViewport3D.Camera>
+                <h:DefaultLights />
+                <h:SunLight />
+                <h:CoordinateSystemVisual3D >
+                    <ModelVisual3D.Transform>
+                        <Transform3DGroup>
+                            <ScaleTransform3D
+                                ScaleX=".5"
+                                ScaleY=".5"
+                                ScaleZ=".5" />
+
+                            <RotateTransform3D Rotation="{Binding QuaternionRotation}" />
+                        </Transform3DGroup>
+                    </ModelVisual3D.Transform>
+                </h:CoordinateSystemVisual3D>
+                <!--<ModelVisual3D Content="{Binding ModelGroup}">
                         <ModelVisual3D.Transform>
                             <Transform3DGroup>
                                 <ScaleTransform3D
@@ -60,10 +74,10 @@
                                 <RotateTransform3D Rotation="{Binding QuaternionRotation}" />
                             </Transform3DGroup>
                         </ModelVisual3D.Transform>
-                    </ModelVisual3D>
-                </h:HelixViewport3D>
-            </Grid>
-        </materialDesign:TransitioningContent>
+                    </ModelVisual3D>-->
+            </h:HelixViewport3D>
+        </Grid>
+        <!--</materialDesign:TransitioningContent>-->
     </Grid>
 
 </UserControl>

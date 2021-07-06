@@ -8,13 +8,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaterialDesignUnityBootStrap" Version="1.0.9" />
+    <None Remove="Assets\Model.3DS" />
+  </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="Assets\Model.3DS">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.17.0" />
+    <PackageReference Include="MaterialDesignUnityBootStrap" Version="1.0.9" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SharpCommuniation.Module\SharpCommunication.Module.csproj" />
-    <ProjectReference Include="..\SharpCommunication.Base\SharpCommunication.Base.csproj" />
     <ProjectReference Include="..\SharpCommunication.GY955\SharpCommunication.GY955.csproj" />
   </ItemGroup>
 
@@ -31,5 +40,9 @@
     <Page Update="Views\ImuView.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
     </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\AntennaModel\" />
   </ItemGroup>
 </Project>

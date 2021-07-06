@@ -7,11 +7,15 @@
     xmlns:loadingIndicator="clr-namespace:MaterialDesignUnityBootStrap.LoadingIndicator;assembly=MaterialDesignUnityBootStrap"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mvvm="http://prismlibrary.com/"
     compositeContentNavigator:ViewManager.HeaderDisplay="Message"
     compositeContentNavigator:ViewManager.HeaderPackIcon="Satellite"
+    mvvm:ViewModelLocator.AutoWireViewModel="True"
     ClipToBounds="True"
     mc:Ignorable="d">
-
+    <UserControl.Resources>
+        <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+    </UserControl.Resources>
     <Grid VerticalAlignment="Center">
         <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:1}" Visibility="{Binding IsLoaded, Converter={StaticResource InverseBoolToVisConverter}}">
             <Viewbox
@@ -30,13 +34,13 @@
 
         <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:1}" Visibility="{Binding IsLoaded, Converter={StaticResource BoolToVisConverter}}">
             <Grid VerticalAlignment="Stretch">
-                <UserControl.Resources>
-                    <Style BasedOn="{StaticResource MaterialDesignTitleTextBlock}" TargetType="{x:Type TextBlock}">
+                <Grid.Resources>
+                    <Style BasedOn="{StaticResource MaterialDesignSubtitle1TextBlock}" TargetType="{x:Type TextBlock}">
                         <Setter Property="Margin" Value="5,5,0,5" />
                         <Setter Property="HorizontalAlignment" Value="Right" />
                         <Setter Property="VerticalAlignment" Value="Center" />
                     </Style>
-                </UserControl.Resources>
+                </Grid.Resources>
                 <GroupBox
                     Margin="5"
                     VerticalAlignment="Bottom"
@@ -47,7 +51,7 @@
                             <TextBlock
                                 Margin="8,0,0,0"
                                 VerticalAlignment="Center"
-                                Style="{StaticResource MaterialDesignSubheadingTextBlock}"
+                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                 Text="Angles" />
                         </StackPanel>
                     </GroupBox.Header>

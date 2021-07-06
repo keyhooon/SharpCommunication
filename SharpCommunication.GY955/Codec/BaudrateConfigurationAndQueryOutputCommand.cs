@@ -1,8 +1,8 @@
-﻿using SharpCommunication.Codec.Encoding;
+﻿using System.IO;
+using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
-using System.IO;
 
-namespace SharpCommunication.GY955.Codec
+namespace SharpCommunication.Codec
 {
     public class BaudrateConfigurationAndQueryOutput : IPacket
     {

@@ -8,7 +8,7 @@ using Prism.Mvvm;
 using Prism.Regions;
 using SharpCommunication.Channels;
 using SharpCommunication.Channels.Decorator;
-using SharpCommunication.GY955.Codec;
+using SharpCommunication.Codec;
 using SharpCommunication.Transport.SerialPort;
 
 namespace ImuModule.ViewModels
@@ -93,7 +93,7 @@ namespace ImuModule.ViewModels
             set => SetProperty(ref _loaded, value);
         }
 
-        public async void OnNavigatedTo(NavigationContext navigationContext)
+        public void OnNavigatedTo(NavigationContext navigationContext)
         {
             Loaded = true;
         }

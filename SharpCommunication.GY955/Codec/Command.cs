@@ -3,7 +3,7 @@ using System.Linq;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 
-namespace SharpCommunication.GY955.Codec
+namespace SharpCommunication.Codec
 {
     public class Command : IDescendantPacket
     {

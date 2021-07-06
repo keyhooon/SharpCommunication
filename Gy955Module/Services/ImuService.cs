@@ -1,9 +1,9 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Numerics;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec;
-using SharpCommunication.GY955.Codec;
 using SharpCommunication.Module.Services;
 using SharpCommunication.Transport.SerialPort;
 
@@ -11,6 +11,7 @@ namespace ImuModule.Services
 {
     public class ImuService : TransportService<Gy955>
     {
+        public event EventHandler DataReceived;
         public ImuService(SerialPortDataTransport<Gy955> dataTransport, Codec<Gy955> codec) : base(dataTransport, codec)
         {
             
@@ -38,6 +39,7 @@ namespace ImuModule.Services
             Yrp = e.Data.Output.Yrp;
             OnPropertyChanged(new PropertyChangedEventArgs(nameof(Yrp)));
             OnPropertyChanged(new PropertyChangedEventArgs(nameof(Q4)));
+            DataReceived?.Invoke(this,EventArgs.Empty);
         }
 
 

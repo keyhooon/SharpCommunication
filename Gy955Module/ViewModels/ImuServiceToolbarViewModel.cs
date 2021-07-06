@@ -1,12 +1,12 @@
-﻿using SharpCommunication.GY955.Codec;
+﻿using SharpCommunication.Codec;
 using SharpCommunication.Module.ViewModels;
 using SharpCommunication.Transport.SerialPort;
 
 namespace ImuModule.ViewModels
 {
-    public class GpsServiceToolbarViewModel : TransportViewModel<Gy955>
+    public class ImuServiceToolbarViewModel : TransportViewModel<Gy955>
     {
-        public GpsServiceToolbarViewModel(SerialPortDataTransport<Gy955> dataTransport) : base(dataTransport)
+        public ImuServiceToolbarViewModel(SerialPortDataTransport<Gy955> dataTransport) : base(dataTransport)
         {
 
         }

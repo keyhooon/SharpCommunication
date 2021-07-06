@@ -56,7 +56,7 @@ namespace SharpCommunication.Transport
 
                             await Task.Delay(Settings.AutoCheckIsOpenTime, token);
                         }
-                        catch (OperationCanceledException e)
+                        catch (OperationCanceledException)
                         {
                             break;
                         }

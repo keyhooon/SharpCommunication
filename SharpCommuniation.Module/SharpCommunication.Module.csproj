@@ -12,7 +12,10 @@
 
   <ItemGroup>
     <PackageReference Include="MaterialDesignUnityBootStrap" Version="1.0.9" />
-    <PackageReference Include="SharpCommunication.Base" Version="1.0.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpCommunication.Base\SharpCommunication.Base.csproj" />
   </ItemGroup>
 
 </Project>

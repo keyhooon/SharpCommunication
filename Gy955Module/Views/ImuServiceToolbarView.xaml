@@ -48,7 +48,7 @@
                 Margin="8,0"
                 VerticalAlignment="Center"
                 DockPanel.Dock="Left"
-                Text="Gps" />
+                Text="IMU" />
         </StackPanel>
     </ToolBar.Header>
     <Separator />

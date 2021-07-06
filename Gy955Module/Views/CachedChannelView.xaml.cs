@@ -7,7 +7,6 @@ namespace ImuModule.Views
     /// </summary>
     public partial class CachedChannelView : UserControl
     {
-        private bool _loaded;
 
         public CachedChannelView()
         {

@@ -1,12 +1,12 @@
-﻿using SharpCommunication.Codec.Encoding;
-using SharpCommunication.Codec.Packets;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
+using SharpCommunication.Codec.Encoding;
+using SharpCommunication.Codec.Packets;
 
-namespace SharpCommunication.GY955.Codec
+namespace SharpCommunication.Codec
 {
     public class Output : IPacket
     {

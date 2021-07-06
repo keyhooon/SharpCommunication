@@ -1,5 +1,5 @@
 ﻿<materialdesignunitybootstrap:App
-    x:Class="GPSModule.App"
+    x:Class="GpsDemo.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:materialdesignunitybootstrap="clr-namespace:MaterialDesignUnityBootStrap;assembly=MaterialDesignUnityBootStrap"

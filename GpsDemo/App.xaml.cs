@@ -1,7 +1,11 @@
-﻿using ImuModule;
+﻿using CompositeContentNavigator.Services;
+using CompositeContentNavigator.Services.MapItems;
+using CompositeContentNavigator.Services.MapItems.Data;
+using MaterialDesignThemes.Wpf;
+using Prism.Ioc;
 using Prism.Modularity;
 
-namespace GPSModule
+namespace GpsDemo
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -11,8 +15,10 @@ namespace GPSModule
         protected override void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
             base.ConfigureModuleCatalog(moduleCatalog);
-            moduleCatalog.AddModule<GpsModule>();
-            moduleCatalog.AddModule<Gy955Module>();
+
+            moduleCatalog.AddModule<GPSModule.GpsModule>();
+            moduleCatalog.AddModule<ImuModule.ImuModule>();
         }
+
     }
 }

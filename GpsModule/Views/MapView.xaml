@@ -8,11 +8,8 @@
     xmlns:prism="http://prismlibrary.com/"
     xmlns:xamlMap="clr-namespace:GPSModule.XamlMap"
     compositeContentNavigator:ViewManager.HeaderDisplay="Map"
+    compositeContentNavigator:ViewManager.HeaderPackIcon="MapMarker"
     prism:ViewModelLocator.AutoWireViewModel="True">
-    <compositeContentNavigator:ViewManager.HeaderChipIcon>
-        <materialDesign:PackIcon Kind="MapMarker" />
-    </compositeContentNavigator:ViewManager.HeaderChipIcon>
-
     <Grid Margin="15">
         <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource InverseBoolToVisConverter}}">
             <Viewbox

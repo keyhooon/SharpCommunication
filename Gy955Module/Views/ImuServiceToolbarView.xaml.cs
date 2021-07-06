@@ -2,7 +2,7 @@
 using ImuModule.ViewModels;
 using Prism.Events;
 using Prism.Regions;
-using SharpCommunication.GY955.Codec;
+using SharpCommunication.Codec;
 using SharpCommunication.Transport.SerialPort;
 
 namespace ImuModule.Views
@@ -19,7 +19,7 @@ namespace ImuModule.Views
         {
             _dataTransport = dataTransport;
             _eventAggregator = eventAggregator;
-            this.DataContext = new GpsServiceToolbarViewModel(_dataTransport);
+            DataContext = new ImuServiceToolbarViewModel(_dataTransport);
 
             InitializeComponent();
         }

@@ -1,5 +1,5 @@
 ﻿using Prism.Events;
-using SharpCommunication.GY955.Codec;
+using SharpCommunication.Codec;
 using SharpCommunication.Module.ViewModels;
 using SharpCommunication.Transport.SerialPort;
 

@@ -17,7 +17,7 @@ namespace GpsDemo
             base.ConfigureModuleCatalog(moduleCatalog);
 
             moduleCatalog.AddModule<GPSModule.GpsModule>();
-            moduleCatalog.AddModule<ImuModule.ImuModule>();
+            moduleCatalog.AddModule<Gy955Module.Gy955Module>();
         }
 
     }

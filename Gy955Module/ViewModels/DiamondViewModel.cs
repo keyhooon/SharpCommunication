@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
+using Gy955Module.Services;
 using HelixToolkit.Wpf;
-using ImuModule.Services;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace ImuModule.ViewModels
+namespace Gy955Module.ViewModels
 {
     public class DiamondViewModel : BindableBase, INavigationAware
     {

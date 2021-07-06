@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GPSModule", "GpsModule\GPSM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GpsDemo", "GpsDemo\GpsDemo.csproj", "{366346D7-DB56-46D4-A238-4F54FE81937C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImuModule", "Gy955Module\ImuModule.csproj", "{B8D888CD-7CC9-405A-AB73-659C9D48B554}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gy955Module", "Gy955Module\Gy955Module.csproj", "{B8D888CD-7CC9-405A-AB73-659C9D48B554}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

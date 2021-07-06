@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GpsModule\GPSModule.csproj" />
-    <ProjectReference Include="..\Gy955Module\ImuModule.csproj" />
+    <ProjectReference Include="..\Gy955Module\Gy955Module.csproj" />
   </ItemGroup>
 
   <ItemGroup>

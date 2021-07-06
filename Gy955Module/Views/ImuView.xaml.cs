@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace ImuModule.Views
+namespace Gy955Module.Views
 {
 
     public partial class ImuView : UserControl

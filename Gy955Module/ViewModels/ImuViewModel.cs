@@ -2,11 +2,11 @@
 using System.Windows;
 using System.Windows.Media.Media3D;
 using System.Windows.Threading;
-using ImuModule.Services;
+using Gy955Module.Services;
 using Prism.Mvvm;
 using Prism.Regions;
 
-namespace ImuModule.ViewModels
+namespace Gy955Module.ViewModels
 {
     public class ImuViewModel : BindableBase, INavigationAware
     {
@@ -32,7 +32,7 @@ namespace ImuModule.ViewModels
             {
                 switch (e.PropertyName)
                 {
-                    case nameof(Services.ImuService.Yrp):
+                    case nameof(global::Gy955Module.Services.ImuService.Yrp):
                         Euler = new Vector3D(ImuService.Yrp?.X ?? 0, ImuService.Yrp?.Y ?? 0, ImuService.Yrp?.Z ?? 0);
                         break;
                 }

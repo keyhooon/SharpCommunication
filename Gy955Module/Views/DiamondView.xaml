@@ -1,12 +1,11 @@
 ﻿<UserControl
-    x:Class="ImuModule.Views.DiamondView"
+    x:Class="Gy955Module.Views.DiamondView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:compositeContentNavigator="clr-namespace:CompositeContentNavigator;assembly=CompositeContentNavigator"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:h="http://helix-toolkit.org/wpf"
     xmlns:loadingIndicator="clr-namespace:MaterialDesignUnityBootStrap.LoadingIndicator;assembly=MaterialDesignUnityBootStrap"
-    xmlns:local="clr-namespace:ImuModule.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="http://prismlibrary.com/"

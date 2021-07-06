@@ -3,7 +3,7 @@ using SharpCommunication.Codec;
 using SharpCommunication.Module.ViewModels;
 using SharpCommunication.Transport.SerialPort;
 
-namespace ImuModule.ViewModels
+namespace Gy955Module.ViewModels
 {
     public class ImuConfigurationViewModel : SerialPortTransportConfigurationViewModel<Gy955>
     {

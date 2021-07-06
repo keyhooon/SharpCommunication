@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="ImuModule.Views.ImuView"
+    x:Class="Gy955Module.Views.ImuView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:compositeContentNavigator="clr-namespace:CompositeContentNavigator;assembly=CompositeContentNavigator"

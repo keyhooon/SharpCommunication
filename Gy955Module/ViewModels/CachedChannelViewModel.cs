@@ -11,7 +11,7 @@ using SharpCommunication.Channels.Decorator;
 using SharpCommunication.Codec;
 using SharpCommunication.Transport.SerialPort;
 
-namespace ImuModule.ViewModels
+namespace Gy955Module.ViewModels
 {
     public class CachedChannelViewModel : BindableBase, INavigationAware
     {

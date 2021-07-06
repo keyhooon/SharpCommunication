@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using CompositeContentNavigator.Services;
 using CompositeContentNavigator.Services.MapItems;
 using CompositeContentNavigator.Services.MapItems.Data;
-using ImuModule.Services;
-using ImuModule.Views;
+using Gy955Module.Services;
+using Gy955Module.Views;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Extensions.DependencyInjection;
 using Prism.Ioc;
@@ -14,9 +14,9 @@ using SharpCommunication.Codec;
 using SharpCommunication.Module.Services;
 using SharpCommunication.Transport.SerialPort;
 
-namespace ImuModule
+namespace Gy955Module
 {
-    public class ImuModule : IModule
+    public class Gy955Module : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {

@@ -2,7 +2,7 @@
 using SharpCommunication.Module.ViewModels;
 using SharpCommunication.Transport.SerialPort;
 
-namespace ImuModule.ViewModels
+namespace Gy955Module.ViewModels
 {
     public class ImuServiceToolbarViewModel : TransportViewModel<Gy955>
     {

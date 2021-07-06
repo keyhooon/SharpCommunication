@@ -5,6 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +20,6 @@
 
   <ItemGroup>
     <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.17.0" />
-    <PackageReference Include="MaterialDesignUnityBootStrap" Version="1.0.9" />
   </ItemGroup>
 
   <ItemGroup>

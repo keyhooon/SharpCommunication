@@ -7,7 +7,7 @@ using SharpCommunication.Codec;
 using SharpCommunication.Module.Services;
 using SharpCommunication.Transport.SerialPort;
 
-namespace ImuModule.Services
+namespace Gy955Module.Services
 {
     public class ImuService : TransportService<Gy955>
     {

@@ -1,11 +1,11 @@
 ﻿using System.Windows.Controls;
-using ImuModule.ViewModels;
+using Gy955Module.ViewModels;
 using Prism.Events;
 using Prism.Regions;
 using SharpCommunication.Codec;
 using SharpCommunication.Transport.SerialPort;
 
-namespace ImuModule.Views
+namespace Gy955Module.Views
 {
     /// <summary>
     /// Interaction logic for ToolBarView

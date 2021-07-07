@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -15,7 +16,7 @@ namespace Gy955Module.ViewModels
 {
     public class CachedChannelViewModel : BindableBase, INavigationAware
     {
-        public class ChannelInfo : BindableBase
+        public class ChannelInfo : BindableBase, IDisposable
         {
             private DateTime lastPacketTime;
             private DateTime firstPacketTime;
@@ -25,37 +26,11 @@ namespace Gy955Module.ViewModels
             {
                 
                 Channel = channel;
-                var Cached = channel.ToCachedChannel();
-                var Monitored = channel.ToMonitoredChannel();
-                Monitored.DataReceived += (sender, e) =>
-                {
-                    Application.Current.Dispatcher.InvokeAsync(() =>
-                    {
-                        DataReceivedCount = Monitored.DataReceivedCount;
-                        FirstPacketTime = Monitored.FirstPacketTime;
-                        LastPacketTime = Monitored.LastPacketTime;
-                    });
-                };
-                ((INotifyCollectionChanged)Cached.Packet).CollectionChanged += (sender, e) =>
-                 {
-                     Application.Current.Dispatcher.InvokeAsync(() =>
-                     {
-                         if ((e.NewItems?.Count ?? 0) != 0)
-                         {
-                             foreach (PacketCacheInfo<Gy955> item in e.NewItems)
-                             {
-                                 internalPacketsList.Add(item);
-                             }
-                         }
-                         if ((e.OldItems?.Count ?? 0) != 0)
-                         {
-                             foreach (PacketCacheInfo<Gy955> item in e.OldItems)
-                             {
-                                 internalPacketsList.Remove(item);
-                             }
-                         }
-                     });
-                 };
+                Monitored = Channel.ToMonitoredChannel();
+                Cached = Channel.ToCachedChannel();
+                
+                Monitored.DataReceived += Monitored_DataReceived;
+                ((INotifyCollectionChanged)Cached.Packet).CollectionChanged += ChannelInfo_CollectionChanged;
                 internalPacketsList = new ObservableCollection<PacketCacheInfo<Gy955>>();
                 PacketsList = new ReadOnlyObservableCollection<PacketCacheInfo<Gy955>>(internalPacketsList);
             }
@@ -63,7 +38,53 @@ namespace Gy955Module.ViewModels
             public int DataReceivedCount { get => dataReceivedCount; set => SetProperty(ref dataReceivedCount, value); }
             public DateTime FirstPacketTime { get => firstPacketTime; set => SetProperty(ref firstPacketTime, value); }
             public DateTime LastPacketTime { get => lastPacketTime; set => SetProperty(ref lastPacketTime, value); }
-            public IChannel<Gy955> Channel { get; set; }
+            public MonitoredChannel<Gy955> Monitored { get; init; }
+            public CachedChannel<Gy955> Cached { get; init; }
+            public IChannel<Gy955> Channel { get; init; }
+
+            private void Monitored_DataReceived(object sender, DataReceivedEventArg<Gy955> e)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    var Monitored = Channel.ToMonitoredChannel();
+                    DataReceivedCount = Monitored.DataReceivedCount;
+                    FirstPacketTime = Monitored.FirstPacketTime;
+                    LastPacketTime = Monitored.LastPacketTime;
+                });
+            }
+
+            private void ChannelInfo_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    if ((e.NewItems?.Count ?? 0) != 0)
+                    {
+                        foreach (PacketCacheInfo<Gy955> item in e.NewItems)
+                        {
+                            internalPacketsList.Add(item);
+                        }
+                    }
+                    if ((e.OldItems?.Count ?? 0) != 0)
+                    {
+                        foreach (PacketCacheInfo<Gy955> item in e.OldItems)
+                        {
+                            internalPacketsList.Remove(item);
+                        }
+                    }
+                });
+            }
+
+            public void Dispose()
+            {
+                Monitored.Dispose();
+                Cached.Dispose();
+                Channel.Dispose();
+                Monitored.DataReceived -= Monitored_DataReceived;
+                ((INotifyCollectionChanged)Cached.Packet).CollectionChanged -= ChannelInfo_CollectionChanged;
+                internalPacketsList.Clear();
+                internalPacketsList = null;
+                PacketsList = null;
+            }
         }
         private readonly SerialPortDataTransport<Gy955> _dataTransport;
         private bool _loaded;
@@ -73,13 +94,7 @@ namespace Gy955Module.ViewModels
         public CachedChannelViewModel(SerialPortDataTransport<Gy955> dataTransport)
         {
             _dataTransport = dataTransport;
-            ((INotifyCollectionChanged)dataTransport.Channels).CollectionChanged += (sender, args) =>
-           {
-               ChannelInfosList = dataTransport.Channels.Select(o => new ChannelInfo(o)).ToList();
 
-           };
-            _dataTransport.IsOpenChanged += (sender, args) =>
-                RaisePropertyChanged(nameof(IsOpen));
             Loaded = false;
         }
 
@@ -93,8 +108,23 @@ namespace Gy955Module.ViewModels
             set => SetProperty(ref _loaded, value);
         }
 
-        public void OnNavigatedTo(NavigationContext navigationContext)
+        private void CachedChannelViewModel_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            ChannelInfosList = _dataTransport.Channels.Select(o => new ChannelInfo(o)).ToList();
+        }
+
+        private void _dataTransport_IsOpenChanged(object sender, EventArgs e)
+        {
+            RaisePropertyChanged(nameof(IsOpen));
+        }
+
+        public async void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            
+            ChannelInfosList = _dataTransport.Channels.Select(o => new ChannelInfo(o)).ToList();
+            RaisePropertyChanged(nameof(IsOpen));
+            ((INotifyCollectionChanged)_dataTransport.Channels).CollectionChanged += CachedChannelViewModel_CollectionChanged;
+            _dataTransport.IsOpenChanged += _dataTransport_IsOpenChanged;
             Loaded = true;
         }
 
@@ -105,6 +135,10 @@ namespace Gy955Module.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
+            ((INotifyCollectionChanged)_dataTransport.Channels).CollectionChanged -= CachedChannelViewModel_CollectionChanged;
+            _dataTransport.IsOpenChanged -= _dataTransport_IsOpenChanged;
+            ChannelInfosList.ForEach(o=> o.Dispose());
+            Loaded = false;
         }
     }
 }

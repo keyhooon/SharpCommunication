@@ -28,14 +28,27 @@ namespace Gy955Module.ViewModels
         {
             _imuService = imuService;
             QuaternionRotation = new QuaternionRotation3D();
-            _imuService.DataReceived += (sender, args) =>
-            {
-                Quaternion = new Quaternion(imuService.Q4?.W ?? 0, imuService.Q4?.X ?? 0, imuService.Q4?.Y ?? 0,
-                    imuService.Q4?.Z ?? 0);
-                Application.Current.Dispatcher?.Invoke(() =>
-                    QuaternionRotation.BeginAnimation(QuaternionRotation3D.QuaternionProperty,
-                        new QuaternionAnimation(Quaternion, new Duration(TimeSpan.FromMilliseconds(100)))));
-            };
+            
+        }
+
+        public bool IsLoaded
+        {
+            get => _isLoaded;
+            set => SetProperty(ref _isLoaded, value);
+        }
+
+        private void _imuService_DataReceived(object sender, EventArgs e)
+        {
+            Quaternion = new Quaternion(_imuService.Q4?.W ?? 0, _imuService.Q4?.X ?? 0, _imuService.Q4?.Y ?? 0,
+                    _imuService.Q4?.Z ?? 0);
+            Application.Current.Dispatcher?.Invoke(() =>
+                QuaternionRotation.BeginAnimation(QuaternionRotation3D.QuaternionProperty,
+                    new QuaternionAnimation(Quaternion, new Duration(TimeSpan.FromMilliseconds(100)))));
+        }
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            _imuService.DataReceived += _imuService_DataReceived;
             Task.Run(() =>
             {
                 var importer = new ModelImporter();
@@ -46,26 +59,18 @@ namespace Gy955Module.ViewModels
                 return model3DGroup;
             }).ContinueWith((result) =>
             {
-                ModelGroup = result.Result;
+                
                 if (result.IsCompleted)
                 {
-                    Application.Current.Dispatcher.InvokeAsync(() =>
-                    {
-                        IsLoaded = true;
-                    });
+                    ModelGroup = result.Result;
                 }
+                Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    IsLoaded = true;
+                });
             });
         }
 
-        public bool IsLoaded
-        {
-            get => _isLoaded;
-            set => SetProperty(ref _isLoaded, value);
-        }
-        public void OnNavigatedTo(NavigationContext navigationContext)
-        {
-
-        }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
         {
@@ -74,7 +79,8 @@ namespace Gy955Module.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-
+            _imuService.DataReceived -= _imuService_DataReceived;
+            ModelGroup = null;
         }
     }
 }

@@ -1,0 +1,132 @@
+﻿<map:Map
+    x:Class="GPS_Module.Infrastructure.XamlMap.Map"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:map="clr-namespace:MapControl;assembly=MapControl.WPF"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:xamlMap="clr-namespace:Infrastructure.XamlMap"
+    xmlns:xamlMap1="clr-namespace:GPS_Module.Infrastructure.XamlMap"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    AnimationDuration="00:00:1"
+    Center="35.68, 51.4"
+    Foreground="#DD171717"
+    IsManipulationEnabled="True"
+    ManipulationInertiaStarting="MapManipulationInertiaStarting"
+    ManipulationMode="TranslateX"
+    MaxZoomLevel="19"
+    MinZoomLevel="7"
+    MouseLeave="MapMouseLeave"
+    MouseLeftButtonDown="MapMouseLeftButtonDown"
+    MouseMove="MapMouseMove"
+    MouseRightButtonDown="MapMouseRightButtonDown"
+    ZoomLevel="15"
+    mc:Ignorable="d">
+    <xamlMap1:Map.Resources>
+        <xamlMap1:LocationToVisibilityConverter x:Key="LocationToVisibilityConverter" />
+        <xamlMap1:LocationToStringConverter x:Key="LocationToStringConverter" />
+        <xamlMap1:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+        <xamlMap1:DbGeographyToLocationConverter x:Key="DbGeographyToLocationConverter" />
+        <xamlMap1:NullToVisibilityConverter x:Key="NotNullToVisibilityConverter" Invert="True" />
+
+    </xamlMap1:Map.Resources>
+
+    <materialDesign:PackIcon
+        Width="40"
+        Height="40"
+        Margin="-20,-40"
+        map:MapPanel.Location="{Binding Path=CurrentLocation, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"
+        Kind="MapMarker" />
+
+    <map:MapItemsControl
+        x:Name="ItemsControl"
+        ItemTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"
+        ItemsSource="{Binding Path=ItemsSource, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"
+        SelectedItem="{Binding Path=SelectedItem, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"
+        SelectionMode="Extended">
+        <map:MapItemsControl.ItemContainerStyle>
+            <Style TargetType="map:MapItem">
+                <Setter Property="map:MapPanel.Location" Value="{Binding Location, Converter={StaticResource DbGeographyToLocationConverter}}" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
+                <Setter Property="Foreground" Value="Black" />
+                <Setter Property="Visibility">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource LocationToVisibilityConverter}">
+                            <Binding Path="(map:MapPanel.ParentMap)" RelativeSource="{RelativeSource Self}" />
+                            <Binding Path="(map:MapPanel.ViewportPosition)" RelativeSource="{RelativeSource Self}" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Panel.ZIndex" Value="1" />
+                        <Setter Property="Foreground" Value="OrangeRed" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </map:MapItemsControl.ItemContainerStyle>
+    </map:MapItemsControl>
+
+
+    <DockPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
+        <Grid DockPanel.Dock="Bottom">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Border
+                Margin="5"
+                Background="#AADDDDDD"
+                CornerRadius="5"
+                Visibility="{Binding ElementName=MouseLocation, Path=Text, Converter={StaticResource NotNullToVisibilityConverter}}">
+                <TextBlock
+                    x:Name="MouseLocation"
+                    Margin="15,8"
+                    FontFamily="Courier New"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="Black" />
+            </Border>
+            <Border
+                Grid.Column="0"
+                Margin="5"
+                Background="#AADDDDDD"
+                CornerRadius="5"
+                DockPanel.Dock="Bottom"
+                Visibility="{Binding ElementName=MouseLocation, Path=Text, Converter={StaticResource NullToVisibilityConverter}}">
+                <TextBlock
+                    Margin="15,8"
+                    FontFamily="Courier New"
+                    FontSize="16"
+                    FontWeight="ExtraBlack"
+                    Text="{Binding Path=Center, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}, Converter={StaticResource LocationToStringConverter}}" />
+            </Border>
+            <Button
+                Grid.Column="1"
+                Margin="5"
+                Padding="8"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="#AADDDDDD"
+                BorderBrush="#00000000"
+                Click="CurrentLocationViewButton_OnClick"
+                Foreground="#DD171717">
+                <materialDesign:PackIcon Background="Transparent" Kind="CrosshairsGps" />
+            </Button>
+        </Grid>
+
+        <StackPanel Orientation="Horizontal">
+            <Border
+                Margin="5"
+                HorizontalAlignment="Left"
+                Background="#AADDDDDD"
+                CornerRadius="5"
+                DockPanel.Dock="Bottom">
+                <map:MapScale Margin="5" />
+            </Border>
+        </StackPanel>
+    </DockPanel>
+
+</map:Map>

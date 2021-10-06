@@ -1,6 +1,8 @@
 ﻿using SharpCommunication.Codec.Packets;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 
 namespace SharpCommunication.Codec.Encoding

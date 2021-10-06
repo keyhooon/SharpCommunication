@@ -22,8 +22,8 @@ namespace GPSModule.ViewModels
             GpsService = gpsService;
             GpsService.PropertyChanged += (sender, e) =>
             {
-                if (e.PropertyName is nameof(GpsService.GpsSVs) or nameof(GpsService.GlonassSVs))
-                    sVs = GpsService.GpsSVs.Concat(GpsService.GlonassSVs).ToList();
+                if (e.PropertyName == nameof(GpsService.GpsSVs) || e.PropertyName == nameof(GpsService.GlonassSVs))
+                    SVs = GpsService.GpsSVs.Concat(GpsService.GlonassSVs).ToList();
             };
             var timer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher)
             {
@@ -31,18 +31,15 @@ namespace GPSModule.ViewModels
             };
             timer.Tick += (sender, e) =>
             {
-                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(SVs)));
-                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(FixDateTime)));
-                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(Position)));
-                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(Dop)));
-
+                    RaisePropertyChanged(nameof(SVs));
+                    RaisePropertyChanged(nameof(FixDateTime));
+                    RaisePropertyChanged(nameof(Position));
+                    RaisePropertyChanged(nameof(Dop));
             };
+
             gpsService.IsOpenChanged += (_, _) =>
             {
-                if (gpsService.IsOpen)
-                    timer.Start();
-                else
-                    timer.Stop();
+                timer.IsEnabled = gpsService.IsOpen;
             };
         }
         public bool IsLoaded
@@ -61,7 +58,7 @@ namespace GPSModule.ViewModels
         public Dop Dop => GpsService.Dop;
 
         public PseudorangeErrorStatics Error => GpsService.Error;
-        public List<SatelliteVehicleInView> SVs => sVs;
+        public List<SatelliteVehicleInView> SVs { get; private set; }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {

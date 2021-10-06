@@ -24,44 +24,22 @@ namespace GPSModule.Services
         public event EventHandler GsaChanged;
         public event EventHandler GnsChanged;
 
-        private Bod _bod;
-        private Gga _gga;
-        private Gll _gll;
-        private Zda _zda;
-        private Vtg _vtg;
-        private Rte _rte;
-        private Rmc _rmc;
-        private Rmb _rmb;
-        private Gsv _gsv;
-        private Gst _gst;
-        private Gsa _gsa;
-        private Gns _gns;
-        private DateTime fixDateTime;
-        private GpsData gpsData;
-        private GnssData gnssData;
-        private GeographicPosition position;
-        private PseudorangeErrorStatics error;
-        private IReadOnlyList<Satellite> activeSatellites;
-        private List<SatelliteVehicleInView> gpsSVs;
-        private List<SatelliteVehicleInView> glonassSVs;
-        private Dop dop;
-
         public GpsService(SerialPortDataTransport<Gps> dataTransport, Codec<Gps> codec) : base(dataTransport, codec)
         {
-            gpsSVs = new List<SatelliteVehicleInView>();
-            glonassSVs = new List<SatelliteVehicleInView>();
+            GpsSVs = new List<SatelliteVehicleInView>();
+            GlonassSVs = new List<SatelliteVehicleInView>();
             ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["BOD"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _bod = (Bod)e.Packet;
+                    Bod = (Bod)e.Packet;
                     RaisePropertyChanged(nameof(Bod));
                     BodChanged?.Invoke(this, EventArgs.Empty);
                 };
             ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["GGA"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _gga = (Gga)e.Packet;
-                    gpsData = new GpsData(
+                    Gga = (Gga)e.Packet;
+                    GpsData = new GpsData(
                         Gga.FixTime,
                         Gga.Latitude,
                         Gga.Longitude,
@@ -78,84 +56,84 @@ namespace GPSModule.Services
                     RaisePropertyChanged(nameof(GpsData));
                     GgaChanged?.Invoke(this, EventArgs.Empty);
                 };
-            ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["GLL"]).DecodeFinished +=
+                ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["GLL"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _gll = (Gll)e.Packet;
-                    position = new GeographicPosition(Gll.FixTime, Gll.Latitude, Gll.Longitude, Gll.DataActive, Gll.ModeIndicator);
+                    Gll = (Gll)e.Packet;
+                    Position = new GeographicPosition(Gll.FixTime, Gll.Latitude, Gll.Longitude, Gll.DataActive, Gll.ModeIndicator);
                     RaisePropertyChanged(nameof(Gll));
                     RaisePropertyChanged(nameof(Position));
                     GllChanged?.Invoke(this, EventArgs.Empty);
                 };
-            ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["ZDA"]).DecodeFinished +=
+                ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["ZDA"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _zda = (Zda)e.Packet;
-                    fixDateTime = Zda.FixDateTime;
+                    Zda = (Zda)e.Packet;
+                    FixDateTime = Zda.FixDateTime;
                     RaisePropertyChanged(nameof(Zda));
                     RaisePropertyChanged(nameof(FixDateTime));
                     ZdaChanged?.Invoke(this, EventArgs.Empty);
                 };
-            ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["VTG"]).DecodeFinished +=
+                ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["VTG"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _vtg = (Vtg)e.Packet;
+                    Vtg = (Vtg)e.Packet;
                     RaisePropertyChanged(nameof(Vtg));
                     VtgChanged?.Invoke(this, EventArgs.Empty);
                 };
-            ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["RTE"]).DecodeFinished +=
+                ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["RTE"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _rte = (Rte)e.Packet;
+                    Rte = (Rte)e.Packet;
                     RaisePropertyChanged(nameof(Rte));
                     RteChanged?.Invoke(this, EventArgs.Empty);
                 };
-            ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["RMC"]).DecodeFinished +=
+                ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["RMC"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _rmc = (Rmc)e.Packet;
+                    Rmc = (Rmc)e.Packet;
                     RaisePropertyChanged(nameof(Rmc));
                     RmcChanged?.Invoke(this, EventArgs.Empty);
                 };
-            ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["RMB"]).DecodeFinished +=
+                ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["RMB"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _rmb = (Rmb)e.Packet;
+                    Rmb = (Rmb)e.Packet;
                     RaisePropertyChanged(nameof(Rmb));
                     RmbChanged?.Invoke(this, EventArgs.Empty);
                 };
-            ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["GSV"]).DecodeFinished +=
+                ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["GSV"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _gsv = (Gsv)e.Packet;
-                    if (_gsv.SVs.Count == 0)
+                    Gsv = (Gsv)e.Packet;
+                    if (Gsv.SVs.Count == 0)
                         return;
-                    if (_gsv.SVs.First().PrnNumber < 64)
+                    if (Gsv.SVs.First().PrnNumber < 64)
                     {
-                        if (_gsv.MessageNumber == 1)
+                        if (Gsv.MessageNumber == 1)
                         {
-                            gpsSVs = new List<SatelliteVehicleInView>(_gsv.TotalMessages * 4);
+                            GpsSVs = new List<SatelliteVehicleInView>(Gsv.TotalMessages * 4);
                         }
-                        foreach (var sv in _gsv.SVs)
+                        foreach (var sv in Gsv.SVs)
                         {
-                            gpsSVs.Add(new SatelliteVehicleInView(sv.PrnNumber, sv.Elevation, sv.Azimuth, sv.SignalToNoiseRatio));
+                            GpsSVs.Add(new SatelliteVehicleInView(sv.PrnNumber, sv.Elevation, sv.Azimuth, sv.SignalToNoiseRatio));
                         }
                         RaisePropertyChanged(nameof(Gsv));
-                        if(_gsv.MessageNumber == _gsv.TotalMessages)
+                        if(Gsv.MessageNumber == Gsv.TotalMessages)
                             RaisePropertyChanged(nameof(GpsSVs));
                     }
-                    else if (_gsv.SVs.First().PrnNumber < 128 )
+                    else if (Gsv.SVs.First().PrnNumber < 128 )
                     {
-                        if (_gsv.MessageNumber == 1)
+                        if (Gsv.MessageNumber == 1)
                         {
-                            glonassSVs = new List<SatelliteVehicleInView>(_gsv.TotalMessages * 4);
+                            GlonassSVs = new List<SatelliteVehicleInView>(Gsv.TotalMessages * 4);
                         }
-                        foreach (var sv in _gsv.SVs)
+                        foreach (var sv in Gsv.SVs)
                         {
-                            glonassSVs.Add(new SatelliteVehicleInView(sv.PrnNumber, sv.Elevation, sv.Azimuth, sv.SignalToNoiseRatio));
+                            GlonassSVs.Add(new SatelliteVehicleInView(sv.PrnNumber, sv.Elevation, sv.Azimuth, sv.SignalToNoiseRatio));
                         }
                         RaisePropertyChanged(nameof(Gsv));
-                        if (_gsv.MessageNumber == _gsv.TotalMessages)
+                        if (Gsv.MessageNumber == Gsv.TotalMessages)
                             RaisePropertyChanged(nameof(GlonassSVs));
                     }
 
@@ -165,8 +143,8 @@ namespace GPSModule.Services
             ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["GST"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _gst = (Gst)e.Packet;
-                    error = new PseudorangeErrorStatics(Gst.FixTime,
+                    Gst = (Gst)e.Packet;
+                    Error = new PseudorangeErrorStatics(Gst.FixTime,
                         Gst.Rms,
                         Gst.SigmaLatitudeError,
                         Gst.SigmaLongitudeError,
@@ -181,9 +159,9 @@ namespace GPSModule.Services
             ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["GSA"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _gsa = (Gsa)e.Packet;
-                    activeSatellites = Gsa.SVs.Select(o => new Satellite(o)).ToList();
-                    dop = new Dop(Gsa.Hdop, Gsa.Vdop, Gsa.Pdop, Gsa.FixMode, Gsa.GpsMode);
+                    Gsa = (Gsa)e.Packet;
+                    ActiveSatellites = Gsa.SVs.Select(o => new Satellite(o)).ToList();
+                    Dop = new Dop(Gsa.Hdop, Gsa.Vdop, Gsa.Pdop, Gsa.FixMode, Gsa.GpsMode);
                     RaisePropertyChanged(nameof(Gsa));
                     RaisePropertyChanged(nameof(ActiveSatellites));
                     RaisePropertyChanged(nameof(Dop));
@@ -192,8 +170,8 @@ namespace GPSModule.Services
             ((AncestorGenericPacketEncodingDecorator<string>)codec.Encoding.FindDecoratedEncoding<DescendantGenericPacketEncodingDecorator<Gps, string>>().EncodingDictionary["GNS"]).DecodeFinished +=
                 (sender, e) =>
                 {
-                    _gns = (Gns)e.Packet;
-                    gnssData = new GnssData(
+                    Gns = (Gns)e.Packet;
+                    GnssData = new GnssData(
                         Gns.FixTime,
                         Gns.Latitude,
                         Gns.Longitude,
@@ -214,47 +192,57 @@ namespace GPSModule.Services
 
 
 
-        public Bod Bod => _bod;
-        public Gga Gga => _gga;
-        public Gll Gll => _gll;
-        public Gns Gns => _gns;
-        public Gsa Gsa => _gsa;
-        public Gst Gst => _gst;
-        public Gsv Gsv => _gsv;
-        public Rmb Rmb => _rmb;
-        public Rmc Rmc => _rmc;
-        public Rte Rte => _rte;
-        public Vtg Vtg => _vtg;
-        public Zda Zda => _zda;
-        
+        public Bod Bod { get; private set; }
 
-        public DateTime FixDateTime => fixDateTime;
+        public Gga Gga { get; private set; }
 
-        public GpsData GpsData => gpsData;
+        public Gll Gll { get; private set; }
 
-        public GnssData GnssData => gnssData;
+        public Gns Gns { get; private set; }
 
-        public GeographicPosition Position => position;
+        public Gsa Gsa { get; private set; }
 
-        public Dop Dop => dop;
+        public Gst Gst { get; private set; }
 
-        public PseudorangeErrorStatics Error => error;
+        public Gsv Gsv { get; private set; }
+
+        public Rmb Rmb { get; private set; }
+
+        public Rmc Rmc { get; private set; }
+
+        public Rte Rte { get; private set; }
+
+        public Vtg Vtg { get; private set; }
+
+        public Zda Zda { get; private set; }
+
+
+        public DateTime FixDateTime { get; private set; }
+
+        public GpsData GpsData { get; private set; }
+
+        public GnssData GnssData { get; private set; }
+
+        public GeographicPosition Position { get; private set; }
+
+        public Dop Dop { get; private set; }
+
+        public PseudorangeErrorStatics Error { get; private set; }
 
         /// <summary>
         /// Satellite vehicles in this message part.
         /// </summary>
-        public IReadOnlyList<Satellite> ActiveSatellites => activeSatellites;
+        public IReadOnlyList<Satellite> ActiveSatellites { get; private set; }
 
 
         /// <summary>
         /// Satellite vehicles in this message part.
         /// </summary>
-        public List<SatelliteVehicleInView> GpsSVs => gpsSVs;
+        public List<SatelliteVehicleInView> GpsSVs { get; private set; }
 
         /// <summary>
         /// Satellite vehicles in this message part.
         /// </summary>
-        public List<SatelliteVehicleInView> GlonassSVs => glonassSVs;
-
+        public List<SatelliteVehicleInView> GlonassSVs { get; private set; }
     }
 }

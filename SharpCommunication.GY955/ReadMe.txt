@@ -142,7 +142,7 @@ Command byte, sent by external controller to GY-955 module (hexadecimal)
 		Example: Send command 
 			<0xAA-0xA1-0x4B>
 			Command = 0xA1, bit7(Auto=1), bit5(50hz output frequency=1), bit0(ACC=1)
-			which means the accelerometer data is output continuously, and the accelerometer data will be output continuously after power on
+			which means the accelerometer data is output continuously, and data will be output continuously after power on
 	query output command:
 		Byte0: 0xA5 frame header flag
 		Byte1: Command
@@ -156,7 +156,7 @@ Command byte, sent by external controller to GY-955 module (hexadecimal)
 		Note: The query command will not be saved after power-off. If you use query output, please pay attention to whether command=0x00 is configured before this.
 
 	baud rate configuration:
-	Byte0: 0xA5 frame header flag
+		Byte0: 0xA5 frame header flag
 		Byte1: Command
 			0xAE : 9600 (default)
 			0xAF : 115200

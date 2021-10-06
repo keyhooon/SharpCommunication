@@ -1,53 +1,34 @@
-﻿using System;
+﻿using SharpCommunication.Codec.Packets;
+using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Text;
-using SharpCommunication.Codec.Packets;
 
 namespace SharpCommunication.Codec.Encoding
 {
-    public class DescendantFlagPacketEncodingDecorator<T> : EncodingDecorator, IDescendantPacketEncoding where T : IDescendantPacket, new()
+    public class DescendantFlagPacketEncoding<T> : EncodingDecorator, IDescendantPacketEncoding where T : IListDescendantPacket, new()
     {
+        public readonly bool ContainLength;
         public readonly IReadOnlyDictionary<Type, byte> IdDictionary;
-        public readonly IReadOnlyList<EncodingDecorator> EncodingDictionary;
+        public readonly IReadOnlyList<EncodingDecorator> EncodingList;
         private readonly IDictionary<Type, byte> _idDictionary;
-        private readonly EncodingDecorator[] _encodingDictionary;
+        private readonly IList<EncodingDecorator> _encodingList;
 
-        public override IPacket Decode(BinaryReader reader)
+        public DescendantFlagPacketEncoding(EncodingDecorator encoding, IEnumerable<EncodingDecorator> encodingsList, bool containLength = false) : this(encoding, containLength)
         {
-            throw new NotImplementedException();
+            foreach (var encodingItem in encodingsList)
+            {
+                Register(encodingItem);
+            }
         }
-
-        public override void Encode(IPacket packet, BinaryWriter writer)
+        public DescendantFlagPacketEncoding(EncodingDecorator encoding, bool containLength = false) : base(encoding)
         {
-            var descendantPacket = (IListDescendantPacket)packet;
-            byte flag = 0;
-            var idList = new List<byte>();
-            foreach (var ancestorPacket in descendantPacket.ContentsList)
-            {
-                _idDictionary.TryGetValue(ancestorPacket.GetType(), out var ancestorPacketId);
-                flag |= ancestorPacketId;
-            }
-            writer.Write(flag);
-            for (int i = 0; i < 8; i++)
-            {
-                if ((flag & 0x01) == 0x01)
-                {
+            ContainLength = containLength;
+            _idDictionary = new Dictionary<Type, byte>();
+            IdDictionary = new ReadOnlyDictionary<Type, byte>(_idDictionary);
 
-                }
-
-                flag = (byte) (flag >> 1);
-            }
-            foreach (var ancestorPacket in descendantPacket.ContentsList)
-            {
-                _idDictionary.TryGetValue(ancestorPacket.GetType(), out var ancestorPacketId);
-
-                writer.Write(ancestorPacketId);
-                _encodingDictionary.TryGetValue(ancestorPacketId, out var encodingDecorator);
-                encodingDecorator?.Encode(ancestorPacket, writer);
-            }
-
+            _encodingList = new List<EncodingDecorator>(8);
+            EncodingList = ((List < EncodingDecorator > )_encodingList).AsReadOnly();
+            
         }
 
         public void Register(EncodingDecorator encoding)
@@ -58,25 +39,59 @@ namespace SharpCommunication.Codec.Encoding
             var enc = encoding.FindDecoratedEncoding<IAncestorPacketEncoding<IAncestorPacket>>();
             if (enc == null)
                 throw new NotSupportedException();
+            if (enc.Id> 8)
+                throw new ArgumentOutOfRangeException();
+
 
             _idDictionary.Add(enc.PacketType, enc.Id);
-            _encodingDictionary[enc.Id] = encoding;
+            _encodingList[enc.Id] = encoding;
         }
 
-        public DescendantFlagPacketEncodingDecorator(EncodingDecorator encoding, IEnumerable<EncodingDecorator> encodingsList) : this(encoding)
+        public override void Encode(IPacket packet, BinaryWriter writer)
         {
-            foreach (var encodingItem in encodingsList)
+            var descendantPacket = (IListDescendantPacket)packet;
+            if (descendantPacket == null)
+                return;
+            byte flag = 0;
+            var stream = new MemoryStream();
+            var binarywriter = new BinaryWriter(stream);
+            
+            foreach (var content in descendantPacket.ContentsList)
             {
-                Register(encodingItem);
+                _idDictionary.TryGetValue(content.GetType(), out var ancestorPacketId);
+                flag |= ancestorPacketId;
+                _encodingList[ancestorPacketId]?.Encode(content, binarywriter);
             }
-        }
-        public DescendantFlagPacketEncodingDecorator(EncodingDecorator encoding) : base(encoding)
-        {
-            _idDictionary = new Dictionary<Type, byte>();
-            IdDictionary = new ReadOnlyDictionary<Type, byte>(_idDictionary);
+            writer.Write(flag);
+            if (ContainLength)
+            {
+                writer.Write(stream.Length);
+            }
+            writer.Write(stream.ToArray());
 
-            _encodingDictionary = new EncodingDecorator[8];
-            EncodingDictionary = new ReadOnlyCollection<EncodingDecorator>(_encodingDictionary);
+        }
+
+        public override IPacket Decode(BinaryReader reader)
+        {
+            var packetEncodingId = reader.ReadByte();
+            byte length = 0;
+            if (ContainLength)
+            {
+                length = reader.ReadByte();
+            }
+            var obj = new T
+            {
+                ContentsList = new List<IAncestorPacket>() 
+            };
+            int index = 0;
+            while(packetEncodingId != 0)
+            {
+                if ((packetEncodingId & 0x01) == 0x01)
+                    obj.ContentsList.Add((IAncestorPacket)_encodingList[index++]?.Decode(reader));
+                packetEncodingId >>= 1;
+            }
+
+            return obj;
         }
     }
 }

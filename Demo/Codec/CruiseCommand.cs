@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using SharpCommunication.Codec;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 
 namespace Demo.Codec
 {
-    class CruiseCommand : IFunctionPacket
+    public class CruiseCommand : IFunctionPacket
     {
         public delegate void CommandDelegate(bool isOn);
 

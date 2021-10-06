@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.5</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\RS.png" />
+    <None Remove="Assets\US.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NetTopologySuite" Version="2.2.0" />
+    <PackageReference Include="XAML.MapControl" Version="5.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpCommuniation.Module\SharpCommunication.Module.csproj" />
+    <ProjectReference Include="..\SharpCommunication.GPS\SharpCommunication.GPS.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\RS.png" />
+    <Resource Include="Assets\US.png" />
+  </ItemGroup>
+
+</Project>

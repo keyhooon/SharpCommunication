@@ -1,0 +1,64 @@
+﻿<ToolBar
+    x:Class="GPSModule.Views.GpsServiceToolBarView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:behaviors="clr-namespace:SharpCommunication.Module.Behaviors;assembly=SharpCommunication.Module"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:prism="http://prismlibrary.com/"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    Background="{DynamicResource PrimaryHueDarkBrush}"
+    Style="{StaticResource MaterialDesignToolBar}">
+    <ToolBar.Header>
+        <StackPanel Orientation="Horizontal">
+            <materialDesign:PackIcon
+                VerticalAlignment="Center"
+                DockPanel.Dock="Left"
+                Kind="GpsFixed">
+                <materialDesign:PackIcon.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsOpen}" Value="True">
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                AutoReverse="True"
+                                                RepeatBehavior="Forever"
+                                                Storyboard.TargetProperty="Opacity"
+                                                To="0"
+                                                Duration="0:0:1" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetProperty="Opacity"
+                                                To="1"
+                                                Duration="0:0:1" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </materialDesign:PackIcon.Style>
+            </materialDesign:PackIcon>
+            <TextBlock
+                Margin="8,0"
+                VerticalAlignment="Center"
+                DockPanel.Dock="Left"
+                Text="Gps" />
+        </StackPanel>
+    </ToolBar.Header>
+    <Separator />
+    <Button Command="{Binding OpenCommand}" ToolTip="Connect">
+        <materialDesign:PackIcon Kind="Play" />
+    </Button>
+    <Button Command="{Binding CloseCommand}" ToolTip="Disconnect">
+        <materialDesign:PackIcon Kind="Stop" />
+    </Button>
+    <Separator />
+</ToolBar>

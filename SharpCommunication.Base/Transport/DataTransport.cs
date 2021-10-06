@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec;
 using SharpCommunication.Codec.Packets;
@@ -57,7 +56,7 @@ namespace SharpCommunication.Transport
 
                             await Task.Delay(Settings.AutoCheckIsOpenTime, token);
                         }
-                        catch (OperationCanceledException e)
+                        catch (OperationCanceledException)
                         {
                             break;
                         }
@@ -75,7 +74,14 @@ namespace SharpCommunication.Transport
             if (IsOpen)
                 throw new InvalidOperationException("Device Is Open");
             Log.LogInformation("Try Open Transport Layer...");
-            OpenCore();
+            try
+            {
+                OpenCore();
+            }
+            catch (Exception)
+            {
+                Log.LogError("Openening Transport Layer has Error.");
+            }
             if (IsOpenCore != IsOpen)
                 IsOpen = IsOpenCore;
         }
@@ -85,7 +91,14 @@ namespace SharpCommunication.Transport
             if (IsOpen == false)
                 throw new InvalidOperationException();
             Log.LogInformation("Try Close Transport Layer...");
-            CloseCore();
+            try
+            {
+                CloseCore();
+            }
+            catch (Exception)
+            {
+                Log.LogError("Closing Transport Layer has Error.");
+            }
             if (IsOpenCore != IsOpen)
                 IsOpen = IsOpenCore;
         }

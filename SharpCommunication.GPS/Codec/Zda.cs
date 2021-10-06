@@ -36,7 +36,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("ZDA")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "ZDA", typeof(Zda))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -61,9 +61,9 @@ namespace SharpCommunication.Codec
                 // specify this, so we're just ignoring it.
                 return ret;
             }
-
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+    PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("ZDA", typeof(Zda)).AddDecorate(o => new Encoding(null));
+
         }
     }
 }

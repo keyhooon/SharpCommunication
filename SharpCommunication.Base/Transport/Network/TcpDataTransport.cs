@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec.Packets;
 using SharpCommunication.Transport.SerialPort;

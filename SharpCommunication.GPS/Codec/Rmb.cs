@@ -96,7 +96,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("RMB")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "RMB", typeof(Rmb))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -129,9 +129,8 @@ namespace SharpCommunication.Codec
                 ret.Arrived = message[12] == "A";
                 return ret;
             }
-
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("RMB", typeof(Rmb)).AddDecorate(o => new Encoding(null));
         }
     }
 }

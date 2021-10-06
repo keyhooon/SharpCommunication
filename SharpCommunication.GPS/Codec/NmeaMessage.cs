@@ -81,9 +81,10 @@ namespace SharpCommunication.Codec
         }
 
 
-        public abstract class Encoding : AncestorGenericPacketEncodingDecorator<string>
+        public abstract class Encoding : EncodingDecorator
         {
-            protected Encoding(EncodingDecorator encoding, string id, Type packetType) : base(encoding, id, packetType)
+
+            protected Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
             public override void Encode(IPacket packet, BinaryWriter writer)
@@ -99,7 +100,7 @@ namespace SharpCommunication.Codec
                 if (ch != ',')
                     throw new FormatException();
                 ch = reader.ReadChar();
-                while (ch != '\r')
+                while (ch != '*')
                 {
 
                     if (ch == ',')
@@ -114,6 +115,15 @@ namespace SharpCommunication.Codec
                     ch = reader.ReadChar();
                 }
                 parts.Add(sb.ToString());
+                sb.Clear();
+                ch = reader.ReadChar();
+                while (ch != '\r')
+                {
+                    sb.Append(ch);
+                    ch = reader.ReadChar();
+                }
+                parts.Add(sb.ToString());
+                var checksum = sb.ToString();
                 NmeaMessage decodeCore = (NmeaMessage) DecodeCore(parts);
                 decodeCore.MessageParts = new ReadOnlyCollection<string>(parts);
                 return decodeCore;

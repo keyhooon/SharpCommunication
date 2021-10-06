@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using SharpCommunication.Codec.Encoding;
 using SharpCommunication.Codec.Packets;
 
@@ -27,7 +26,9 @@ namespace SharpCommunication.Codec
                     var attr = subclass.GetCustomAttribute<NmeaMessageTypeAttribute>(false);
                     if (attr == null || subclass.IsAbstract)
                         continue;
-                    Register(PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => (EncodingDecorator)subclass.DeclaredConstructors.First(c => c.GetParameters().Length == 1).Invoke(new object[] {item})).Build());
+                    var createBuilder = subclass.GetDeclaredMethod("CreateBuilder");
+                    ;
+                    Register(((PacketEncodingBuilder)createBuilder.Invoke(null, null)).Build());
                 }
             }
 

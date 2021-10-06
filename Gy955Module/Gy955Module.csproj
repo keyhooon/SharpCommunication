@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.3</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\Model.3DS" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\Model.3DS">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.17.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpCommuniation.Module\SharpCommunication.Module.csproj" />
+    <ProjectReference Include="..\SharpCommunication.GY955\SharpCommunication.GY955.csproj" />
+  </ItemGroup>
+
+ 
+  <ItemGroup>
+    <Folder Include="Assets\AntennaModel\" />
+  </ItemGroup>
+</Project>

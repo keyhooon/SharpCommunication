@@ -64,7 +64,7 @@ namespace SharpCommunication.Codec
         [NmeaMessageType("GSA")]
         public new class Encoding : NmeaMessage.Encoding
         {
-            public Encoding(EncodingDecorator encoding) : base(encoding, "GSA", typeof(Gsa))
+            public Encoding(EncodingDecorator encoding) : base(encoding)
             {
             }
 
@@ -93,9 +93,9 @@ namespace SharpCommunication.Codec
 
                 return ret;
             }
-
             public static PacketEncodingBuilder CreateBuilder() =>
-                PacketEncodingBuilder.CreateDefaultBuilder().AddDecorate(item => new Encoding(item));
+                PacketEncodingBuilder.CreateDefaultBuilder().WithAncestorGeneric<string>("GSA", typeof(Gsa)).AddDecorate(o => new Encoding(null));
+         
         }
 
         /// <summary>

@@ -9,8 +9,8 @@ namespace SharpCommunication.Codec.Encoding
 
     public class DescendantPacketEncoding<T> : DescendantGenericPacketEncodingDecorator<T,byte>, IDescendantPacketEncoding where T: IDescendantPacket, new()
         {
-        public readonly IReadOnlyDictionary<Type, byte> IdDictionary;
-        public readonly IReadOnlyDictionary<byte, EncodingDecorator> EncodingDictionary ;
+        public new readonly IReadOnlyDictionary<Type, byte> IdDictionary;
+        public new readonly IReadOnlyDictionary<byte, EncodingDecorator> EncodingDictionary ;
         private readonly IDictionary<Type, byte> _idDictionary;
         private readonly IDictionary<byte, EncodingDecorator> _encodingDictionary;
 

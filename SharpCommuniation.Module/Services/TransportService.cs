@@ -1,6 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Prism.Mvvm;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec;
@@ -14,12 +13,17 @@ namespace SharpCommunication.Module.Services
 {
     public abstract class TransportService<T> : BindableBase where T : IPacket, new()
     {
+        public event EventHandler IsOpenChanged;
+
+        public bool IsOpen => DataTransport.IsOpen;
         protected DataTransport<T> DataTransport { get; }
+
         protected Codec<T> Codec { get; }
 
         protected TransportService(DataTransport<T> dataTransport, Codec<T> codec)
         {
             DataTransport = dataTransport;
+            dataTransport.IsOpenChanged += IsOpenChanged;
             Codec = codec;
         }
     }
@@ -28,10 +32,9 @@ namespace SharpCommunication.Module.Services
     {
         public static IServiceCollection AddSerialPortTransport<T>(
             this IServiceCollection serviceCollection, 
-            EncodingDecorator encoding,
+            Codec<T> codec,
             SerialPortDataTransportSettings settings) where T: IPacket, new()
         {
-            var codec = new Codec<T>(encoding);
             var monitoredCachedChannelFactory = new MonitoredCachedChannelFactory<T>(codec);
             return serviceCollection
                 .AddSingleton(codec)

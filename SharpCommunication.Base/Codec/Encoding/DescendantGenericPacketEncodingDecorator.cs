@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Text;
 using SharpCommunication.Codec.Packets;
 
 namespace SharpCommunication.Codec.Encoding
@@ -60,7 +59,7 @@ namespace SharpCommunication.Codec.Encoding
             var obj = new T
             {
                 Content = (IAncestorPacket)encodingDecorator?.Decode(reader)
-            };
+            }; 
             return obj;
         }
 

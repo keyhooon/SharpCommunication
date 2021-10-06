@@ -4,7 +4,7 @@ using System.Text;
 
 namespace SharpCommunication.Codec.Packets
 {
-    public class IListDescendantPacket : IPacket
+    public interface IListDescendantPacket : IPacket
     {
         List<IAncestorPacket> ContentsList { get; set; }
     }

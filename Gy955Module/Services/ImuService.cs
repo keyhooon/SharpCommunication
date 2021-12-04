@@ -9,7 +9,7 @@ using SharpCommunication.Transport.SerialPort;
 
 namespace Gy955Module.Services
 {
-    public class ImuService : TransportService<Gy955>
+    public class ImuService : DeviceService<Gy955>
     {
         public event EventHandler DataReceived;
         public ImuService(SerialPortDataTransport<Gy955> dataTransport, Codec<Gy955> codec) : base(dataTransport, codec)
@@ -37,8 +37,6 @@ namespace Gy955Module.Services
         {
             Q4 = e.Data.Output.Q4;
             Yrp = e.Data.Output.Yrp;
-            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Yrp)));
-            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Q4)));
             DataReceived?.Invoke(this,EventArgs.Empty);
         }
 

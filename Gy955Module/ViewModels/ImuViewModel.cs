@@ -34,15 +34,7 @@ namespace Gy955Module.ViewModels
                 timer.Stop();
         }
 
-        private void ImuService_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(global::Gy955Module.Services.ImuService.Yrp):
-                    Euler = new Vector3D(_imuService.Yrp?.X ?? 0, _imuService.Yrp?.Y ?? 0, _imuService.Yrp?.Z ?? 0);
-                    break;
-            }
-        }
+        private void ImuService_DataReceived(object sender, EventArgs e) => Euler = new Vector3D(_imuService.Yrp?.X ?? 0, _imuService.Yrp?.Y ?? 0, _imuService.Yrp?.Z ?? 0);
 
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -59,7 +51,7 @@ namespace Gy955Module.ViewModels
         {
             Euler = new Vector3D(_imuService.Yrp?.X ?? 0, _imuService.Yrp?.Y ?? 0, _imuService.Yrp?.Z ?? 0);
             timer.Tick += Timer_Tick;
-            _imuService.PropertyChanged += ImuService_PropertyChanged;
+            _imuService.DataReceived += ImuService_DataReceived;
             _imuService.IsOpenChanged += ImuService_IsOpenChanged;
             IsLoaded = true;
         }
@@ -72,7 +64,7 @@ namespace Gy955Module.ViewModels
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
             timer.Tick -= Timer_Tick;
-            _imuService.PropertyChanged -= ImuService_PropertyChanged;
+            _imuService.DataReceived -= ImuService_DataReceived;
             _imuService.IsOpenChanged -= ImuService_IsOpenChanged;
             IsLoaded = false;
         }

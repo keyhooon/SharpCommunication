@@ -16,10 +16,10 @@
     d:DesignWidth="367.51"
     mc:Ignorable="d">
     <UserControl.Resources />
-    <materialDesign:Card Margin="5" materialDesign:ShadowAssist.ShadowDepth="Depth0">
-        <materialDesign:ColorZone>
+    <materialDesign:Card Margin="5" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+        <materialDesign:ColorZone Mode="PrimaryLight">
 
-            <Expander Background="{StaticResource PrimaryHueDarkBrush}">
+            <Expander>
                 <Expander.Header>
                     <ToolBar materialDesign:ColorZoneAssist.Mode="PrimaryMid" Background="Transparent">
                         <ToolBar.Header>

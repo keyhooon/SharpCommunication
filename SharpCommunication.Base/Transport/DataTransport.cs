@@ -16,7 +16,7 @@ namespace SharpCommunication.Transport
         private bool _isOpen;
         private readonly CancellationTokenSource _tokenSource;
         private readonly Task<Task> _checkingIsOpenedTask;
-        protected ObservableCollection<IChannel<TPacket>> InnerChannels;
+        protected readonly ObservableCollection<IChannel<TPacket>> InnerChannels;
         protected ILogger Log { get; }
         protected readonly IChannelFactory<TPacket> ChannelFactory;
         public readonly DataTransportSettings Settings;
@@ -80,7 +80,7 @@ namespace SharpCommunication.Transport
             }
             catch (Exception)
             {
-                Log.LogError("Openening Transport Layer has Error.");
+                Log.LogError("Opening Transport Layer has Error.");
             }
             if (IsOpenCore != IsOpen)
                 IsOpen = IsOpenCore;

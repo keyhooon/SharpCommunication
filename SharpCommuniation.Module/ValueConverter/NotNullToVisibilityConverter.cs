@@ -6,7 +6,7 @@ using System.Windows.Data;
 namespace SharpCommunication.Module.ValueConverter
 {
     [ValueConversion(typeof(object), typeof(Visibility))]
-    public class NotNullToVisibilityConverter : IValueConverter
+    public class NullableToVisibilityConverterConverter : IValueConverter
     {
         public bool Invert { get; set; } = false;
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

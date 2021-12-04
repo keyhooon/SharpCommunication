@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
+using GPSModule.Models;
 using GPSModule.Services;
-using GPSModule.Services.Models;
 using Prism.Mvvm;
 using Prism.Regions;
 
@@ -20,30 +20,21 @@ namespace GPSModule.ViewModels
         public NmeaViewModel(GpsService gpsService)
         {
             GpsService = gpsService;
-            GpsService.PropertyChanged += (sender, e) =>
-            {
-                if (e.PropertyName is nameof(GpsService.GpsSVs) or nameof(GpsService.GlonassSVs))
-                    sVs = GpsService.GpsSVs.Concat(GpsService.GlonassSVs).ToList();
-            };
+            GpsService.GlonassSVsChanged += (_, _) => Application.Current.Dispatcher.InvokeAsync(() => SVs = GpsService.GpsSVs.Concat(GpsService.GlonassSVs).ToList());
+            gpsService.GpsSVsChanged += (_, _) => Application.Current.Dispatcher.InvokeAsync(() => SVs = GpsService.GpsSVs.Concat(GpsService.GlonassSVs).ToList());
             var timer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher)
             {
                 Interval = TimeSpan.FromSeconds(1)
             };
-            timer.Tick += (sender, e) =>
+            timer.Tick += (_, _) =>
             {
-                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(SVs)));
-                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(FixDateTime)));
-                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(Position)));
-                Application.Current.Dispatcher.InvokeAsync(() => RaisePropertyChanged(nameof(Dop)));
+                    RaisePropertyChanged(nameof(SVs));
+                    RaisePropertyChanged(nameof(FixDateTime));
+                    RaisePropertyChanged(nameof(Position));
+                    RaisePropertyChanged(nameof(Dop));
+            };
 
-            };
-            gpsService.IsOpenChanged += (_, _) =>
-            {
-                if (gpsService.IsOpen)
-                    timer.Start();
-                else
-                    timer.Stop();
-            };
+            gpsService.IsOpenChanged += (_, _) => timer.IsEnabled = gpsService.IsOpen;
         }
         public bool IsLoaded
         {
@@ -54,14 +45,14 @@ namespace GPSModule.ViewModels
 
         public GpsData GpsData => GpsService.GpsData;
 
-        public GnssData GnssData => GpsService.GnssData;
+        public GnssData GnssData => GpsService.GlonassData;
 
         public GeographicPosition Position => GpsService.Position;
 
         public Dop Dop => GpsService.Dop;
 
         public PseudorangeErrorStatics Error => GpsService.Error;
-        public List<SatelliteVehicleInView> SVs => sVs;
+        public List<SatelliteVehicleInView> SVs { get; private set; }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {

@@ -6,10 +6,11 @@
     xmlns:compositeContentNavigator="clr-namespace:CompositeContentNavigator;assembly=CompositeContentNavigator"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:gpsModule="clr-namespace:GPSModule"
-    xmlns:loadingIndicator="clr-namespace:MaterialDesignUnityBootStrap.LoadingIndicator;assembly=MaterialDesignUnityBootStrap"
     xmlns:local="clr-namespace:GPSModule.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:polarPlacementControl="clr-namespace:GPSModule.Infrastructure.PolarPlacementControl"
+    xmlns:loadingIndicatorControl="clr-namespace:MaterialDesignUnityBootStrap.LoadingIndicatorControl;assembly=MaterialDesignUnityBootStrap"
     compositeContentNavigator:ViewManager.HeaderDisplay="Message"
     compositeContentNavigator:ViewManager.HeaderPackIcon="Satellite"
     ClipToBounds="True"
@@ -21,7 +22,7 @@
                 Width="150"
                 Height="150"
                 Margin="10">
-                <loadingIndicator:LoadingIndicator
+                <loadingIndicatorControl:LoadingIndicator
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
@@ -99,7 +100,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="codec:SatelliteVehicle">
-                                    <gpsModule:PolarPlacementItem Azimuth="{Binding Azimuth}" Elevation="{Binding Elevation}">
+                                    <polarPlacementControl:PolarPlacementItem Azimuth="{Binding Azimuth}" Elevation="{Binding Elevation}">
                                         <Canvas Width="8" Height="8">
                                             <Image
                                                 Canvas.Left="-32"
@@ -143,7 +144,7 @@
                                                 Opacity=".5"
                                                 Text="{Binding Id}" />
                                         </Canvas>
-                                    </gpsModule:PolarPlacementItem>
+                                    </polarPlacementControl:PolarPlacementItem>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

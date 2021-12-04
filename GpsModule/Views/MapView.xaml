@@ -2,31 +2,42 @@
     x:Class="GPSModule.Views.MapView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:av="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:compositeContentNavigator="clr-namespace:CompositeContentNavigator;assembly=CompositeContentNavigator"
-    xmlns:loadingIndicator="clr-namespace:MaterialDesignUnityBootStrap.LoadingIndicator;assembly=MaterialDesignUnityBootStrap"
+    xmlns:loadingIndicatorControl="clr-namespace:MaterialDesignUnityBootStrap.LoadingIndicatorControl;assembly=MaterialDesignUnityBootStrap"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
-    xmlns:xamlMap="clr-namespace:GPSModule.XamlMap"
+    xmlns:xamlMap="clr-namespace:GPSModule.Infrastructure.XamlMap"
+    av:DesignHeight="337"
+    av:DesignWidth="550"
     compositeContentNavigator:ViewManager.HeaderDisplay="Map"
     compositeContentNavigator:ViewManager.HeaderPackIcon="MapMarker"
-    prism:ViewModelLocator.AutoWireViewModel="True">
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    mc:Ignorable="av">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <materialDesign:BooleanToVisibilityConverter
+                x:Key="InverseVisibilityConverter"
+                FalseValue="Visible"
+                TrueValue="Collapsed" />
+            <materialDesign:BooleanToVisibilityConverter
+                x:Key="VisibilityConverter"
+                FalseValue="Collapsed"
+                TrueValue="Visible" />
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid Margin="15">
-        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource InverseBoolToVisConverter}}">
-            <Viewbox
-                Width="150"
-                Height="150"
-                Margin="10">
-                <loadingIndicator:LoadingIndicator
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="{StaticResource PrimaryHueMidForegroundBrush}"
-                    IsActive="True"
-                    Mode="Arcs"
-                    SpeedRatio="1.2" />
-            </Viewbox>
-        </materialDesign:TransitioningContent>
-        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource BoolToVisConverter}}">
+        <materialDesign:TransitioningContent
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            OpeningEffect="{materialDesign:TransitionEffect FadeIn,
+                                                            Duration=0:0:2}"
+            Visibility="{Binding IsLoaded, Converter={StaticResource InverseVisibilityConverter}}">
+            <loadingIndicatorControl:LoadingIndicator Mode="Arcs" />
 
+        </materialDesign:TransitioningContent>
+        <materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource VisibilityConverter}}">
             <Grid>
                 <xamlMap:Map CurrentLocation="{Binding CurrentLocation}" />
             </Grid>

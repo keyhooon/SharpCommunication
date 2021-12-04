@@ -4,10 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:compositeContentNavigator="clr-namespace:CompositeContentNavigator;assembly=CompositeContentNavigator"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:loadingIndicator="clr-namespace:MaterialDesignUnityBootStrap.LoadingIndicator;assembly=MaterialDesignUnityBootStrap"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mvvm="http://prismlibrary.com/"
+    xmlns:loadingIndicatorControl="clr-namespace:MaterialDesignUnityBootStrap.LoadingIndicatorControl;assembly=MaterialDesignUnityBootStrap"
     compositeContentNavigator:ViewManager.HeaderDisplay="Message"
     compositeContentNavigator:ViewManager.HeaderPackIcon="Satellite"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
@@ -22,7 +22,7 @@
                 Width="150"
                 Height="150"
                 Margin="10">
-                <loadingIndicator:LoadingIndicator
+                <loadingIndicatorControl:LoadingIndicator
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Foreground="{StaticResource PrimaryHueMidForegroundBrush}"

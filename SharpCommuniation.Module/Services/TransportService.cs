@@ -11,20 +11,23 @@ using SharpCommunication.Transport.SerialPort;
 
 namespace SharpCommunication.Module.Services
 {
-    public abstract class TransportService<T> : BindableBase where T : IPacket, new()
+    public abstract class DeviceService<T> where T : IPacket, new()
     {
         public event EventHandler IsOpenChanged;
 
         public bool IsOpen => DataTransport.IsOpen;
+        public void Open() => DataTransport.Open();
+
+        public void Close() => DataTransport.Close();
         protected DataTransport<T> DataTransport { get; }
 
         protected Codec<T> Codec { get; }
 
-        protected TransportService(DataTransport<T> dataTransport, Codec<T> codec)
+        protected DeviceService(DataTransport<T> dataTransport, Codec<T> codec)
         {
             DataTransport = dataTransport;
-            dataTransport.IsOpenChanged += IsOpenChanged;
             Codec = codec;
+            dataTransport.IsOpenChanged += IsOpenChanged;
         }
     }
 

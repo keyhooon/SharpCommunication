@@ -16,12 +16,16 @@ using SharpCommunication.Transport.SerialPort;
 
 namespace Gy955Module
 {
-    public class Gy955Module : IModule
+    public class Module : IModule
     {
         public void OnInitialized(IContainerProvider containerProvider)
         {
 
             var compositeMapNavigatorService = containerProvider.Resolve<CompositeMapNavigatorService>();
+            if (!compositeMapNavigatorService.TryGetItemByName("Device", out var _))
+                compositeMapNavigatorService.RegisterItem("Device", MapItemBuilder
+                    .CreateDefaultBuilder("Device")
+                    .WithImagePackIcon(PackIconKind.BoxView));
 
             compositeMapNavigatorService.RegisterItem("Device\\IMU", MapItemBuilder
                     .CreateDefaultBuilder("IMU")

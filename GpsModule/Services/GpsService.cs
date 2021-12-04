@@ -214,6 +214,7 @@ namespace GPSModule.Services
 
         public Zda Zda { get; private set; }
 
+        public Vtg Vtg { get; private set; }
 
 
 

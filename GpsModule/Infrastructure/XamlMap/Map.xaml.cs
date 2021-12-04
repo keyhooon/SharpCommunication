@@ -63,9 +63,14 @@ namespace GPSModule.Infrastructure.XamlMap
 
         public Map()
         {
-            
+            //MapLayer = "{x:Static map:MapTileLayer.OpenStreetMapTileLayer}"
+            MapLayer = MapTileLayer.OpenStreetMapTileLayer;
+  
             InitializeComponent();
 
+            TileImageLoader.Cache = new MapControl.Caching.ImageFileCache($"{Directory.GetCurrentDirectory()}\\Map");
+            TileImageLoader.MaxCacheExpiration = TimeSpan.MaxValue;
+            InitializeComponent();
         }
 
         private void MapMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Numerics;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec;

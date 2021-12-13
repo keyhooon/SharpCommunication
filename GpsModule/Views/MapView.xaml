@@ -27,7 +27,7 @@
                 TrueValue="Visible" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="15">
+    <Grid Margin="5">
         <materialDesign:TransitioningContent
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"

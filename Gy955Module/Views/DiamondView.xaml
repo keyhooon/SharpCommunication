@@ -14,7 +14,7 @@
     d:DesignWidth="800"
     mvvm:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
-    <Grid Margin="15">
+    <Grid Margin="5">
         <!--<materialDesign:TransitioningContent OpeningEffect="{materialDesign:TransitionEffect FadeIn, Duration=0:0:2}" Visibility="{Binding IsLoaded, Converter={StaticResource InverseBoolToVisConverter}}">
             <Viewbox
                 Width="150"
@@ -50,7 +50,7 @@
                 </h:HelixViewport3D.Camera>
                 <h:DefaultLights />
                 <h:SunLight />
-                <h:CoordinateSystemVisual3D >
+                <h:CoordinateSystemVisual3D>
                     <ModelVisual3D.Transform>
                         <Transform3DGroup>
                             <ScaleTransform3D

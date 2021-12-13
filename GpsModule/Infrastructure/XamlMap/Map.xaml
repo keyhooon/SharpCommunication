@@ -84,51 +84,50 @@
 
 
     <DockPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-        <Grid DockPanel.Dock="Bottom">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <Border
-                Margin="5"
-                Background="#Aae0e0e0"
-                CornerRadius="5"
-                Visibility="{Binding ElementName=MouseLocation, Path=Text, Converter={StaticResource NotEmptyStringToVisibilityConverter}}">
-                <TextBlock
-                    x:Name="MouseLocation"
-                    Margin="15,8"
-                    FontFamily="Courier New"
-                    FontSize="16"
-                    FontWeight="Bold"
-                    Foreground="Black" />
-            </Border>
-            <Border
-                Grid.Column="0"
-                Margin="5"
-                Background="#Aae0e0e0"
-                CornerRadius="5"
-                DockPanel.Dock="Bottom"
-                Visibility="{Binding ElementName=MouseLocation, Path=Text, Converter={StaticResource EmptyStringToVisibilityConverter}}">
-                <TextBlock
-                    Margin="15,8"
-                    FontFamily="Courier New"
-                    FontSize="16"
-                    FontWeight="Bold"
-                    Foreground="Black"
-                    Text="{Binding Path=Center, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}, Converter={StaticResource LocationToStringConverter}}" />
-            </Border>
 
-        </Grid>
-
-        <StackPanel Orientation="Horizontal">
-            <Border
-                Margin="5"
-                HorizontalAlignment="Left"
-                Background="#AADDDDDD"
-                CornerRadius="5"
-                DockPanel.Dock="Bottom">
-                <map:MapScale Margin="5" />
-            </Border>
+        <Border
+            Margin="5"
+            HorizontalAlignment="Left"
+            Background="#AADDDDDD"
+            CornerRadius="5"
+            DockPanel.Dock="Top">
+            <map:MapScale  Margin="5" />
+        </Border>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Border
+                    Margin="5"
+                    Background="#Aae0e0e0"
+                    CornerRadius="5"
+                    Visibility="{Binding ElementName=MouseLocation, Path=Text, Converter={StaticResource NotEmptyStringToVisibilityConverter}}">
+                    <TextBlock
+                        x:Name="MouseLocation"
+                        Margin="15,8"
+                        FontFamily="Courier New"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="Black" />
+                </Border>
+                <Border
+                    Grid.Column="0"
+                    Margin="5"
+                    Background="#Aae0e0e0"
+                    CornerRadius="5"
+                    DockPanel.Dock="Bottom"
+                    Visibility="{Binding ElementName=MouseLocation, Path=Text, Converter={StaticResource EmptyStringToVisibilityConverter}}">
+                    <TextBlock
+                        Margin="15,8"
+                        FontFamily="Courier New"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="Black"
+                        Text="{Binding Path=Center, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}, Converter={StaticResource LocationToStringConverter}}" />
+                </Border>
+            </Grid>
             <Button
                 Grid.Column="1"
                 Margin="5"
@@ -142,17 +141,7 @@
                 Foreground="#DD171717">
                 <materialDesign:PackIcon Background="Transparent" Kind="CrosshairsGps" />
             </Button>
-        </Grid>
 
-        <StackPanel Orientation="Horizontal">
-            <Border
-                Margin="5"
-                HorizontalAlignment="Left"
-                Background="#AADDDDDD"
-                CornerRadius="5"
-                DockPanel.Dock="Bottom">
-                <map:MapScale Margin="5" />
-            </Border>
         </StackPanel>
     </DockPanel>
 

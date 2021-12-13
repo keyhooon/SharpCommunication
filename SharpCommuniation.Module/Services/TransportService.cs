@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
-using Prism.Mvvm;
 using SharpCommunication.Channels;
 using SharpCommunication.Codec;
 using SharpCommunication.Codec.Encoding;

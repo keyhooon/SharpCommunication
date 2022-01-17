@@ -19,7 +19,7 @@
     <materialDesign:Card Margin="5" materialDesign:ShadowAssist.ShadowDepth="Depth3">
         <materialDesign:ColorZone Mode="PrimaryLight">
 
-            <Expander>
+            <Expander IsExpanded="True">
                 <Expander.Header>
                     <ToolBar materialDesign:ColorZoneAssist.Mode="PrimaryMid" Background="Transparent">
                         <ToolBar.Header>
@@ -27,96 +27,76 @@
                                 <materialDesign:PackIcon
                                     VerticalAlignment="Center"
                                     DockPanel.Dock="Left"
-                                    Kind="GpsFixed" />
+                                    Kind="SerialPort" />
                                 <TextBlock
                                     Margin="8,0"
                                     VerticalAlignment="Center"
                                     DockPanel.Dock="Left"
-                                    Text="Gps" />
+                                    Text="Serial Port" />
                             </StackPanel>
                         </ToolBar.Header>
                         <Button
-                            Margin="5"
                             Command="{Binding OpenCommand}"
                             Content="{materialDesign:PackIcon Kind=Play}"
                             DockPanel.Dock="Right"
-                            Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                            Style="{StaticResource MaterialDesignToolForegroundButton}"
                             ToolTip="Connect" />
                         <Button
-                            Margin="5"
                             Command="{Binding CloseCommand}"
                             Content="{materialDesign:PackIcon Kind=Stop}"
                             DockPanel.Dock="Right"
-                            Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                            Style="{StaticResource MaterialDesignToolForegroundButton}"
                             ToolTip="Disconnect" />
                     </ToolBar>
                 </Expander.Header>
-                <Grid Margin="20" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
+                <Grid Margin="20,-20,20,20" TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
                     <Grid.Resources>
                         <xamlConverter:InverseBooleanConverter x:Key="InvBoolConverter" />
                         <Style TargetType="TextBlock">
-                            <Setter Property="Margin" Value="5" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="VerticalAlignment" Value="Bottom" />
                         </Style>
 
                     </Grid.Resources>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="40" />
-                        <RowDefinition Height="40" />
+
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="50" />
+                        <RowDefinition Height="50" />
                         <RowDefinition />
                     </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="1" Text="Com Port" />
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        Text="Baud Rate" />
-                    <TextBlock
-                        Grid.Row="3"
-                        Grid.Column="0"
-                        Text="Parity" />
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="0"
-                        Text="Data Bits" />
-                    <TextBlock
-                        Grid.Row="5"
-                        Grid.Column="0"
-                        Text="Stop Bits" />
-                    <TextBlock
-                        Grid.Row="6"
-                        Grid.Column="0"
-                        Text="Timeout" />
                     <ComboBox
-                        Grid.Row="1"
+                        Grid.Row="0"
                         Grid.Column="1"
-                        Margin="5,0"
+                        Margin="5"
+                        VerticalContentAlignment="Bottom"
                         materialDesign:HintAssist.Hint="Com Port"
                         IsEditable="False"
                         IsEnabled="{Binding IsOpen, Converter={StaticResource InvBoolConverter}}"
                         SelectedItem="{Binding PortName}"
-                        SelectedValuePath=".">
+                        SelectedValuePath="."
+                        Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                         <b:Interaction.Behaviors>
                             <behaviors:FillAvailableComPortBehavior />
                         </b:Interaction.Behaviors>
                     </ComboBox>
                     <ComboBox
-                        Grid.Row="2"
+                        Grid.Row="1"
                         Grid.Column="1"
-                        Margin="5,0"
+                        Margin="5"
+                        VerticalContentAlignment="Bottom"
                         materialDesign:HintAssist.Hint="Baud Rate"
                         IsEditable="True"
                         IsEnabled="{Binding IsOpen, Converter={StaticResource InvBoolConverter}}"
-                        SelectedItem="{Binding BaudRate}">
+                        SelectedItem="{Binding BaudRate}"
+                        Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                         <ComboBox.ItemsSource>
                             <x:Array xmlns:sys="clr-namespace:System;assembly=mscorlib" Type="sys:Int32">
                                 <sys:Int32>300</sys:Int32>
@@ -139,20 +119,26 @@
                         </ComboBox.ItemsSource>
                     </ComboBox>
                     <ComboBox
-                        Grid.Row="3"
+                        Grid.Row="2"
                         Grid.Column="1"
                         Margin="5"
+                        VerticalContentAlignment="Bottom"
+                        materialDesign:HintAssist.Hint="Com Port"
                         IsEditable="False"
                         IsEnabled="{Binding IsOpen, Converter={StaticResource InvBoolConverter}}"
                         ItemsSource="{Binding Source={module:EnumBindingSource {x:Type serial:Parity}}}"
-                        SelectedItem="{Binding Parity}" />
+                        SelectedItem="{Binding Parity}"
+                        Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
                     <ComboBox
-                        Grid.Row="4"
+                        Grid.Row="3"
                         Grid.Column="1"
                         Margin="5"
+                        VerticalContentAlignment="Bottom"
+                        materialDesign:HintAssist.Hint="Data Bits"
                         IsEditable="False"
                         IsEnabled="{Binding IsOpen, Converter={StaticResource InvBoolConverter}}"
-                        SelectedItem="{Binding DataBits}">
+                        SelectedItem="{Binding DataBits}"
+                        Style="{StaticResource MaterialDesignFloatingHintComboBox}">
                         <ComboBox.ItemsSource>
                             <x:Array xmlns:sys="clr-namespace:System;assembly=mscorlib" Type="sys:Int32">
                                 <sys:Int32>8</sys:Int32>
@@ -162,19 +148,24 @@
                         </ComboBox.ItemsSource>
                     </ComboBox>
                     <ComboBox
-                        Grid.Row="5"
+                        Grid.Row="4"
                         Grid.Column="1"
                         Margin="5"
+                        VerticalContentAlignment="Bottom"
+                        materialDesign:HintAssist.Hint="Stop Bits"
                         IsEditable="False"
                         IsEnabled="{Binding IsOpen, Converter={StaticResource InvBoolConverter}}"
                         ItemsSource="{Binding Source={module:EnumBindingSource {x:Type serial:StopBits}}}"
-                        SelectedItem="{Binding StopBits}" />
+                        SelectedItem="{Binding StopBits}"
+                        Style="{StaticResource MaterialDesignFloatingHintComboBox}" />
                     <TextBox
-                        Grid.Row="6"
+                        Grid.Row="5"
                         Grid.Column="1"
-                        Margin="5,5"
+                        Margin="5"
                         VerticalContentAlignment="Bottom"
+                        materialDesign:HintAssist.Hint="Timeout"
                         IsEnabled="{Binding IsOpen, Converter={StaticResource InvBoolConverter}}"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                         Text="{Binding ReadTimeout}" />
                 </Grid>
             </Expander>

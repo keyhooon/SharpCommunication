@@ -8,7 +8,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:valueConverter="clr-namespace:SharpCommunication.Module.ValueConverter;assembly=SharpCommunication.Module"
     xmlns:xamlMap="clr-namespace:GPSModule.Infrastructure.XamlMap"
-    xmlns:xamlMap1="clr-namespace:GPSModule.Infrastructure.XamlMap"
     d:DesignHeight="450"
     d:DesignWidth="800"
     AnimationDuration="00:00:1"
@@ -39,12 +38,10 @@
             x:Key="NullToVisibilityConverter"
             NotNullValue="Collapsed"
             NullValue="Visible" />
-
         <materialDesign:NullableToVisibilityConverter
             x:Key="NotNullToVisibilityConverter"
             NotNullValue="Visible"
             NullValue="Collapsed" />
-
     </map:Map.Resources>
     <materialDesign:PackIcon
         Width="40"
@@ -52,7 +49,6 @@
         Margin="-20,-40"
         map:MapPanel.Location="{Binding Path=CurrentLocation, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"
         Kind="MapMarker" />
-
     <map:MapItemsControl
         x:Name="ItemsControl"
         ItemTemplate="{Binding Path=ItemTemplate, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type map:Map}}}"
@@ -81,17 +77,14 @@
             </Style>
         </map:MapItemsControl.ItemContainerStyle>
     </map:MapItemsControl>
-
-
     <DockPanel HorizontalAlignment="Left" VerticalAlignment="Bottom">
-
         <Border
             Margin="5"
             HorizontalAlignment="Left"
             Background="#AADDDDDD"
             CornerRadius="5"
             DockPanel.Dock="Top">
-            <map:MapScale  Margin="5" />
+            <map:MapScale Margin="5" />
         </Border>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal">
             <Grid>
@@ -141,7 +134,6 @@
                 Foreground="#DD171717">
                 <materialDesign:PackIcon Background="Transparent" Kind="CrosshairsGps" />
             </Button>
-
         </StackPanel>
     </DockPanel>
 

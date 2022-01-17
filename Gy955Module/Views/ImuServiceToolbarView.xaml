@@ -5,14 +5,13 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:prism="http://prismlibrary.com/"
     prism:ViewModelLocator.AutoWireViewModel="True"
-    Background="{DynamicResource PrimaryHueDarkBrush}"
     Style="{StaticResource MaterialDesignToolBar}">
     <ToolBar.Header>
         <StackPanel Orientation="Horizontal">
             <materialDesign:PackIcon
                 VerticalAlignment="Center"
                 DockPanel.Dock="Left"
-                Kind="GpsFixed">
+                Kind="Compass">
                 <materialDesign:PackIcon.Style>
                     <Style>
                         <Style.Triggers>
@@ -52,10 +51,16 @@
         </StackPanel>
     </ToolBar.Header>
     <Separator />
-    <Button Command="{Binding OpenCommand}" ToolTip="Connect">
+    <Button
+        Command="{Binding OpenCommand}"
+        Style="{StaticResource MaterialDesignToolForegroundButton}"
+        ToolTip="Connect">
         <materialDesign:PackIcon Kind="Play" />
     </Button>
-    <Button Command="{Binding CloseCommand}" ToolTip="Disconnect">
+    <Button
+        Command="{Binding CloseCommand}"
+        Style="{StaticResource MaterialDesignToolForegroundButton}"
+        ToolTip="Disconnect">
         <materialDesign:PackIcon Kind="Stop" />
     </Button>
     <Separator />

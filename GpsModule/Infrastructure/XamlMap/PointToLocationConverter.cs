@@ -17,7 +17,7 @@ namespace GPSModule.Infrastructure.XamlMap
         public object ConvertBack(object value, Type targetTypes, object parameter, CultureInfo culture)
         {
             var val = (Location)value;
-            return val == null ? new Point(0, 0) : new Point(val.Latitude, val.Longitude);
+            return val == null ? new Point(0, 0) : new Point(val.Latitude, val.Longitude){ SRID = 4326 };
         }
     }
 }

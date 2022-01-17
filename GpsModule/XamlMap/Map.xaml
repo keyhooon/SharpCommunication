@@ -30,7 +30,7 @@
         <xamlMap:LocationToVisibilityConverter x:Key="LocationToVisibilityConverter" />
         <xamlMap:LocationToStringConverter x:Key="LocationToStringConverter" />
         <xamlMap:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
-        <xamlMap:DbGeographyToLocationConverter x:Key="DbGeographyToLocationConverter" />
+        <xamlMap:PointToLocationConverter x:Key="DbGeographyToLocationConverter" />
         <xamlMap:NullToVisibilityConverter x:Key="NotNullToVisibilityConverter" Invert="True" />
     </map:Map.Resources>
     <materialDesign:PackIcon

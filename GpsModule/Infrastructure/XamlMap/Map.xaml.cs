@@ -65,13 +65,14 @@ namespace GPSModule.Infrastructure.XamlMap
         {
             //MapLayer = "{x:Static map:MapTileLayer.OpenStreetMapTileLayer}"
             MapLayer = MapTileLayer.OpenStreetMapTileLayer;
-  
             InitializeComponent();
 
             TileImageLoader.Cache = new MapControl.Caching.ImageFileCache($"{Directory.GetCurrentDirectory()}\\Map");
             TileImageLoader.MaxCacheExpiration = TimeSpan.MaxValue;
             InitializeComponent();
         }
+
+
 
         private void MapMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -108,24 +109,6 @@ namespace GPSModule.Infrastructure.XamlMap
 
         }
 
-        //private void MapItemTouchDown(object sender, TouchEventArgs e)
-        //{
-        //    var mapItem = (MapItem)sender;
-        //    TargetCenter = MapPanel.GetLocation(mapItem);
-        //    mapItem.IsSelected = !mapItem.IsSelected;
-        //    e.Handled = true;
-        //}
-
-        //private void SeamarksChecked(object sender, RoutedEventArgs e)
-        //{
-        //    map.Children.Insert(map.Children.IndexOf(mapGraticule),
-        //        ((MapViewModel) DataContext).MapLayers.SeamarksLayer);
-        //}
-
-        //private void SeamarksUnchecked(object sender, RoutedEventArgs e)
-        //{
-        //    map.Children.Remove(((MapViewModel) DataContext).MapLayers.SeamarksLayer);
-        //}
         private void CurrentLocationViewButton_OnClick(object sender, RoutedEventArgs e)
         {
             Center = CurrentLocation;

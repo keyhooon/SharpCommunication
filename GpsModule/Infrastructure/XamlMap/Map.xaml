@@ -23,7 +23,7 @@
     MouseLeftButtonDown="MapMouseLeftButtonDown"
     MouseMove="MapMouseMove"
     MouseRightButtonDown="MapMouseRightButtonDown"
-    ZoomLevel="15"
+    ZoomLevel="15" 
     mc:Ignorable="d">
     <map:Map.MapProjection>
         <map:WebMercatorProjection />

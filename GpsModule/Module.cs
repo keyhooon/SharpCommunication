@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using CompositeContentNavigator.Services;
 using CompositeContentNavigator.Services.MapItems;
 using CompositeContentNavigator.Services.MapItems.Data;
@@ -25,16 +26,16 @@ namespace GPSModule
         {
 
             var compositeMapNavigatorService = containerProvider.Resolve<CompositeMapNavigatorService>();
-            if (!compositeMapNavigatorService.TryGetItemByName("Device", out var _))
-                compositeMapNavigatorService.RegisterItem("Device", MapItemBuilder
-                    .CreateDefaultBuilder("Device")
+            if (!compositeMapNavigatorService.TryGetItemByName("Config", out _))
+                compositeMapNavigatorService.RegisterItem("Config", MapItemBuilder
+                    .CreateDefaultBuilder("Config")
                     .WithImagePackIcon(PackIconKind.BoxView));
-            compositeMapNavigatorService.RegisterItem("Device\\GPS", MapItemBuilder
+            compositeMapNavigatorService.RegisterItem("Config\\GPS", MapItemBuilder
                     .CreateDefaultBuilder("GPS")
                     .WithImagePackIcon(PackIconKind.CrosshairsGps)
                     .WithChild(new Collection<MapItem>
                     {
-                        compositeMapNavigatorService.RegisterItem("Device\\GPS\\Map", MapItemBuilder
+                        compositeMapNavigatorService.RegisterItem("Config\\GPS\\Map", MapItemBuilder
                             .CreateDefaultBuilder("Map")
                             .WithImagePackIcon(PackIconKind.MapMarker)
                             .WithToolBars(new[] {typeof(GpsServiceToolBarView)})
@@ -50,13 +51,12 @@ namespace GPSModule
                                 },
                                 {"ToolsRegion", new[] {typeof(GpsConfigurationView)}}
                             })),
-                    }), "Device"
+                    }), "Config"
             );
 
             ImageLoader.HttpClient.DefaultRequestHeaders.Add("User-Agent", "XAML Map Control Test Application");
-            
             var defaultCacheFolder = TileImageLoader.DefaultCacheFolder;
-            TileImageLoader.Cache = new SQLiteCache(defaultCacheFolder);
+            TileImageLoader.Cache = new ImageFileCache(defaultCacheFolder);
             
         }
 

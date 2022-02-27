@@ -22,17 +22,17 @@ namespace Gy955Module
         {
 
             var compositeMapNavigatorService = containerProvider.Resolve<CompositeMapNavigatorService>();
-            if (!compositeMapNavigatorService.TryGetItemByName("Device", out var _))
-                compositeMapNavigatorService.RegisterItem("Device", MapItemBuilder
-                    .CreateDefaultBuilder("Device")
+            if (!compositeMapNavigatorService.TryGetItemByName("Config", out var _))
+                compositeMapNavigatorService.RegisterItem("Config", MapItemBuilder
+                    .CreateDefaultBuilder("Config")
                     .WithImagePackIcon(PackIconKind.BoxView));
 
-            compositeMapNavigatorService.RegisterItem("Device\\IMU", MapItemBuilder
+            compositeMapNavigatorService.RegisterItem("Config\\IMU", MapItemBuilder
                     .CreateDefaultBuilder("IMU")
                     .WithImagePackIcon(PackIconKind.Compass)
                     .WithChild(new Collection<MapItem>
                     {
-                        compositeMapNavigatorService.RegisterItem("Device\\IMU\\Diamond", MapItemBuilder
+                        compositeMapNavigatorService.RegisterItem("Config\\IMU\\Diamond", MapItemBuilder
                             .CreateDefaultBuilder("Diamond")
                             .WithImagePackIcon(PackIconKind.Diamond)
                             .WithToolBars(new[] {typeof(ImuServiceToolBarView)})
@@ -50,7 +50,7 @@ namespace Gy955Module
                             })
                         ),
                     })
-                , "Device");
+                , "Config");
 
 
         }
